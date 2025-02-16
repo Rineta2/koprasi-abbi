@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+import daisyui from "daisyui";
+
 export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,9 +12,28 @@ export default {
     extend: {
       colors: {
         background: "var(--background)",
-        foreground: "var(--foreground)",
+        text: "var(--text)",
+        primary: "var(--primary)",
+      },
+
+      container: {
+        screens: {
+          DEFAULT: "1500px",
+        },
+        center: true,
+      },
+      keyframes: {
+        shimmer: {
+          "100%": {
+            transform: "translateX(100%)",
+          },
+        },
       },
     },
   },
-  plugins: [],
+  plugins: [daisyui],
+  darkMode: "class",
+  daisyui: {
+    themes: false,
+  },
 } satisfies Config;

@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --text: #0d0d0d;
+  --primary: #ffb800;
+}
+
+.dark {
+  --background: #0d0d0d;
+  --text: #ffffff;
+  --primary: #ffb800;
+}
+
+body {
+  color: var(--text);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+section {
+  padding: 4rem 2rem;
+
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+  }
+}
+
+html {
+  font-size: 85%;
+  scroll-behavior: smooth;
+}
