@@ -4,8 +4,6 @@ import { RiAdminFill } from "react-icons/ri";
 
 import { MdFeaturedPlayList } from "react-icons/md";
 
-import { GiCardboardBoxClosed } from "react-icons/gi";
-
 import { GrArticle } from "react-icons/gr";
 
 export const menuItems = [
@@ -18,12 +16,12 @@ export const menuItems = [
   {
     icon: RiAdminFill,
     label: "Layout",
-    href: "/admins/dashboard/seller",
+    href: "/admins/dashboard/layout",
     subItems: [
-      { label: "Home", href: "/admins/dashboard/home" },
-      { label: "About", href: "/admins/dashboard/about" },
-      { label: "Skills", href: "/admins/dashboard/skills" },
-      { label: "Achievements", href: "/admins/dashboard/achievements" },
+      { label: "Home", href: "/admins/dashboard/layout/home" },
+      { label: "About", href: "/admins/dashboard/layout/about" },
+      { label: "Skills", href: "/admins/dashboard/layout/skills" },
+      { label: "Achievements", href: "/admins/dashboard/layout/achievements" },
     ],
   },
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { themeOptions } from "../data/thema"
@@ -6,6 +6,20 @@ import { themeOptions } from "../data/thema"
 export default function ThemeToggle() {
     const { theme, setTheme } = useTheme()
     const [isOpen, setIsOpen] = useState(false)
+
+    const handleClickOutside = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        if (!target.closest('.theme-dropdown')) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="relative">

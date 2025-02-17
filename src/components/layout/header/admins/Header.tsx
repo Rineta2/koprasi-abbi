@@ -62,46 +62,45 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
     return (
         <header className="h-full flex flex-col">
             {/* Close Button - Mobile Only */}
-            <div className="absolute top-0 right-0 flex justify-end p-4 lg:hidden">
+            <div className="absolute top-4 right-4 lg:hidden">
                 <button
                     onClick={() => onSidebarToggle?.(false)}
-                    className="p-1.5 hover:bg-gray-100 rounded-lg"
+                    className="p-2 rounded-lg hover:bg-muted/60 dark:hover:bg-muted/25
+                             transition-colors duration-200 active:scale-95"
                 >
                     <svg
-                        className="w-6 h-6 text-gray-500"
+                        className="w-5 h-5 text-muted-foreground"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                     >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
 
-            {/* Profile Section - Updated design */}
-            <div className="p-4 mt-2 mb-2 border-b border-slate-200">
-                <div className="flex items-center gap-3">
-                    <Image
-                        src={user?.photoURL || '/images/default-profile.png'}
-                        alt="Profile"
-                        width={48}
-                        height={48}
-                        className="rounded-xl object-cover w-12 h-12"
-                    />
-                    <div>
-                        <p className="text-[15px] font-semibold text-slate-900">{user?.displayName}</p>
-                        <p className="text-[12px] text-slate-500">Super Admin</p>
+            {/* Profile Section */}
+            <div className="p-6 border-b border-border/40 dark:border-border/30">
+                <div className="flex items-center gap-4">
+                    <div className="relative">
+                        <Image
+                            src={user?.photoURL || '/images/default-profile.png'}
+                            alt="Profile"
+                            width={48}
+                            height={48}
+                            className="rounded-full object-cover w-12 h-12 ring-2 ring-background"
+                        />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-background"></div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <p className="text-foreground font-medium truncate">{user?.displayName}</p>
+                        <p className="text-sm text-muted-foreground truncate">Super Admin</p>
                     </div>
                 </div>
             </div>
 
-            {/* Navigation - Updated design */}
-            <nav className="flex-1 px-3 py-2 overflow-y-auto">
+            {/* Navigation */}
+            <nav className="flex-1 px-4 py-4 overflow-y-auto">
                 <ul className="space-y-1.5">
                     {menuItems.map((item, index) => (
                         <li key={index}>
@@ -109,9 +108,11 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                                 <Link
                                     href={item.href}
                                     onClick={handleLinkClick}
-                                    className={`flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all duration-200 ${isLinkActive(item.href)
-                                        ? 'bg-primary text-white shadow-sm shadow-primary/25'
-                                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg 
+                                    transition-all duration-200 group
+                                    ${isLinkActive(item.href)
+                                            ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/25'
+                                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/60 dark:hover:bg-muted/25'
                                         }`}
                                 >
                                     <item.icon className="w-5 h-5" />
@@ -121,9 +122,11 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                                 <>
                                     <button
                                         onClick={() => toggleDropdown(index)}
-                                        className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg transition-all duration-200 ${item.subItems?.some(subItem => isLinkActive(subItem.href))
-                                            ? 'bg-primary text-white shadow-sm shadow-primary/25'
-                                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                                        className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg 
+                                        transition-all duration-200 group
+                                        ${item.subItems?.some(subItem => isLinkActive(subItem.href))
+                                                ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/25'
+                                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/60 dark:hover:bg-muted/25'
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">
@@ -131,7 +134,8 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                                             <span className="text-sm font-medium">{item.label}</span>
                                         </div>
                                         <svg
-                                            className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === index ? 'rotate-180' : ''}`}
+                                            className={`w-4 h-4 transition-transform duration-200 
+                                            ${activeDropdown === index ? 'rotate-180' : ''}`}
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
@@ -140,18 +144,21 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                                         </svg>
                                     </button>
 
-                                    <div className={`overflow-hidden transition-all duration-200 ${activeDropdown === index ? 'max-h-48' : 'max-h-0'}`}>
-                                        <ul className="mt-1 space-y-1 px-3.5">
+                                    <div className={`overflow-hidden transition-all duration-200 
+                                    ${activeDropdown === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                        <ul className="mt-1 ml-4 space-y-1">
                                             {item.subItems.map((subItem, subIndex) => (
                                                 <li key={subIndex}>
                                                     <Link
                                                         href={subItem.href}
                                                         onClick={handleLinkClick}
-                                                        className={`block py-2 px-4 text-sm rounded-md transition-all duration-200 ${isLinkActive(subItem.href)
-                                                            ? 'text-primary font-medium bg-primary/10'
-                                                            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+                                                        className={`flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200
+                                                        ${isLinkActive(subItem.href)
+                                                                ? 'text-primary font-medium bg-primary/10'
+                                                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/60 dark:hover:bg-muted/25'
                                                             }`}
                                                     >
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-current mr-3 opacity-60"></span>
                                                         {subItem.label}
                                                     </Link>
                                                 </li>
@@ -165,14 +172,16 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                 </ul>
             </nav>
 
-            {/* Logout Button - Updated design */}
-            <div className="p-3 border-t border-slate-200">
+            {/* Logout Button */}
+            <div className="p-4 border-t border-border/40 dark:border-border/30">
                 <button
                     onClick={() => {
                         logout();
                         handleLinkClick();
                     }}
-                    className="flex items-center justify-center gap-2 w-full p-2.5 rounded-lg text-red-600 hover:bg-red-50 active:bg-red-100 transition-all duration-200"
+                    className="flex items-center justify-center gap-2 w-full p-2.5 rounded-lg
+                    text-destructive hover:bg-destructive/10 active:bg-destructive/20
+                    transition-all duration-200 group"
                 >
                     <FiLogOut className="w-4 h-4" />
                     <span className="text-sm font-medium">Logout</span>
