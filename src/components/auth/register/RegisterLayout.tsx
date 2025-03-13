@@ -85,7 +85,7 @@ export default function RegisterLayout() {
         try {
             setIsLoading(true)
 
-            // Validasi username
+            // Username validation remains the same
             const isAvailable = await isUsernameAvailable(data.username)
             if (!isAvailable) {
                 setError('username', {
@@ -95,9 +95,9 @@ export default function RegisterLayout() {
                 return
             }
 
-            // Proses referral code jika ada
+            // Process referral code if exists
             if (data.referralCode) {
-                // Cek keberadaan kode referral
+                // Check referral code existence
                 const referralQuery = query(
                     collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS as string),
                     where('referralCode', '==', data.referralCode),
@@ -113,27 +113,11 @@ export default function RegisterLayout() {
                     return
                 }
 
-                // Dapatkan data affiliate
+                // Get affiliate data
                 const affiliateData = referralSnapshot.docs[0].data()
                 const affiliateUsername = affiliateData.username
 
-                // Cek apakah kode referral sudah pernah digunakan
-                const referralUsageQuery = query(
-                    collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_AFFILIATES as string),
-                    where('referralCode', '==', data.referralCode)
-                )
-                const referralUsageSnapshot = await getDocs(referralUsageQuery)
-
-                if (!referralUsageSnapshot.empty) {
-                    setError('referralCode', {
-                        type: 'manual',
-                        message: 'This referral code has already been used'
-                    })
-                    toast.error('Maaf, kode referral ini sudah digunakan')
-                    return
-                }
-
-                // Cek apakah user sudah pernah menggunakan referral code apapun
+                // Check if user has already used any referral code
                 const userAsSubscriberQuery = query(
                     collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_AFFILIATES as string),
                     where('subscriberDetails.username', '==', data.username)
@@ -149,54 +133,48 @@ export default function RegisterLayout() {
                     return
                 }
 
-                // Cek dokumen affiliate
-                const affiliateQuery = query(
+                // Get the root affiliate (Alfiet) document
+                const rootAffiliateQuery = query(
                     collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_AFFILIATES as string),
-                    where('username', '==', affiliateUsername)
+                    where('username', '==', 'alfiet')
                 )
-                const affiliateSnapshot = await getDocs(affiliateQuery)
+                const rootAffiliateSnapshot = await getDocs(rootAffiliateQuery)
 
                 const affiliateRef = collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_AFFILIATES as string)
 
-                if (affiliateSnapshot.empty) {
-                    // Buat dokumen affiliate baru
+                if (rootAffiliateSnapshot.empty) {
+                    // Create new affiliate document with Alfiet as root
                     const orderedData = {
                         createdAt: new Date(),
                         referralCode: data.referralCode,
                         status: 'active',
                         type: 'affiliate',
-                        username: affiliateUsername,
+                        username: 'alfiet',
                         subscriberDetails: [{
                             joinedAt: new Date(),
                             type: 'subscriber',
                             username: data.username,
-                            usedReferralFrom: affiliateUsername
+                            usedReferralFrom: affiliateUsername,
+                            referralChain: [affiliateUsername]
                         }]
                     } as const;
 
                     await addDoc(affiliateRef, orderedData)
                 } else {
-                    // Cek apakah affiliate sudah memiliki subscriber
-                    const existingAffiliateDoc = affiliateSnapshot.docs[0].data()
-                    if (existingAffiliateDoc.subscriberDetails && existingAffiliateDoc.subscriberDetails.length > 0) {
-                        setError('referralCode', {
-                            type: 'manual',
-                            message: 'This referral code has already been used'
-                        })
-                        toast.error('Maaf, kode referral ini sudah digunakan oleh pengguna lain')
-                        return
-                    }
+                    // Update existing root affiliate document
+                    const rootAffiliateDoc = rootAffiliateSnapshot.docs[0]
 
-                    // Update dokumen affiliate yang ada
-                    const affiliateDoc = affiliateSnapshot.docs[0]
+                    // Remove unnecessary check
                     const newSubscriber = {
                         joinedAt: new Date(),
                         type: 'subscriber',
                         username: data.username,
-                        usedReferralFrom: affiliateUsername
+                        usedReferralFrom: affiliateUsername,
+                        referralChain: [affiliateUsername]
                     } as const;
 
-                    await updateDoc(affiliateDoc.ref, {
+                    // Update document dengan subscriber baru
+                    await updateDoc(rootAffiliateDoc.ref, {
                         subscriberDetails: arrayUnion(newSubscriber)
                     })
                 }
