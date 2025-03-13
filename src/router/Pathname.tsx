@@ -16,8 +16,7 @@ const Pathname = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
 
     // Check for all dashboard/admin routes
-    const isAdminRoute = pathname?.includes("/admins") ||
-        pathname?.includes("/users") ||
+    const isAdminRoute = pathname?.includes("/dashboard") ||
         pathname?.includes("/auth") || false;
 
     return (

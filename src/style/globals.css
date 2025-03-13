@@ -2,16 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  input:-webkit-autofill {
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: var(--text) !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
+  }
+
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
+  }
+
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus,
+  .dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgb(17, 24, 39) inset !important;
+    -webkit-text-fill-color: rgb(255, 255, 255) !important;
+    caret-color: rgb(255, 255, 255) !important;
+  }
+}
+
 :root {
   --background: #ffffff;
   --text: #0d0d0d;
-  --primary: #ffb800;
+  --primary: #1091cc;
 }
 
 .dark {
   --background: #0d0d0d;
   --text: #ffffff;
-  --primary: #ffb800;
+  --primary: #1091cc;
 }
 
 body {

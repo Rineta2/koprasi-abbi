@@ -8,23 +8,23 @@ import {
 
 export const navLink = [
   {
-    label: "Home",
+    label: "Beranda",
     href: "/",
   },
 
   {
-    label: "About",
+    label: "Tentang Kami",
     href: "/about",
   },
 
   {
-    label: "Projects",
-    href: "/projects",
+    label: "Layanan Kami",
+    href: "/services",
   },
 
   {
-    label: "Blog",
-    href: "/blog",
+    label: "Kontak Kami",
+    href: "/contact",
   },
 
   {

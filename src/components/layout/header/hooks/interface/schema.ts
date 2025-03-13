@@ -1,32 +1,22 @@
 export interface User {
-  displayName: string | null;
-  email: string | null;
-  photoURL: string | null;
+  uid: string;
+  email: string;
+  fullName: string;
+  username: string;
+  phoneNumber: string;
   role: string;
+  photoURL?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
 }
 
 export interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   getDashboardUrl: (role: string) => string;
-}
-
-// Login Modal
-
-export interface LoginModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-// Menu Overlay
-
-export interface MenuOverlayProps {
-  isOpen: boolean;
-  onClose: () => void;
-  pathname: string;
 }
 
 // Profile Dropdown

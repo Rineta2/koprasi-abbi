@@ -1,21 +1,23 @@
-import { metadata } from "@/helper/meta/metadata";
+import { metadata } from "@/base/meta/metadata";
 
 metadata.manifest = "/manifest.json";
 
 export { metadata };
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Roboto, Roboto_Mono } from "next/font/google";
 
 import "@/style/globals.css";
 
-const geistSans = Geist({
+const robotoSans = Roboto({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ['400', '500', '700'],
 });
 
-const geistMono = Geist_Mono({
+const robotoMono = Roboto_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  weight: ['400', '500', '700'],
 });
 
 import Providers from "@/router/Provider";
@@ -30,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${robotoSans.variable} ${robotoMono.variable} antialiased`}
       >
         <Providers>
           <Pathname>
