@@ -104,7 +104,7 @@ export default function AlamatLayout() {
     }
 
     return (
-        <section className="min-h-full px-2 sm:px-4 py-4 sm:py-6">
+        <section className="min-h-full px-0 sm:px-2">
             {/* Header Section */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 bg-background dark:bg-background-dark rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8">
                 <div className="space-y-1">

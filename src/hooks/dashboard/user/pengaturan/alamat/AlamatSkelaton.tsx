@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function AddressSkelaton() {
     return (
-        <section className="min-h-full px-4 py-6">
+        <section className="min-h-full px-0 sm:px-2">
             {/* Header Section Skeleton */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-background dark:bg-background-dark rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-8">
                 <div className="space-y-1">
