@@ -26,14 +26,18 @@
 
 :root {
   --background: #ffffff;
-  --text: #0d0d0d;
-  --primary: #1091cc;
+  --background-dark: #f7f7f7;
+  --text: #1a1a1a;
+  --text-dark: #4a4a4a;
+  --primary: #2563eb;
 }
 
 .dark {
-  --background: #0d0d0d;
-  --text: #ffffff;
-  --primary: #1091cc;
+  --background: #111827;
+  --background-dark: #1f2937;
+  --text: #f3f4f6;
+  --text-dark: #9ca3af;
+  --primary: #3b82f6;
 }
 
 body {
@@ -45,14 +49,6 @@ body {
 .container {
   max-width: 1500px;
   margin: 0 auto;
-}
-
-section {
-  padding: 4rem 2rem;
-
-  @media (max-width: 768px) {
-    padding: 2rem 1rem;
-  }
 }
 
 html {
