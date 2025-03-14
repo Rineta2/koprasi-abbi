@@ -133,23 +133,23 @@ export default function RegisterLayout() {
                     return
                 }
 
-                // Get the root affiliate (Alfiet) document
-                const rootAffiliateQuery = query(
+                // Get the affiliate document for the referral code owner
+                const affiliateQuery = query(
                     collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_AFFILIATES as string),
-                    where('username', '==', 'alfiet')
+                    where('username', '==', affiliateUsername)
                 )
-                const rootAffiliateSnapshot = await getDocs(rootAffiliateQuery)
+                const affiliateSnapshot = await getDocs(affiliateQuery)
 
                 const affiliateRef = collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_AFFILIATES as string)
 
-                if (rootAffiliateSnapshot.empty) {
-                    // Create new affiliate document with Alfiet as root
+                if (affiliateSnapshot.empty) {
+                    // Create new affiliate document for the referral code owner
                     const orderedData = {
                         createdAt: new Date(),
                         referralCode: data.referralCode,
                         status: 'active',
                         type: 'affiliate',
-                        username: 'alfiet',
+                        username: affiliateUsername,
                         subscriberDetails: [{
                             joinedAt: new Date(),
                             type: 'subscriber',
@@ -161,10 +161,9 @@ export default function RegisterLayout() {
 
                     await addDoc(affiliateRef, orderedData)
                 } else {
-                    // Update existing root affiliate document
-                    const rootAffiliateDoc = rootAffiliateSnapshot.docs[0]
+                    // Update existing affiliate document
+                    const affiliateDoc = affiliateSnapshot.docs[0]
 
-                    // Remove unnecessary check
                     const newSubscriber = {
                         joinedAt: new Date(),
                         type: 'subscriber',
@@ -173,8 +172,8 @@ export default function RegisterLayout() {
                         referralChain: [affiliateUsername]
                     } as const;
 
-                    // Update document dengan subscriber baru
-                    await updateDoc(rootAffiliateDoc.ref, {
+                    // Update document with new subscriber
+                    await updateDoc(affiliateDoc.ref, {
                         subscriberDetails: arrayUnion(newSubscriber)
                     })
                 }
