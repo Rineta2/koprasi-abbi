@@ -21,6 +21,14 @@ import { db } from '@/utils/firebase'
 import { collection, query, where, getDocs, addDoc, updateDoc, doc, arrayUnion } from 'firebase/firestore'
 
 import { useRouter } from 'next/navigation'
+import { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore'
+
+interface NetworkData extends DocumentData {
+    ownerReferralCode: string;
+    supporters: Array<{
+        referralCode: string;
+    }>;
+}
 
 export default function RegisterLayout() {
     const { signUp } = useAuth()
@@ -84,28 +92,87 @@ export default function RegisterLayout() {
         try {
             setIsLoading(true)
 
-            // Check if referral code exists if provided
-            if (data.referralCode) {
-                const referralQuery = query(
-                    collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS as string),
-                    where('referralCode', '==', data.referralCode)
-                );
-                const referralSnapshot = await getDocs(referralQuery);
-
-                if (referralSnapshot.empty) {
-                    setError('referralCode', {
-                        type: 'manual',
-                        message: 'Invalid referral code'
-                    });
-                    return;
-                }
-            }
-
             // Generate referral code
             let generatedReferralCode = '';
             if (!data.referralCode) {
                 generatedReferralCode = `AFF${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
             } else {
+                // Check if referral code exists if provided
+                const networkQuery = query(
+                    collection(db, 'referralNetwork'),
+                    where('ownerReferralCode', '==', data.referralCode)
+                );
+                const networkSnapshot = await getDocs(networkQuery);
+
+                if (!networkSnapshot.empty) {
+                    // This is an AFF code
+                    const networkDoc = networkSnapshot.docs[0];
+                    const networkData = networkDoc.data();
+
+                    // Check if AFF code has been used (has any supporters)
+                    if (networkData.supporters && networkData.supporters.length > 0) {
+                        setError('referralCode', {
+                            type: 'manual',
+                            message: 'This affiliate code has already been used. Please use a supporter code.'
+                        });
+                        return;
+                    }
+                } else {
+                    // If not an AFF code, check if it's a SUP code
+                    // Get all networks and find the one containing the SUP code
+                    const allNetworksQuery = query(collection(db, 'referralNetwork'));
+                    const allNetworksSnapshot = await getDocs(allNetworksQuery);
+
+                    let foundNetwork: QueryDocumentSnapshot<DocumentData> | null = null;
+                    let supporterIndex: number = -1;
+
+                    allNetworksSnapshot.forEach((doc) => {
+                        const networkData = doc.data();
+                        const supporterIdx = networkData.supporters?.findIndex(
+                            (supporter: { referralCode: string }) => supporter.referralCode === data.referralCode
+                        );
+                        if (supporterIdx !== -1) {
+                            foundNetwork = doc;
+                            supporterIndex = supporterIdx;
+                        }
+                    });
+
+                    if (!foundNetwork) {
+                        setError('referralCode', {
+                            type: 'manual',
+                            message: 'Invalid referral code'
+                        });
+                        return;
+                    }
+
+                    // Use the original owner's network for SUP referrals
+                    const networkData = (foundNetwork as QueryDocumentSnapshot<DocumentData>).data() as NetworkData;
+
+                    // Update the count for the supporter whose SUP code was used
+                    if (supporterIndex !== -1) {
+                        const supporters = networkData.supporters;
+
+                        // Update the supporter's count and add to usedBy array
+                        await updateDoc(doc(db, 'referralNetwork', (foundNetwork as QueryDocumentSnapshot<DocumentData>).id), {
+                            supporters: supporters.map((sup: { referralCode: string; count?: number; usedBy?: Array<{ username: string; joinedAt: Date }> }, index: number) => {
+                                if (index === supporterIndex) {
+                                    return {
+                                        ...sup,
+                                        count: (sup.count || 0) + 1,
+                                        usedBy: [...(sup.usedBy || []), {
+                                            username: data.username.toLowerCase(),
+                                            joinedAt: new Date()
+                                        }]
+                                    };
+                                }
+                                return sup;
+                            }),
+                            updatedAt: new Date()
+                        });
+                    }
+
+                    data.referralCode = networkData.ownerReferralCode;
+                }
                 generatedReferralCode = `SUP${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
             }
 
@@ -119,7 +186,7 @@ export default function RegisterLayout() {
                 return
             }
 
-            // Register the user with referral code
+            // Register the user
             const newUserUid = await signUp(
                 data.email,
                 data.password,
@@ -147,7 +214,10 @@ export default function RegisterLayout() {
                             username: data.username.toLowerCase(),
                             referralCode: generatedReferralCode,
                             type: 'support',
-                            joinedAt: new Date()
+                            joinedAt: new Date(),
+                            referredBy: data.referralCode,
+                            count: 0, // Initialize count for new supporter
+                            usedBy: [] // Initialize empty array for tracking who uses this SUP code
                         }),
                         updatedAt: new Date()
                     });
@@ -159,7 +229,7 @@ export default function RegisterLayout() {
                     ownerUsername: data.username.toLowerCase(),
                     ownerReferralCode: generatedReferralCode,
                     type: 'affiliate',
-                    supporters: [],
+                    supporters: [], // Empty array of supporters with count field
                     createdAt: new Date(),
                     updatedAt: new Date()
                 });
