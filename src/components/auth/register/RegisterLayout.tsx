@@ -18,11 +18,9 @@ import { useAuth } from '@/utils/context/AuthContext'
 
 import { db } from '@/utils/firebase'
 
-import { collection, query, where, getDocs, addDoc, updateDoc, arrayUnion } from 'firebase/firestore'
+import { collection, query, where, getDocs } from 'firebase/firestore'
 
 import { useRouter } from 'next/navigation'
-
-import toast from 'react-hot-toast'
 
 export default function RegisterLayout() {
     const { signUp } = useAuth()
@@ -76,7 +74,6 @@ export default function RegisterLayout() {
         formState: { errors },
         setError,
         clearErrors,
-        reset,
     } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
     })
@@ -85,7 +82,7 @@ export default function RegisterLayout() {
         try {
             setIsLoading(true)
 
-            // Username validation remains the same
+            // Validasi username
             const isAvailable = await isUsernameAvailable(data.username)
             if (!isAvailable) {
                 setError('username', {
@@ -95,92 +92,8 @@ export default function RegisterLayout() {
                 return
             }
 
-            // Process referral code if exists
-            if (data.referralCode) {
-                // Check referral code existence
-                const referralQuery = query(
-                    collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS as string),
-                    where('referralCode', '==', data.referralCode),
-                )
-                const referralSnapshot = await getDocs(referralQuery)
-
-                if (referralSnapshot.empty) {
-                    setError('referralCode', {
-                        type: 'manual',
-                        message: 'Invalid referral code'
-                    })
-                    toast.error('Kode referral tidak valid')
-                    return
-                }
-
-                // Get affiliate data
-                const affiliateData = referralSnapshot.docs[0].data()
-                const affiliateUsername = affiliateData.username
-
-                // Check if user has already used any referral code
-                const userAsSubscriberQuery = query(
-                    collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_AFFILIATES as string),
-                    where('subscriberDetails.username', '==', data.username)
-                )
-                const userAsSubscriberSnapshot = await getDocs(userAsSubscriberQuery)
-
-                if (!userAsSubscriberSnapshot.empty) {
-                    setError('referralCode', {
-                        type: 'manual',
-                        message: 'You have already used a referral code'
-                    })
-                    toast.error('Anda sudah pernah menggunakan kode referral sebelumnya')
-                    return
-                }
-
-                // Get the affiliate document for the referral code owner
-                const affiliateQuery = query(
-                    collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_AFFILIATES as string),
-                    where('username', '==', affiliateUsername)
-                )
-                const affiliateSnapshot = await getDocs(affiliateQuery)
-
-                const affiliateRef = collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_AFFILIATES as string)
-
-                if (affiliateSnapshot.empty) {
-                    // Create new affiliate document for the referral code owner
-                    const orderedData = {
-                        createdAt: new Date(),
-                        referralCode: data.referralCode,
-                        status: 'active',
-                        type: 'affiliate',
-                        username: affiliateUsername,
-                        subscriberDetails: [{
-                            joinedAt: new Date(),
-                            type: 'subscriber',
-                            username: data.username,
-                            usedReferralFrom: affiliateUsername,
-                            referralChain: [affiliateUsername]
-                        }]
-                    } as const;
-
-                    await addDoc(affiliateRef, orderedData)
-                } else {
-                    // Update existing affiliate document
-                    const affiliateDoc = affiliateSnapshot.docs[0]
-
-                    const newSubscriber = {
-                        joinedAt: new Date(),
-                        type: 'subscriber',
-                        username: data.username,
-                        usedReferralFrom: affiliateUsername,
-                        referralChain: [affiliateUsername]
-                    } as const;
-
-                    // Update document with new subscriber
-                    await updateDoc(affiliateDoc.ref, {
-                        subscriberDetails: arrayUnion(newSubscriber)
-                    })
-                }
-            }
-
-            // Proses pendaftaran user
-            const newUserReferralCode = await signUp(
+            // Register the user
+            await signUp(
                 data.email,
                 data.password,
                 data.fullName,
@@ -188,13 +101,8 @@ export default function RegisterLayout() {
                 data.phoneNumber
             )
 
-            // Tampilkan modal referral code
-            const modal = document.getElementById('referral_modal') as HTMLDialogElement
-            if (modal) {
-                modal.showModal()
-            }
-
-            setReferralCode(newUserReferralCode)
+            // Redirect to login page
+            router.push('/auth/login')
         } catch (error) {
             console.error('Registration error:', error)
             if (error instanceof Error) {
@@ -224,28 +132,6 @@ export default function RegisterLayout() {
                 clearErrors('username')
             }
         }
-    }
-
-    // Add state for referral code
-    const [referralCode, setReferralCode] = useState<string>('')
-    const [copied, setCopied] = useState(false)
-
-    const handleCopyClick = async () => {
-        try {
-            await navigator.clipboard.writeText(referralCode)
-            setCopied(true)
-            setTimeout(() => setCopied(false), 2000) // Reset after 2 seconds
-        } catch (err) {
-            console.error('Failed to copy text: ', err)
-        }
-    }
-
-    // Add handler for modal close
-    const handleModalClose = () => {
-        reset() // Reset the form
-        setReferralCode('') // Reset referral code state
-        setCopied(false) // Reset copied state
-        router.push('/auth/login') // Redirect to login
     }
 
     return (
@@ -453,119 +339,6 @@ export default function RegisterLayout() {
                     </div>
                 </div>
             </div>
-
-            {/* Add modal at the end of the section */}
-            <dialog id="referral_modal" className="modal">
-                <div className="modal-box bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 max-w-md mx-auto">
-                    {/* Success Icon Animation */}
-                    <div className="flex justify-center mb-6">
-                        <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                            <svg
-                                className="w-8 h-8 text-green-500"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M5 13l4 4L19 7"
-                                />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <h3 className="font-bold text-2xl text-center bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent mb-2">
-                        Pendaftaran Berhasil! 🎉
-                    </h3>
-
-                    <p className="text-lg text-center text-gray-600 dark:text-gray-400 mb-6">
-                        Selamat datang di komunitas kami!
-                    </p>
-
-                    <div className="space-y-6">
-                        <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-100 dark:border-gray-700">
-                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                                Kode Referral Anda
-                            </p>
-                            <div className="relative">
-                                <div className="font-mono text-xl bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 pr-12 text-center select-all">
-                                    {referralCode}
-                                </div>
-                                <button
-                                    onClick={handleCopyClick}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group"
-                                    title="Copy to clipboard"
-                                >
-                                    {copied ? (
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5 text-green-500"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
-                                        >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                    ) : (
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5 text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
-                                        >
-                                            <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
-                                            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
-                                        </svg>
-                                    )}
-                                </button>
-                            </div>
-                            <p className="text-sm text-center text-gray-500 dark:text-gray-400 mt-3">
-                                {copied ? (
-                                    <span className="text-green-500 flex items-center justify-center gap-1">
-                                        <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                        </svg>
-                                        Tersalin ke clipboard!
-                                    </span>
-                                ) : (
-                                    'Klik ikon untuk menyalin'
-                                )}
-                            </p>
-                        </div>
-
-                        <div className="text-center space-y-2">
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                                Bagikan kode ini dengan teman-teman dan dapatkan reward!
-                            </p>
-
-                            <div className="flex justify-center gap-4">
-                                <form method="dialog" className="space-x-2">
-                                    <button
-                                        className="btn btn-primary px-6"
-                                        onClick={handleModalClose}
-                                    >
-                                        Lanjutkan ke Login
-                                    </button>
-                                    <button
-                                        className="btn btn-ghost"
-                                        onClick={handleModalClose}
-                                    >
-                                        Tutup
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <form method="dialog" className="modal-backdrop bg-black/50 backdrop-blur-sm">
-                    <button onClick={handleModalClose}>close</button>
-                </form>
-            </dialog>
         </section>
     )
 }

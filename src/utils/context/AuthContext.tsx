@@ -20,15 +20,6 @@ import toast from 'react-hot-toast';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function generateReferralCode(length: number = 8): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<UserAccount | null>(null);
     const [loading, setLoading] = useState(true);
@@ -194,7 +185,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         fullName: string,
         username: string,
         phoneNumber: string
-    ): Promise<string> => {
+    ): Promise<void> => {
         try {
             if (!process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS) {
                 throw new Error('Collection path is not configured');
@@ -214,24 +205,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-            // Generate unique referral code
-            let referralCode;
-            let isUnique = false;
-            while (!isUnique) {
-                referralCode = generateReferralCode();
-                const referralQuery = await getDocs(
-                    query(
-                        collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS),
-                        where('referralCode', '==', referralCode)
-                    )
-                );
-                isUnique = referralQuery.empty;
-            }
-
-            if (!referralCode) {
-                throw new Error('Failed to generate referral code');
-            }
-
             const userData: UserAccount = {
                 uid: userCredential.user.uid,
                 email: email,
@@ -241,8 +214,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 role: Role.USER,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                isActive: true,
-                referralCode: referralCode
+                isActive: true
             };
 
             const userDocRef = doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS, userCredential.user.uid);
@@ -250,8 +222,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             // Sign out immediately after creating account
             await signOut(auth);
-
-            return referralCode;
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message.includes('auth/email-already-in-use')) {
