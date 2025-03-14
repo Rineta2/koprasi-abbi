@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Account rules
+    match /accounts/{userId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if isAuthenticated() && request.auth.uid == userId;
+      allow delete: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Community rules
+    match /community/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;  // Allow updating for referral system
+      allow delete: if isAuthenticated() && request.auth.uid == docId;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 

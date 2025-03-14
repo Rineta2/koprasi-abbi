@@ -15,6 +15,7 @@ export interface UserAccount {
   createdAt: Date;
   updatedAt: Date;
   isActive: boolean;
+  referralCode: string;
 }
 
 export interface AuthContextType {
@@ -34,8 +35,9 @@ export interface AuthContextType {
     password: string,
     fullName: string,
     username: string,
-    phoneNumber: string
-  ) => Promise<void>;
+    phoneNumber: string,
+    referralCode: string
+  ) => Promise<string>;
   forgotPassword: (email: string) => Promise<void>;
   showInactiveModal: boolean;
   setShowInactiveModal: React.Dispatch<React.SetStateAction<boolean>>;

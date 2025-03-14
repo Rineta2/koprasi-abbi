@@ -18,7 +18,7 @@ import { useAuth } from '@/utils/context/AuthContext'
 
 import { db } from '@/utils/firebase'
 
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs, addDoc, updateDoc, doc, arrayUnion } from 'firebase/firestore'
 
 import { useRouter } from 'next/navigation'
 
@@ -26,6 +26,8 @@ export default function RegisterLayout() {
     const { signUp } = useAuth()
     const [isChecking, setIsChecking] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [showReferralModal, setShowReferralModal] = useState(false)
+    const [generatedReferralCode, setGeneratedReferralCode] = useState('')
     const router = useRouter()
 
     // Custom validation function to check username availability
@@ -82,6 +84,31 @@ export default function RegisterLayout() {
         try {
             setIsLoading(true)
 
+            // Check if referral code exists if provided
+            if (data.referralCode) {
+                const referralQuery = query(
+                    collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS as string),
+                    where('referralCode', '==', data.referralCode)
+                );
+                const referralSnapshot = await getDocs(referralQuery);
+
+                if (referralSnapshot.empty) {
+                    setError('referralCode', {
+                        type: 'manual',
+                        message: 'Invalid referral code'
+                    });
+                    return;
+                }
+            }
+
+            // Generate referral code
+            let generatedReferralCode = '';
+            if (!data.referralCode) {
+                generatedReferralCode = `AFF${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+            } else {
+                generatedReferralCode = `SUP${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+            }
+
             // Validasi username
             const isAvailable = await isUsernameAvailable(data.username)
             if (!isAvailable) {
@@ -92,17 +119,62 @@ export default function RegisterLayout() {
                 return
             }
 
-            // Register the user
-            await signUp(
+            // Register the user with referral code
+            const newUserUid = await signUp(
                 data.email,
                 data.password,
                 data.fullName,
                 data.username,
-                data.phoneNumber
+                data.phoneNumber,
+                generatedReferralCode
             )
 
-            // Redirect to login page
-            router.push('/auth/login')
+            // If user used a referral code, update referral network
+            if (data.referralCode) {
+                // Find existing referral network
+                const networkQuery = query(
+                    collection(db, 'referralNetwork'),
+                    where('ownerReferralCode', '==', data.referralCode)
+                );
+                const networkSnapshot = await getDocs(networkQuery);
+                const networkDoc = networkSnapshot.docs[0];
+
+                if (networkDoc) {
+                    // Update existing network with new supporter
+                    await updateDoc(doc(db, 'referralNetwork', networkDoc.id), {
+                        supporters: arrayUnion({
+                            uid: newUserUid,
+                            username: data.username.toLowerCase(),
+                            referralCode: generatedReferralCode,
+                            type: 'support',
+                            joinedAt: new Date()
+                        }),
+                        updatedAt: new Date()
+                    });
+                }
+            } else {
+                // Create new network for this user as affiliate
+                await addDoc(collection(db, 'referralNetwork'), {
+                    ownerUid: newUserUid,
+                    ownerUsername: data.username.toLowerCase(),
+                    ownerReferralCode: generatedReferralCode,
+                    type: 'affiliate',
+                    supporters: [],
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                });
+            }
+
+            // Show referral code modal
+            setGeneratedReferralCode(generatedReferralCode)
+            setShowReferralModal(true)
+
+            // Don't redirect immediately, let user see their referral code
+            setTimeout(() => {
+                setShowReferralModal(false)
+                router.push('/auth/login')
+            }, 10000) // Modal will auto-close after 10 seconds
+
         } catch (error) {
             console.error('Registration error:', error)
             if (error instanceof Error) {
@@ -150,7 +222,7 @@ export default function RegisterLayout() {
                 </div>
             </div>
 
-            <div className='w-full max-w-7xl relative z-10'>
+            <div className='w-full container relative z-10'>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20">
                     {/* Left side - Form */}
                     <div className='flex items-center justify-center p-6 lg:p-12 w-full'>
@@ -183,7 +255,7 @@ export default function RegisterLayout() {
                                     )}
                                 </div>
 
-                                <div className="form-control w-full">
+                                <div className="form-control w-full overflow-hidden">
                                     <label className="label">
                                         <span className="label-text">Username</span>
                                     </label>
@@ -339,6 +411,39 @@ export default function RegisterLayout() {
                     </div>
                 </div>
             </div>
+
+            {/* Referral Code Modal */}
+            {showReferralModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full space-y-4 relative">
+                        <h3 className="text-2xl font-bold text-center bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                            Registration Successful!
+                        </h3>
+                        <div className="text-center space-y-2">
+                            <p className="text-gray-600 dark:text-gray-300">
+                                Your account has been created successfully. Here&apos;s your referral code:
+                            </p>
+                            <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <p className="text-2xl font-mono font-bold text-primary">
+                                    {generatedReferralCode}
+                                </p>
+                            </div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                Save this code! You&apos;ll be redirected to login in a few seconds...
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => {
+                                setShowReferralModal(false)
+                                router.push('/auth/login')
+                            }}
+                            className="btn btn-primary w-full"
+                        >
+                            Got it, let&apos;s login!
+                        </button>
+                    </div>
+                </div>
+            )}
         </section>
     )
 }

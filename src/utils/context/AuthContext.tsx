@@ -184,8 +184,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password: string,
         fullName: string,
         username: string,
-        phoneNumber: string
-    ): Promise<void> => {
+        phoneNumber: string,
+        referralCode: string
+    ): Promise<string> => {
         try {
             if (!process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS) {
                 throw new Error('Collection path is not configured');
@@ -214,7 +215,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 role: Role.USER,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                isActive: true
+                isActive: true,
+                referralCode: referralCode
             };
 
             const userDocRef = doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS, userCredential.user.uid);
@@ -222,6 +224,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             // Sign out immediately after creating account
             await signOut(auth);
+
+            // Return the new user's UID
+            return userCredential.user.uid;
         } catch (error) {
             if (error instanceof Error) {
                 if (error.message.includes('auth/email-already-in-use')) {
