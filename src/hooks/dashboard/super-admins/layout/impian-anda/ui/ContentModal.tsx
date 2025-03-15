@@ -2,7 +2,7 @@ import React from 'react';
 
 import Image from 'next/image';
 
-import { ContentModalProps } from '@/hooks/dashboard/super-admins/layout/insplensiasi/lib/insplentasi';
+import { ContentModalProps } from '@/hooks/dashboard/super-admins/layout/impian-anda/lib/ImpianAnda';
 
 export const ContentModal: React.FC<ContentModalProps> = ({
     formData,
@@ -65,6 +65,18 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                                     className="w-full px-4 py-3 bg-background border-2 border-background-dark rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300"
                                                     placeholder="Enter title here..."
+                                                    required
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label htmlFor="description" className="text-sm font-medium text-text-dark block">Description</label>
+                                                <textarea
+                                                    id="description"
+                                                    value={formData.description}
+                                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                                    className="w-full px-4 py-6 bg-background border-2 border-background-dark rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 resize-none"
+                                                    placeholder="Enter description here..."
                                                     required
                                                 />
                                             </div>

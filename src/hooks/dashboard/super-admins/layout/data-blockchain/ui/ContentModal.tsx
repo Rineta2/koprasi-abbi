@@ -2,7 +2,7 @@ import React from 'react';
 
 import Image from 'next/image';
 
-import { ContentModalProps } from '@/hooks/dashboard/super-admins/layout/insplensiasi/lib/insplentasi';
+import { ContentModalProps } from '@/hooks/dashboard/super-admins/layout/data-blockchain/lib/DataBlockchain';
 
 export const ContentModal: React.FC<ContentModalProps> = ({
     formData,
