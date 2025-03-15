@@ -39,10 +39,10 @@ export default function TopBar() {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="w-full sticky top-0 pt-2 sm:pt-3 bg-background/80 backdrop-blur-xl z-40"
+            className="w-full sticky top-0 py-2 sm:py-3 bg-background dark:bg-[#0f1729] z-40"
         >
             <div className='container mx-auto px-3 sm:px-4 lg:px-6'>
-                <div className="flex flex-col sm:flex-row items-center justify-between py-2 sm:py-3 text-sm gap-2 sm:gap-0">
+                <div className="flex flex-col sm:flex-row items-center justify-between py-2 sm:py-2 text-sm gap-2 sm:gap-0">
                     <motion.div
                         variants={itemVariants}
                         whileHover={{ scale: 1.02 }}

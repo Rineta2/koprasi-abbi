@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
+
 import { motion } from 'framer-motion'
 
 import PartnerSkelaton from '@/components/ui/partner/PartnerSkelaton';
@@ -10,6 +11,7 @@ import { FetchPartner } from '@/components/ui/partner/lib/FetchPartner';
 import { PartnerType } from '@/components/ui/partner/lib/schema';
 
 import Image from 'next/image';
+
 import Marquee from 'react-fast-marquee';
 
 export default function Partner() {
@@ -28,6 +30,7 @@ export default function Partner() {
     if (loading) {
         return <PartnerSkelaton />;
     }
+
     return (
         <div className="container relative px-4 md:px-6">
             <motion.h2
@@ -44,7 +47,7 @@ export default function Partner() {
                     tracking-tight">
                 Bekerja Sama Dengan
             </motion.h2>
-            <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-background via-background/95 to-transparent z-10" />
+            <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-background via-background/80 to-transparent z-10" />
             <Marquee
                 gradient={false}
                 speed={35}
@@ -78,7 +81,7 @@ export default function Partner() {
                     </div>
                 ))}
             </Marquee>
-            <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-background via-background/95 to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-background via-background/80 to-transparent z-10" />
         </div>
     )
 }

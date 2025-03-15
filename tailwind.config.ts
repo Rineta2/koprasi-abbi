@@ -49,6 +49,14 @@ export default {
             transform: "translateX(100%)",
           },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0) rotate(var(--tw-rotate))" },
+          "50%": { transform: "translateY(-20px) rotate(var(--tw-rotate))" },
+        },
+        glow: {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.6", transform: "scale(0.8)" },
+        },
       },
       fadeIn: {
         "0%": { opacity: "0", transform: "scale(0.95)" },
@@ -64,6 +72,10 @@ export default {
         float: "float 6s ease-in-out infinite",
         "float-delayed": "float 6s ease-in-out 3s infinite",
         fadeIn: "fadeIn 1s ease-in forwards",
+        "pulse-slow": "pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "float-slow": "float 8s ease-in-out infinite",
+        glow: "glow 4s ease-in-out infinite",
+        "glow-delayed": "glow 4s ease-in-out 2s infinite",
       },
     },
   },
