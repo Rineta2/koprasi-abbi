@@ -14,6 +14,8 @@ import Link from 'next/link'
 
 import { IoIosArrowForward } from "react-icons/io";
 
+import { motion } from 'framer-motion'
+
 export default function Home() {
     const [home, setHome] = useState<HomeType[]>([]);
     const [loading, setLoading] = useState(true);
@@ -30,39 +32,73 @@ export default function Home() {
     if (loading) {
         return <HomeSkelaton />;
     }
+
     return (
-        <section className='min-h-screen relative overflow-hidden flex items-center mt-20 sm:mt-0'>
+        <section className='min-h-screen relative overflow-hidden flex items-center mt-20 sm:mt-0' id='home'>
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-background/5 to-background/50 dark:from-background-dark/5 dark:to-background-dark/50 z-0" />
 
             <div className="container px-6 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                    <div className='flex flex-col space-y-8 animate-fade-in'>
-                        <div className='inline-block bg-primary rounded-full px-6 py-2.5 mb-4 w-fit'>
+                    <motion.div
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className='flex flex-col space-y-8'
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
+                            className='inline-block bg-primary rounded-full px-6 py-2.5 mb-4 w-fit'
+                        >
                             <p className='text-sm font-medium text-white'>{home[0].title}</p>
-                        </div>
+                        </motion.div>
 
-                        <h1 className='text-4xl md:text-5xl xl:text-6xl font-bold leading-tight tracking-tight'>
+                        <motion.h1
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5, duration: 0.5 }}
+                            className='text-4xl md:text-5xl xl:text-6xl font-bold leading-tight tracking-tight'
+                        >
                             {home[0].primaryText}
                             <span className='block mt-4 bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent'>
                                 {home[0].text}
                             </span>
-                        </h1>
+                        </motion.h1>
 
-                        <p className='text-base md:text-lg text-text-dark max-w-xl'>{home[0].description}</p>
-
-                        <Link
-                            href={home[0].button.link}
-                            className='inline-flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-full font-medium transition-all duration-300 group w-fit shadow-lg shadow-primary/20 hover:shadow-primary/30 transform hover:-translate-y-0.5'
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.7, duration: 0.5 }}
+                            className='text-base md:text-lg text-text-dark max-w-xl capitalize'
                         >
-                            {home[0].button.text}
-                            <div className='bg-white/10 p-1.5 rounded-full group-hover:bg-white/20 group-hover:translate-x-1 transition-all'>
-                                <IoIosArrowForward className='text-lg' />
-                            </div>
-                        </Link>
-                    </div>
+                            {home[0].description}
+                        </motion.p>
 
-                    <div className='w-full h-full flex items-center justify-center animate-float'>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.9, duration: 0.5 }}
+                        >
+                            <Link
+                                href={home[0].button.link}
+                                className='inline-flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-full font-medium transition-all duration-300 group w-fit shadow-lg shadow-primary/20 hover:shadow-primary/30 transform hover:-translate-y-0.5'
+                            >
+                                {home[0].button.text}
+                                <div className='bg-white/10 p-1.5 rounded-full group-hover:bg-white/20 group-hover:translate-x-1 transition-all'>
+                                    <IoIosArrowForward className='text-lg' />
+                                </div>
+                            </Link>
+                        </motion.div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className='w-full h-full flex items-center justify-center'
+                    >
                         <div className="relative">
                             <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary-dark/20 blur-3xl rounded-full" />
                             <Image
@@ -73,7 +109,7 @@ export default function Home() {
                                 className="relative z-10 drop-shadow-2xl"
                             />
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </section>
