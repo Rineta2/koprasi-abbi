@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef } from 'react'
 
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -12,52 +12,39 @@ import { IoMdArrowDropdown } from "react-icons/io"
 
 import { useAuth } from '@/utils/context/AuthContext'
 
-import { ProfileDropdownProps } from '@/components/layout/header/hooks/interface/schema'
+// Add user interface
+interface User {
+    photoURL?: string;
+    fullName: string;
+    email: string;
+    role: string;
+}
 
-export default function ProfileDropdown({ user }: ProfileDropdownProps) {
-    const [isProfileOpen, setIsProfileOpen] = useState(false)
+interface ProfileDropdownProps {
+    user: User;  // Replace 'any' with User interface
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+}
+
+export default function ProfileDropdown({ user, isOpen, setIsOpen }: ProfileDropdownProps) {
     const dropdownRef = useRef<HTMLDivElement>(null)
     const { logout, getDashboardUrl } = useAuth()
 
-    // Handle click outside to close dropdown
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setIsProfileOpen(false)
-            }
-        }
-
-        document.addEventListener('mousedown', handleClickOutside)
-        return () => document.removeEventListener('mousedown', handleClickOutside)
-    }, [])
-
     const handleLogout = async () => {
         try {
-            setIsProfileOpen(false) // Close dropdown first
+            setIsOpen(false)
             await logout()
         } catch (error) {
             console.error('Logout error:', error)
         }
     }
 
-    // Close dropdown when pressing Escape key
-    useEffect(() => {
-        const handleEscape = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                setIsProfileOpen(false)
-            }
-        }
-
-        document.addEventListener('keydown', handleEscape)
-        return () => document.removeEventListener('keydown', handleEscape)
-    }, [])
-
     return (
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative dropdown-trigger" ref={dropdownRef}>
             <button
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-2 hover:bg-neutral-100 dark:hover:bg-neutral-800/50 rounded-xl px-3 py-2 transition-all duration-300"
-                aria-expanded={isProfileOpen}
+                aria-expanded={isOpen}
                 aria-haspopup="true"
             >
                 {user.photoURL ? (
@@ -75,13 +62,13 @@ export default function ProfileDropdown({ user }: ProfileDropdownProps) {
                     {user.fullName}
                 </span>
                 <IoMdArrowDropdown
-                    className={`transition-transform duration-200 text-neutral-700 dark:text-neutral-300 ${isProfileOpen ? 'rotate-180' : ''
+                    className={`transition-transform duration-200 text-neutral-700 dark:text-neutral-300 ${isOpen ? 'rotate-180' : ''
                         }`}
                 />
             </button>
 
             <AnimatePresence>
-                {isProfileOpen && (
+                {isOpen && (
                     <motion.div
                         initial={{ opacity: 0, y: 8, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -99,7 +86,7 @@ export default function ProfileDropdown({ user }: ProfileDropdownProps) {
                         <Link
                             href={getDashboardUrl(user.role)}
                             className="flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={() => setIsOpen(false)}
                             role="menuitem"
                         >
                             <span className="w-5 h-5 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">📊</span>

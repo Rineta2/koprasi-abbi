@@ -5,7 +5,7 @@ import PartnerLayout from '@/hooks/dashboard/super-admins/layout/patner/PartnerL
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'Partner | Koprasi ABBI',
+    title: 'Partner | Koperasi ABBI',
     description: 'Halaman Partner Koprasi ABBI',
 }
 

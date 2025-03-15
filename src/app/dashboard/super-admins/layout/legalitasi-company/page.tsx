@@ -5,7 +5,7 @@ import { Metadata } from 'next'
 import LegalitasiCompanyLayout from '@/hooks/dashboard/super-admins/layout/legalitasi-company/LegalitasiCompanyLayout'
 
 export const metadata: Metadata = {
-    title: 'Legalitasi Company | Koprasi ABBI',
+    title: 'Legalitasi Company | Koperasi ABBI',
     description: 'Halaman Legalitasi Company',
 }
 

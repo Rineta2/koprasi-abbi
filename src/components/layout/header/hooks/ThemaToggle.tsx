@@ -1,28 +1,17 @@
-import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { themeOptions } from "../data/thema"
 
-export default function ThemeToggle() {
+interface ThemeToggleProps {
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+}
+
+export default function ThemeToggle({ isOpen, setIsOpen }: ThemeToggleProps) {
     const { theme, setTheme } = useTheme()
-    const [isOpen, setIsOpen] = useState(false)
-
-    const handleClickOutside = (e: MouseEvent) => {
-        const target = e.target as HTMLElement;
-        if (!target.closest('.theme-dropdown')) {
-            setIsOpen(false);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
 
     return (
-        <div className="relative">
+        <div className="relative dropdown-trigger">
             <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

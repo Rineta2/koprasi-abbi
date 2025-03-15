@@ -1,7 +1,7 @@
 import React from 'react'
 
 export const metadata = {
-    title: 'Home | Super Admin',
+    title: 'Home | Koperasi ABBI',
     description: 'Halaman Home Super Admin',
 }
 
