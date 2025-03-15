@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DeleteModalProps } from '@/hooks/dashboard/super-admins/layout/trend-bisnis/lib/trendbisnis';
+import { DeleteModalProps } from '@/hooks/dashboard/super-admins/layout/pendaftaran-anggota/lib/pendaftarananggota';
 
 export const DeleteModal: React.FC<DeleteModalProps> = ({ onDelete, isSubmitting, onClose }) => {
     return (

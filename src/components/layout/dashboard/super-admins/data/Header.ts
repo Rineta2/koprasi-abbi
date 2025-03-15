@@ -79,11 +79,6 @@ export const menuItems = [
     href: "/dashboard/super-admins/layout-2",
     subItems: [
       {
-        label: "Pendaftaran Anggota",
-        href: "/dashboard/super-admins/layout/pendaftaran-anggota",
-      },
-
-      {
         label: "Prize Pool",
         href: "/dashboard/super-admins/layout/prize-pool",
       },

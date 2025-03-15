@@ -34,7 +34,7 @@ export default function Home() {
     }
 
     return (
-        <section className='min-h-screen relative overflow-hidden flex items-center pt-16 sm:pt-20 md:pt-0' id='home'>
+        <section className='min-h-screen relative overflow-hidden flex items-center pt-14 md:pt-0' id='home'>
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-background/5 to-background/50 dark:from-background-dark/5 dark:to-background-dark/50 z-0" />
 

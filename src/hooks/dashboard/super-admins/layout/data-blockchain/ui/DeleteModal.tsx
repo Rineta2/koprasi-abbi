@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DeleteModalProps } from '@/hooks/dashboard/super-admins/layout/home/lib/home';
+import { DeleteModalProps } from '@/hooks/dashboard/super-admins/layout/data-blockchain/lib/DataBlockchain';
 
 export const DeleteModal: React.FC<DeleteModalProps> = ({ onDelete, isSubmitting, onClose }) => {
     return (
