@@ -80,6 +80,7 @@ export const useInsplensiasiData = () => {
         createdAt: new Date(),
       }
     );
+    await fetchContents();
   };
 
   const handleUpdate = async (id: string, updatedData: InsplensiasiContent) => {
