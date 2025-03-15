@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+
+import Home from '@/components/ui/home/Home'
 
 export default function HomeScreen() {
   return (
-    <div className='min-h-screen'>
-      hallo
-    </div>
+    <Fragment>
+      <Home />
+    </Fragment>
   )
 }
