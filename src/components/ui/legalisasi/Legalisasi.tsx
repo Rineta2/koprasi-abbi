@@ -76,7 +76,7 @@ export default function Legalisasi() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className='backdrop-blur-xl bg-card/95 rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-border/40 hover:border-primary/30 transition-all duration-500'
+                    className='backdrop-blur-xl bg-card/95 rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-border/40 hover:border-primary/30 transition-all duration-500 max-w-[95%] sm:max-w-[90%] mx-auto'
                 >
                     <div className='flex flex-col space-y-16'>
                         {/* Logo Section */}

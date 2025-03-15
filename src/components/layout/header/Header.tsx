@@ -38,32 +38,33 @@ import {
 export default function Header() {
     const { user } = useAuth()
     const router = useRouter()
-    const [activeSection, setActiveSection] = useState('home')
     const [activeDropdown, setActiveDropdown] = useState<'profile' | 'theme' | 'menu' | null>(null)
 
+    const [activeLink, setActiveLink] = useState("home");
+
     useEffect(() => {
-        const observerOptions = {
-            threshold: 0.6,
-        }
+        const handleScroll = () => {
+            const scrollPosition = window.scrollY;
+            const sections = document.querySelectorAll('section');
 
-        const observerCallback = (entries: IntersectionObserverEntry[]) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    setActiveSection(entry.target.id)
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+
+                if (
+                    scrollPosition >= sectionTop - 50 &&
+                    scrollPosition < sectionTop + sectionHeight - 50
+                ) {
+                    setActiveLink(section.getAttribute('id') || activeLink);
                 }
-            })
-        }
+            });
+        };
 
-        const observer = new IntersectionObserver(observerCallback, observerOptions)
-
-        // Observe all sections
-        const sections = document.querySelectorAll('section[id]')
-        sections.forEach((section) => observer.observe(section))
-
+        window.addEventListener('scroll', handleScroll);
         return () => {
-            sections.forEach((section) => observer.unobserve(section))
-        }
-    }, [])
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [activeLink]);
 
     const handleLogin = () => {
         router.push('/auth/login')
@@ -82,12 +83,6 @@ export default function Header() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Update isActiveLink function
-    const isActiveLink = (href: string) => {
-        const sectionId = href.replace('#', '')
-        return activeSection === sectionId
-    }
-
     return (
         <>
             <TopBar />
@@ -95,10 +90,10 @@ export default function Header() {
                 initial="hidden"
                 animate="visible"
                 variants={headerVariants}
-                className="fixed w-full z-50 bg-background/80 backdrop-blur-xl"
+                className="fixed w-full z-50 bg-background"
             >
                 <nav className="container mx-auto">
-                    <div className="flex h-16 sm:h-18 md:h-20 items-center justify-between px-4">
+                    <div className="flex h-14 sm:h-16 md:h-18 items-center justify-between px-4">
                         <motion.div
                             variants={logoVariants}
                             whileHover={{ scale: 1.05 }}
@@ -106,17 +101,17 @@ export default function Header() {
                         >
                             <Link
                                 href="/"
-                                className="flex items-center gap-2.5 sm:gap-3 hover:opacity-90 transition-all duration-300"
+                                className="flex items-center gap-2 sm:gap-2.5 hover:opacity-90 transition-all duration-300"
                             >
                                 <Image
                                     src={logo}
                                     alt="Koperasi ABBI"
                                     width={32}
                                     height={32}
-                                    className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 object-contain"
+                                    className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 object-contain"
                                     priority
                                 />
-                                <span className='text-base sm:text-lg md:text-xl font-bold tracking-tight hidden sm:block'>
+                                <span className='text-sm sm:text-base md:text-lg font-bold tracking-tight hidden sm:block'>
                                     Koperasi ABBI
                                 </span>
                             </Link>
@@ -138,11 +133,8 @@ export default function Header() {
                                         className={`relative text-md font-medium transition-all duration-300 py-2
                                             after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-gradient-to-r 
                                             after:from-primary after:to-primary/70 after:transition-all after:duration-300 
-                                            hover:-translate-y-[1px]
-                                            ${isActiveLink(link.href)
-                                                ? 'text-text after:w-full'
-                                                : 'text-text/80 hover:text-text after:w-0 hover:after:w-full'
-                                            }`}
+                                            hover:-translate-y-[1px] text-text/80 hover:text-text 
+                                            ${activeLink === link.active ? 'text-text after:w-full' : 'after:w-0 hover:after:w-full'}`}
                                     >
                                         {link.label}
                                     </Link>
@@ -195,38 +187,59 @@ export default function Header() {
                     </div>
 
                     {activeDropdown === 'menu' && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="md:hidden absolute top-full left-0 right-0 backdrop-blur-xl bg-background/95 border-t shadow-lg"
-                        >
-                            <ul className='flex flex-col container mx-auto px-4 py-6'>
-                                {navLink.map((link, index) => (
-                                    <motion.li
-                                        key={index}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: index * 0.1 }}
-                                        whileHover={{ x: 10 }}
-                                    >
-                                        <Link
-                                            href={link.href}
-                                            className={`block py-3 px-4 text-base font-medium transition-all duration-200 
-                                                rounded-lg hover:bg-primary/5 relative hover:pl-6
-                                                ${isActiveLink(link.href)
-                                                    ? 'text-text bg-primary/5'
-                                                    : 'text-text/80 hover:text-text'
-                                                }`}
-                                            onClick={() => setActiveDropdown(null)}
+                        <>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="fixed inset-0 bg-black/20 z-40 md:hidden"
+                                onClick={() => setActiveDropdown(null)}
+                            />
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.2 }}
+                                className="md:hidden absolute top-full left-0 right-0 backdrop-blur-xl bg-background/95 border-t shadow-lg z-50 max-h-[calc(100vh-4rem)] overflow-y-auto"
+                            >
+                                <ul className='flex flex-col container mx-auto px-4 py-4 sm:py-5'>
+                                    {navLink.map((link, index) => (
+                                        <motion.li
+                                            key={index}
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{
+                                                delay: index * 0.1,
+                                                duration: 0.2
+                                            }}
+                                            whileHover={{ x: 6 }}
+                                            className="w-full"
                                         >
-                                            {link.label}
-                                        </Link>
-                                    </motion.li>
-                                ))}
-                            </ul>
-                        </motion.div>
+                                            <Link
+                                                href={link.href}
+                                                className={`block py-2.5 sm:py-3 px-4 text-sm sm:text-base font-medium 
+                                                    transition-all duration-200 rounded-lg relative group
+                                                    ${activeLink === link.active
+                                                        ? 'text-text bg-primary/5 pl-6'
+                                                        : 'text-text/80 hover:text-text hover:bg-primary/5 hover:pl-6'
+                                                    }`}
+                                                onClick={() => setActiveDropdown(null)}
+                                            >
+                                                {link.label}
+                                                <span className={`absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full 
+                                                    transition-all duration-200 
+                                                    ${activeLink === link.active
+                                                        ? 'bg-primary scale-100'
+                                                        : 'bg-primary/70 scale-0 group-hover:scale-100'
+                                                    }`}
+                                                />
+                                            </Link>
+                                        </motion.li>
+                                    ))}
+                                </ul>
+                            </motion.div>
+                        </>
                     )}
                 </nav>
             </motion.header>
