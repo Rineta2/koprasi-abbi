@@ -26,6 +26,11 @@ export default {
           DEFAULT: "var(--primary)",
           dark: "var(--primary-dark)",
         },
+        border: "var(--border)",
+        card: {
+          DEFAULT: "var(--card)",
+          hover: "var(--card-hover)",
+        },
       },
       scrollbar: {
         thin: "thin",

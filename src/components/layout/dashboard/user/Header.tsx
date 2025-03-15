@@ -60,15 +60,15 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
     };
 
     return (
-        <header className="h-full flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg">
+        <header className="h-full flex flex-col bg-card">
             {/* Close Button - Mobile Only */}
             <div className="absolute top-0 right-0 flex justify-end p-4 lg:hidden">
                 <button
                     onClick={() => onSidebarToggle(false)}
-                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 active:scale-95"
+                    className="p-1.5 hover:bg-background-dark rounded-xl transition-all duration-300"
                 >
                     <svg
-                        className="w-6 h-6 text-gray-500 dark:text-gray-400"
+                        className="w-6 h-6 text-text-dark"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -84,8 +84,8 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
             </div>
 
             {/* Profile Section */}
-            <div className="p-6 mt-2 mb-2 border-b border-slate-200/80 dark:border-gray-700/80">
-                <div className="flex items-center gap-4 group">
+            <div className="p-4 mt-2 mb-2 border-b border-border">
+                <div className="flex items-center gap-3 group">
                     {user?.photoURL ? (
                         <div className="relative">
                             <Image
@@ -93,24 +93,24 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
                                 alt="Profile"
                                 width={48}
                                 height={48}
-                                className="rounded-2xl object-cover w-12 h-12 ring-2 ring-slate-100 dark:ring-gray-700 transition-transform duration-200 group-hover:scale-105"
+                                className="rounded-2xl object-cover w-12 h-12 ring-2 ring-background-dark transition-transform duration-300 group-hover:scale-105"
                             />
-                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-card"></div>
                         </div>
                     ) : (
                         <div className="relative">
-                            <div className="rounded-2xl object-cover w-12 h-12 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center ring-2 ring-slate-100 dark:ring-gray-700 transition-transform duration-200 group-hover:scale-105">
-                                <FaUser className="w-5 h-5 text-slate-500 dark:text-gray-400" />
+                            <div className="rounded-2xl object-cover w-12 h-12 bg-background-dark flex items-center justify-center ring-2 ring-background-dark transition-transform duration-300 group-hover:scale-105">
+                                <FaUser className="w-5 h-5 text-text-dark" />
                             </div>
-                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-card"></div>
                         </div>
                     )}
 
                     <div className="flex flex-col">
-                        <p className="text-[15px] font-semibold text-slate-900 dark:text-white group-hover:text-primary dark:group-hover:text-primary-dark transition-colors duration-200">
+                        <p className="text-[15px] font-semibold text-text group-hover:text-primary transition-colors duration-300">
                             {user?.fullName}
                         </p>
-                        <span className="text-xs text-slate-500 dark:text-gray-400">
+                        <span className="text-xs text-text-dark">
                             Online
                         </span>
                     </div>
@@ -118,17 +118,17 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
-                <ul className="space-y-2">
+            <nav className="flex-1 px-3 py-2 overflow-y-auto">
+                <ul className="space-y-1.5">
                     {menuItems.map((item, index) => (
                         <li key={index}>
                             {!item.subItems ? (
                                 <Link
                                     href={item.href}
                                     onClick={handleLinkClick}
-                                    className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-200 active:scale-98 ${isLinkActive(item.href)
-                                            ? 'bg-gradient-to-r from-primary to-primary/90 dark:from-primary-dark dark:to-primary-dark/90 text-white shadow-lg shadow-primary/25 dark:shadow-primary-dark/25'
-                                            : 'text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700/50 hover:text-slate-900 dark:hover:text-white'
+                                    className={`flex items-center gap-3 py-2.5 px-3 rounded-xl transition-all duration-300 ${isLinkActive(item.href)
+                                            ? 'bg-primary text-white shadow-md'
+                                            : 'text-text-dark hover:bg-background-dark hover:text-text'
                                         }`}
                                 >
                                     <item.icon className="w-5 h-5" />
@@ -138,9 +138,9 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
                                 <>
                                     <button
                                         onClick={() => toggleDropdown(index)}
-                                        className={`flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all duration-200 active:scale-98 ${item.subItems?.some(subItem => isLinkActive(subItem.href))
-                                                ? 'bg-gradient-to-r from-primary to-primary/90 dark:from-primary-dark dark:to-primary-dark/90 text-white shadow-lg shadow-primary/25 dark:shadow-primary-dark/25'
-                                                : 'text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700/50 hover:text-slate-900 dark:hover:text-white'
+                                        className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl transition-all duration-300 ${item.subItems?.some(subItem => isLinkActive(subItem.href))
+                                                ? 'bg-primary text-white shadow-md'
+                                                : 'text-text-dark hover:bg-background-dark hover:text-text'
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">
@@ -158,17 +158,17 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
                                         </svg>
                                     </button>
 
-                                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${activeDropdown === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                                    <div className={`overflow-hidden transition-all duration-300 ${activeDropdown === index ? 'max-h-48' : 'max-h-0'
                                         }`}>
-                                        <ul className="mt-2 space-y-1 px-4">
+                                        <ul className="mt-1 space-y-1 px-3.5">
                                             {item.subItems.map((subItem, subIndex) => (
                                                 <li key={subIndex}>
                                                     <Link
                                                         href={subItem.href}
                                                         onClick={handleLinkClick}
-                                                        className={`block py-2.5 px-4 text-sm rounded-lg transition-all duration-200 active:scale-98 ${isLinkActive(subItem.href)
-                                                                ? 'text-primary dark:text-primary-dark font-medium bg-primary/10 dark:bg-primary-dark/10'
-                                                                : 'text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-gray-700/50'
+                                                        className={`block py-2 px-4 text-sm rounded-xl transition-all duration-300 ${isLinkActive(subItem.href)
+                                                                ? 'text-primary font-medium bg-primary/10'
+                                                                : 'text-text-dark hover:text-text hover:bg-background-dark'
                                                             }`}
                                                     >
                                                         {subItem.label}
@@ -185,13 +185,13 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
             </nav>
 
             {/* Logout Button */}
-            <div className="p-4 border-t border-slate-200/80 dark:border-gray-700/80">
+            <div className="p-3 border-t border-border">
                 <button
                     onClick={() => {
                         logout();
                         handleLinkClick();
                     }}
-                    className="flex items-center justify-center gap-2 w-full p-3 rounded-xl text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 active:bg-red-100 dark:active:bg-red-500/20 transition-all duration-200 active:scale-98"
+                    className="flex items-center justify-center gap-2 w-full p-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 active:bg-red-100 transition-all duration-300"
                 >
                     <FiLogOut className="w-4 h-4" />
                     <span className="text-sm font-medium">Logout</span>

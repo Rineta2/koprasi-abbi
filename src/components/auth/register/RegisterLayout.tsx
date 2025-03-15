@@ -99,7 +99,7 @@ export default function RegisterLayout() {
             } else {
                 // Check if referral code exists if provided
                 const networkQuery = query(
-                    collection(db, 'referralNetwork'),
+                    collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_REFEL_NETWORK as string),
                     where('ownerReferralCode', '==', data.referralCode)
                 );
                 const networkSnapshot = await getDocs(networkQuery);
@@ -120,7 +120,7 @@ export default function RegisterLayout() {
                 } else {
                     // If not an AFF code, check if it's a SUP code
                     // Get all networks and find the one containing the SUP code
-                    const allNetworksQuery = query(collection(db, 'referralNetwork'));
+                    const allNetworksQuery = query(collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_REFEL_NETWORK as string));
                     const allNetworksSnapshot = await getDocs(allNetworksQuery);
 
                     let foundNetwork: QueryDocumentSnapshot<DocumentData> | null = null;
@@ -153,7 +153,7 @@ export default function RegisterLayout() {
                         const supporters = networkData.supporters;
 
                         // Update the supporter's count and add to usedBy array
-                        await updateDoc(doc(db, 'referralNetwork', (foundNetwork as QueryDocumentSnapshot<DocumentData>).id), {
+                        await updateDoc(doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_REFEL_NETWORK as string, (foundNetwork as QueryDocumentSnapshot<DocumentData>).id), {
                             supporters: supporters.map((sup: { referralCode: string; count?: number; usedBy?: Array<{ username: string; joinedAt: Date }> }, index: number) => {
                                 if (index === supporterIndex) {
                                     return {
@@ -200,7 +200,7 @@ export default function RegisterLayout() {
             if (data.referralCode) {
                 // Find existing referral network
                 const networkQuery = query(
-                    collection(db, 'referralNetwork'),
+                    collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_REFEL_NETWORK as string),
                     where('ownerReferralCode', '==', data.referralCode)
                 );
                 const networkSnapshot = await getDocs(networkQuery);
@@ -208,7 +208,7 @@ export default function RegisterLayout() {
 
                 if (networkDoc) {
                     // Update existing network with new supporter
-                    await updateDoc(doc(db, 'referralNetwork', networkDoc.id), {
+                    await updateDoc(doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_REFEL_NETWORK as string, networkDoc.id), {
                         supporters: arrayUnion({
                             uid: newUserUid,
                             username: data.username.toLowerCase(),
@@ -224,7 +224,7 @@ export default function RegisterLayout() {
                 }
             } else {
                 // Create new network for this user as affiliate
-                await addDoc(collection(db, 'referralNetwork'), {
+                await addDoc(collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_REFEL_NETWORK as string), {
                     ownerUid: newUserUid,
                     ownerUsername: data.username.toLowerCase(),
                     ownerReferralCode: generatedReferralCode,

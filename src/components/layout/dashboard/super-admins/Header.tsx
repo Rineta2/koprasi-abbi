@@ -18,7 +18,7 @@ interface HeaderProps {
     onSidebarToggle: (isOpen: boolean) => void;
 }
 
-export default function SuperAdminHeader({ onSidebarToggle }: HeaderProps) {
+export default function UserHeader({ onSidebarToggle }: HeaderProps) {
     const { user, logout } = useAuth();
     const pathname = usePathname();
     const [activeDropdown, setActiveDropdown] = React.useState<number | null>(null);
@@ -60,15 +60,15 @@ export default function SuperAdminHeader({ onSidebarToggle }: HeaderProps) {
     };
 
     return (
-        <header className="h-full flex flex-col">
+        <header className="h-full flex flex-col bg-card">
             {/* Close Button - Mobile Only */}
             <div className="absolute top-0 right-0 flex justify-end p-4 lg:hidden">
                 <button
                     onClick={() => onSidebarToggle(false)}
-                    className="p-1.5 hover:bg-gray-100 rounded-lg"
+                    className="p-1.5 hover:bg-background-dark rounded-xl transition-all duration-300"
                 >
                     <svg
-                        className="w-6 h-6 text-gray-500"
+                        className="w-6 h-6 text-text-dark"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -84,26 +84,35 @@ export default function SuperAdminHeader({ onSidebarToggle }: HeaderProps) {
             </div>
 
             {/* Profile Section */}
-            <div className="p-4 mt-2 mb-2 border-b border-slate-200">
-                <div className="flex items-center gap-3">
+            <div className="p-4 mt-2 mb-2 border-b border-border">
+                <div className="flex items-center gap-3 group">
                     {user?.photoURL ? (
-                        <Image
-                            src={user.photoURL}
-                            alt="Profile"
-                            width={48}
-                            height={48}
-                            className="rounded-xl object-cover w-12 h-12"
-                        />
+                        <div className="relative">
+                            <Image
+                                src={user?.photoURL}
+                                alt="Profile"
+                                width={48}
+                                height={48}
+                                className="rounded-2xl object-cover w-12 h-12 ring-2 ring-background-dark transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-card"></div>
+                        </div>
                     ) : (
-                        <div className="w-12 h-12 rounded-xl bg-slate-200 flex items-center justify-center">
-                            <FaUser className="w-6 h-6 text-slate-500" />
+                        <div className="relative">
+                            <div className="rounded-2xl object-cover w-12 h-12 bg-background-dark flex items-center justify-center ring-2 ring-background-dark transition-transform duration-300 group-hover:scale-105">
+                                <FaUser className="w-5 h-5 text-text-dark" />
+                            </div>
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-card"></div>
                         </div>
                     )}
-                    <div>
-                        <p className="text-[15px] font-semibold text-slate-900">
+
+                    <div className="flex flex-col">
+                        <p className="text-[15px] font-semibold text-text group-hover:text-primary transition-colors duration-300">
                             {user?.fullName}
                         </p>
-                        <p className="text-[12px] text-slate-500">Super Admin</p>
+                        <span className="text-xs text-text-dark">
+                            Online
+                        </span>
                     </div>
                 </div>
             </div>
@@ -117,9 +126,9 @@ export default function SuperAdminHeader({ onSidebarToggle }: HeaderProps) {
                                 <Link
                                     href={item.href}
                                     onClick={handleLinkClick}
-                                    className={`flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all duration-200 ${isLinkActive(item.href)
-                                        ? 'bg-primary text-white shadow-sm shadow-primary/25'
-                                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                                    className={`flex items-center gap-3 py-2.5 px-3 rounded-xl transition-all duration-300 ${isLinkActive(item.href)
+                                        ? 'bg-primary text-white shadow-md'
+                                        : 'text-text-dark hover:bg-background-dark hover:text-text'
                                         }`}
                                 >
                                     <item.icon className="w-5 h-5" />
@@ -129,9 +138,9 @@ export default function SuperAdminHeader({ onSidebarToggle }: HeaderProps) {
                                 <>
                                     <button
                                         onClick={() => toggleDropdown(index)}
-                                        className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg transition-all duration-200 ${item.subItems?.some(subItem => isLinkActive(subItem.href))
-                                            ? 'bg-primary text-white shadow-sm shadow-primary/25'
-                                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                                        className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl transition-all duration-300 ${item.subItems?.some(subItem => isLinkActive(subItem.href))
+                                            ? 'bg-primary text-white shadow-md'
+                                            : 'text-text-dark hover:bg-background-dark hover:text-text'
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">
@@ -139,7 +148,7 @@ export default function SuperAdminHeader({ onSidebarToggle }: HeaderProps) {
                                             <span className="text-sm font-medium">{item.label}</span>
                                         </div>
                                         <svg
-                                            className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === index ? 'rotate-180' : ''
+                                            className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === index ? 'rotate-180' : ''
                                                 }`}
                                             fill="none"
                                             viewBox="0 0 24 24"
@@ -149,7 +158,7 @@ export default function SuperAdminHeader({ onSidebarToggle }: HeaderProps) {
                                         </svg>
                                     </button>
 
-                                    <div className={`overflow-hidden transition-all duration-200 ${activeDropdown === index ? 'max-h-96' : 'max-h-0'
+                                    <div className={`overflow-hidden transition-all duration-300 ${activeDropdown === index ? 'max-h-100' : 'max-h-0'
                                         }`}>
                                         <ul className="mt-1 space-y-1 px-3.5">
                                             {item.subItems.map((subItem, subIndex) => (
@@ -157,9 +166,9 @@ export default function SuperAdminHeader({ onSidebarToggle }: HeaderProps) {
                                                     <Link
                                                         href={subItem.href}
                                                         onClick={handleLinkClick}
-                                                        className={`block py-2 px-4 text-sm rounded-md transition-all duration-200 ${isLinkActive(subItem.href)
+                                                        className={`block py-2 px-4 text-sm rounded-xl transition-all duration-300 ${isLinkActive(subItem.href)
                                                             ? 'text-primary font-medium bg-primary/10'
-                                                            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+                                                            : 'text-text-dark hover:text-text hover:bg-background-dark'
                                                             }`}
                                                     >
                                                         {subItem.label}
@@ -176,13 +185,13 @@ export default function SuperAdminHeader({ onSidebarToggle }: HeaderProps) {
             </nav>
 
             {/* Logout Button */}
-            <div className="p-3 border-t border-slate-200">
+            <div className="p-3 border-t border-border">
                 <button
                     onClick={() => {
                         logout();
                         handleLinkClick();
                     }}
-                    className="flex items-center justify-center gap-2 w-full p-2.5 rounded-lg text-red-600 hover:bg-red-50 active:bg-red-100 transition-all duration-200"
+                    className="flex items-center justify-center gap-2 w-full p-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 active:bg-red-100 transition-all duration-300"
                 >
                     <FiLogOut className="w-4 h-4" />
                     <span className="text-sm font-medium">Logout</span>

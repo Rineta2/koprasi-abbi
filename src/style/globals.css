@@ -26,24 +26,32 @@
 
 :root {
   --background: #ffffff;
-  --background-dark: #f7f7f7;
-  --text: #1a1a1a;
-  --text-dark: #4a4a4a;
-  --primary: #2563eb;
+  --background-dark: #f8fafc;
+  --text: #0f172a;
+  --text-dark: #64748b;
+  --primary: #0ea5e9;
+  --primary-dark: #0284c7;
+  --border: #e2e8f0;
+  --card: #ffffff;
+  --card-hover: #f8fafc;
 }
 
 .dark {
-  --background: #111827;
-  --background-dark: #1f2937;
-  --text: #f3f4f6;
-  --text-dark: #9ca3af;
-  --primary: #3b82f6;
+  --background: #0f172a;
+  --background-dark: #1e293b;
+  --text: #f1f5f9;
+  --text-dark: #94a3b8;
+  --primary: #0ea5e9;
+  --primary-dark: #38bdf8;
+  --border: #1e293b;
+  --card: #1e293b;
+  --card-hover: #334155;
 }
 
 body {
   color: var(--text);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 .container {
