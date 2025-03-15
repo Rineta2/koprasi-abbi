@@ -58,8 +58,8 @@ export function useLegalitasiCompanyData() {
       const base64 = await base64Promise;
       const result = await imagekitInstance.upload({
         file: base64,
-        fileName: `home-content-${Date.now()}`,
-        folder: "/home-contents",
+        fileName: `legalisasi-${Date.now()}`,
+        folder: "/legalisasi",
       });
 
       return result.url;

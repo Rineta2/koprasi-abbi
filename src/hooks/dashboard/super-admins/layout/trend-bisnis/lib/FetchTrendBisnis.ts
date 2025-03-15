@@ -58,8 +58,8 @@ export const useTrendBisnisData = () => {
       const base64 = await base64Promise;
       const result = await imagekitInstance.upload({
         file: base64,
-        fileName: `home-content-${Date.now()}`,
-        folder: "/home-contents",
+        fileName: `trend-bisnis-${Date.now()}`,
+        folder: "/trend-bisnis",
       });
 
       return result.url;

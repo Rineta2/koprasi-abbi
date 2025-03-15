@@ -55,8 +55,8 @@ export const useAssetsData = () => {
       const base64 = await base64Promise;
       const result = await imagekitInstance.upload({
         file: base64,
-        fileName: `home-content-${Date.now()}`,
-        folder: "/home-contents",
+        fileName: `assets-${Date.now()}`,
+        folder: "/assets",
       });
 
       return result.url;

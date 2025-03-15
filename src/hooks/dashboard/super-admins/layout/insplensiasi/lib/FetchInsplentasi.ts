@@ -21,7 +21,7 @@ import { InsplensiasiContent } from "@/hooks/dashboard/super-admins/layout/inspl
 
 export const useInsplensiasiData = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [contents, setContents] = useState<InsplensiasiContent[]>([]);
+  const [insplensiasi, setInsplensiasi] = useState<InsplensiasiContent[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchContents = async () => {
@@ -36,7 +36,7 @@ export const useInsplensiasiData = () => {
         id: doc.id,
         ...doc.data(),
       })) as InsplensiasiContent[];
-      setContents(contentArray);
+      setInsplensiasi(contentArray);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching contents:", error);
@@ -58,8 +58,8 @@ export const useInsplensiasiData = () => {
       const base64 = await base64Promise;
       const result = await imagekitInstance.upload({
         file: base64,
-        fileName: `home-content-${Date.now()}`,
-        folder: "/home-contents",
+        fileName: `insplensiasi-${Date.now()}`,
+        folder: "/insplensiasi",
       });
 
       return result.url;
@@ -122,7 +122,7 @@ export const useInsplensiasiData = () => {
 
   return {
     isLoading,
-    contents,
+    insplensiasi,
     isSubmitting,
     setIsSubmitting,
     handleImageUpload,

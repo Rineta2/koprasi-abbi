@@ -27,7 +27,7 @@ const initialFormData: InsplensiasiContent = {
 export default function InsplensiasiLayout() {
     const {
         isLoading,
-        contents,
+        insplensiasi,
         isSubmitting,
         setIsSubmitting,
         handleImageUpload,
@@ -130,7 +130,7 @@ export default function InsplensiasiLayout() {
             className='min-h-screen px-0 sm:px-2 flex flex-col items-center justify-center'
         >
             <AnimatePresence mode="wait">
-                {contents.length === 0 && (
+                {insplensiasi.length === 0 && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -168,7 +168,7 @@ export default function InsplensiasiLayout() {
 
             {/* Hero Content Display */}
             <AnimatePresence mode="wait">
-                {contents.length > 0 ? (
+                {insplensiasi.length > 0 ? (
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -189,8 +189,8 @@ export default function InsplensiasiLayout() {
                                 className="relative h-full w-full bg-background-dark/50 overflow-hidden group flex items-center justify-center"
                             >
                                 <Image
-                                    src={contents[0].imageUrl}
-                                    alt={contents[0].title}
+                                    src={insplensiasi[0].imageUrl}
+                                    alt={insplensiasi[0].title}
                                     width={500}
                                     height={500}
                                     className="object-cover"
@@ -207,15 +207,15 @@ export default function InsplensiasiLayout() {
                                 <div className="space-y-8 max-w-2xl mx-auto">
                                     <div className="space-y-6 mt-8">
                                         <h2 className='text-3xl md:text-4xl font-bold bg-gradient-to-r from-text to-text-dark bg-clip-text text-transparent'>
-                                            {contents[0].title}
+                                            {insplensiasi[0].title}
                                         </h2>
                                     </div>
 
                                     {/* SVG Display */}
-                                    {contents[0].svgUrl && (
+                                    {insplensiasi[0].svgUrl && (
                                         <div className="relative w-full h-full mx-auto flex items-center justify-center">
                                             <Image
-                                                src={contents[0].svgUrl}
+                                                src={insplensiasi[0].svgUrl}
                                                 alt="SVG Icon"
                                                 width={500}
                                                 height={500}
@@ -227,7 +227,7 @@ export default function InsplensiasiLayout() {
                                     <div className="flex justify-center gap-4 pt-8 border-t border-border/30">
                                         <button
                                             onClick={() => {
-                                                setDeleteId(contents[0].id!)
+                                                setDeleteId(insplensiasi[0].id!)
                                                 const deleteModal = document.getElementById('delete_modal') as HTMLDialogElement | null
                                                 deleteModal?.showModal()
                                             }}
@@ -240,9 +240,9 @@ export default function InsplensiasiLayout() {
                                         </button>
                                         <button
                                             onClick={() => {
-                                                setFormData(contents[0])
+                                                setFormData(insplensiasi[0])
                                                 setIsEditing(true)
-                                                setEditingId(contents[0].id || null)
+                                                setEditingId(insplensiasi[0].id || null)
                                                 const modal = document.getElementById('content_modal') as HTMLDialogElement | null
                                                 modal?.showModal()
                                             }}
