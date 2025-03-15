@@ -29,7 +29,7 @@ export default function TentangKami() {
     }
 
     return (
-        <section className='relative min-h-screen flex items-center justify-center overflow-hidden bg-background'>
+        <section className='relative min-h-screen flex items-center justify-center overflow-hidden' id='about'>
             <div className="container px-4 sm:px-6 lg:px-8">
                 {tentangKami.map((item) => (
                     <motion.div

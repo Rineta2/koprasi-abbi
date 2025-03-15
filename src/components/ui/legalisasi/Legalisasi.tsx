@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
+
 import { motion } from 'framer-motion'
 
 import { FetchLegalisasi } from '@/components/ui/legalisasi/lib/FetchLegalisasi';
@@ -29,7 +30,7 @@ export default function Legalisasi() {
     }
 
     return (
-        <section className='min-h-screen bg-background relative overflow-hidden'>
+        <section className='min-h-screen bg-background relative overflow-hidden' id='legalitas'>
             {/* Modern tech background */}
             <div className="absolute inset-0 w-full h-full z-0">
                 {/* Gradient mesh background - theme synchronized */}

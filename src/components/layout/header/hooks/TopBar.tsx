@@ -9,7 +9,6 @@ import { IoLocation } from "react-icons/io5"
 import { CgMail } from "react-icons/cg";
 
 export default function TopBar() {
-    // Add container animation variants
     const containerVariants = {
         hidden: { opacity: 0, y: -20 },
         visible: {

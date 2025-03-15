@@ -34,7 +34,7 @@ export default function Home() {
     }
 
     return (
-        <section className='min-h-screen relative overflow-hidden flex items-center mt-20 sm:mt-0' id='home'>
+        <section className='min-h-screen relative overflow-hidden flex items-center mt-14 sm:mt-0' id='home'>
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-background/5 to-background/50 dark:from-background-dark/5 dark:to-background-dark/50 z-0" />
 
@@ -44,12 +44,14 @@ export default function Home() {
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8 }}
+                        viewport={{ once: true }}
                         className='flex flex-col space-y-8'
                     >
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.5 }}
+                            viewport={{ once: true }}
                             className='inline-block bg-primary rounded-full px-6 py-2.5 mb-4 w-fit'
                         >
                             <p className='text-sm font-medium text-white'>{home[0].title}</p>
@@ -59,6 +61,7 @@ export default function Home() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.5, duration: 0.5 }}
+                            viewport={{ once: true }}
                             className='text-4xl md:text-5xl xl:text-6xl font-bold leading-tight tracking-tight'
                         >
                             {home[0].primaryText}
@@ -71,6 +74,7 @@ export default function Home() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.7, duration: 0.5 }}
+                            viewport={{ once: true }}
                             className='text-base md:text-lg text-text-dark max-w-xl capitalize'
                         >
                             {home[0].description}
@@ -80,6 +84,7 @@ export default function Home() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.9, duration: 0.5 }}
+                            viewport={{ once: true }}
                         >
                             <Link
                                 href={home[0].button.link}
@@ -97,6 +102,7 @@ export default function Home() {
                         initial={{ opacity: 0, x: 50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8 }}
+                        viewport={{ once: true }}
                         className='w-full h-full flex items-center justify-center'
                     >
                         <div className="relative">
