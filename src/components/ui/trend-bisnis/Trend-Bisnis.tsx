@@ -38,7 +38,7 @@ export default function TrendBisnis() {
     }
 
     return (
-        <section className="relative min-h-screen py-12 md:py-20 overflow-hidden">
+        <section className="relative min-h-screen py-12 md:py-20 overflow-hidden flex items-center">
             <div className="container px-4 sm:px-6 lg:px-8 relative z-10">
                 {/* Header Section */}
                 <motion.div

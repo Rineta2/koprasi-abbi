@@ -46,7 +46,7 @@ export default function AboutLayout() {
 
     return (
         <motion.section
-            className='min-h-full py-0 px-0 sm:py-4 sm:px-4'
+            className='min-h-screen py-0 px-0 sm:py-4 sm:px-4 flex flex-col items-center justify-center'
             initial="hidden"
             animate="visible"
             variants={containerVariants}

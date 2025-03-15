@@ -128,7 +128,7 @@ export default function HomeLayout() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className='min-h-full px-0 sm:px-2'
+            className='min-h-screen px-0 sm:px-2 flex flex-col items-center justify-center'
         >
             <AnimatePresence mode="wait">
                 {contents.length === 0 && (

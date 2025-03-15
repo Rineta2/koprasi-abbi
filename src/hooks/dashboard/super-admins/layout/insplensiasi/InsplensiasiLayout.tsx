@@ -8,26 +8,23 @@ import { toast } from 'react-hot-toast'
 
 import Image from 'next/image'
 
-import HomeSkelaton from '@/hooks/dashboard/super-admins/layout/home/HomeSkelaton'
+import InsplensiasiSkelaton from '@/hooks/dashboard/super-admins/layout/insplensiasi/InsplensiasiSkelaton'
 
-import { HomeContent } from '@/hooks/dashboard/super-admins/layout/home/lib/home'
+import { InsplensiasiContent } from '@/hooks/dashboard/super-admins/layout/insplensiasi/lib/insplentasi'
 
-import { ContentModal } from '@/hooks/dashboard/super-admins/layout/home/ui/ContentModal'
+import { ContentModal } from '@/hooks/dashboard/super-admins/layout/insplensiasi/ui/ContentModal'
 
-import { DeleteModal } from '@/hooks/dashboard/super-admins/layout/home/ui/DeleteModal'
+import { DeleteModal } from '@/hooks/dashboard/super-admins/layout/insplensiasi/ui/DeleteModal'
 
-import { useHomeData } from '@/hooks/dashboard/super-admins/layout/home/lib/FetchHome'
+import { useInsplensiasiData } from '@/hooks/dashboard/super-admins/layout/insplensiasi/lib/FetchInsplentasi'
 
-const initialFormData: HomeContent = {
+const initialFormData: InsplensiasiContent = {
     title: '',
-    text: '',
-    primaryText: '',
-    description: '',
-    button: { text: '', link: '' },
+    svgUrl: '',
     imageUrl: ''
 };
 
-export default function HomeLayout() {
+export default function InsplensiasiLayout() {
     const {
         isLoading,
         contents,
@@ -37,11 +34,11 @@ export default function HomeLayout() {
         createContent,
         handleUpdate,
         handleDelete,
-    } = useHomeData();
+    } = useInsplensiasiData();
 
     const [selectedImage, setSelectedImage] = useState<File | null>(null)
-
-    const [formData, setFormData] = useState<HomeContent>(initialFormData)
+    const [selectedSvg, setSelectedSvg] = useState<File | null>(null)
+    const [formData, setFormData] = useState<InsplensiasiContent>(initialFormData)
 
     const [isEditing, setIsEditing] = useState(false)
 
@@ -53,18 +50,28 @@ export default function HomeLayout() {
         try {
             setIsSubmitting(true)
             let imageUrl = formData.imageUrl
+            let svgUrl = formData.svgUrl
+
             if (selectedImage) {
                 imageUrl = await handleImageUpload(selectedImage)
+            }
+            if (selectedSvg) {
+                svgUrl = await handleImageUpload(selectedSvg)
             }
 
             if (isEditing && editingId) {
                 await handleUpdate(editingId, {
                     ...formData,
-                    imageUrl: selectedImage ? imageUrl : formData.imageUrl
+                    imageUrl: selectedImage ? imageUrl : formData.imageUrl,
+                    svgUrl: selectedSvg ? svgUrl : formData.svgUrl
                 })
                 toast.success('Content updated successfully!')
             } else {
-                await createContent(formData, imageUrl)
+                await createContent({
+                    ...formData,
+                    imageUrl,
+                    svgUrl
+                })
                 toast.success('Content created successfully!')
             }
 
@@ -83,6 +90,7 @@ export default function HomeLayout() {
         setEditingId(null)
         setFormData(initialFormData)
         setSelectedImage(null)
+        setSelectedSvg(null)
     }
 
     const closeContentModal = () => {
@@ -111,7 +119,7 @@ export default function HomeLayout() {
     }, [selectedImage]);
 
     if (isLoading) {
-        return <HomeSkelaton />
+        return <InsplensiasiSkelaton />
     }
 
     return (
@@ -132,9 +140,9 @@ export default function HomeLayout() {
                     >
                         <div className="space-y-3">
                             <h1 className='text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent'>
-                                Home
+                                Insplensiasi
                             </h1>
-                            <p className='text-text-dark/80 text-lg'>Manage your home page hero section</p>
+                            <p className='text-text-dark/80 text-lg'>Manage your insplensiasi page</p>
                         </div>
 
                         <button
@@ -144,6 +152,7 @@ export default function HomeLayout() {
                                 setEditingId(null)
                                 setFormData(initialFormData)
                                 setSelectedImage(null)
+                                setSelectedSvg(null)
                                 const modal = document.getElementById('content_modal') as HTMLDialogElement | null
                                 modal?.showModal()
                             }}
@@ -171,40 +180,51 @@ export default function HomeLayout() {
                         }}
                         className='w-full bg-card/80 backdrop-blur-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden'
                     >
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                        <div className="flex flex-col">
+                            {/* Image Section - Moved to top */}
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.5, delay: 0.3 }}
+                                className="relative h-full w-full bg-background-dark/50 overflow-hidden group flex items-center justify-center"
+                            >
+                                <Image
+                                    src={contents[0].imageUrl}
+                                    alt={contents[0].title}
+                                    width={500}
+                                    height={500}
+                                    className="object-cover"
+                                />
+                            </motion.div>
+
                             {/* Content Section */}
                             <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: 0.2 }}
-                                className="p-8 md:p-12 lg:p-16 flex flex-col justify-center"
+                                className="p-8 flex flex-col items-center text-center"
                             >
-                                <div className="space-y-8 max-w-xl">
-                                    <div className="space-y-6">
-                                        <h2 className='text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-text to-text-dark bg-clip-text text-transparent'>
+                                <div className="space-y-8 max-w-2xl mx-auto">
+                                    <div className="space-y-6 mt-8">
+                                        <h2 className='text-3xl md:text-4xl font-bold bg-gradient-to-r from-text to-text-dark bg-clip-text text-transparent'>
                                             {contents[0].title}
                                         </h2>
-
-                                        <h3 className='text-2xl md:text-3xl lg:text-4xl leading-relaxed bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent font-bold'>
-                                            {contents[0].primaryText}
-                                        </h3>
-
-                                        <h4 className='text-xl md:text-2xl text-text-dark/90 leading-relaxed'>
-                                            {contents[0].text}
-                                        </h4>
-
-                                        <p className='text-lg md:text-xl text-text-dark/80 leading-relaxed capitalize'>
-                                            {contents[0].description}
-                                        </p>
                                     </div>
 
-                                    <div className="flex flex-wrap gap-4">
-                                        <span className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-primary-dark text-white rounded-2xl transition-all duration-300 text-center min-w-[180px] shadow-lg hover:shadow-primary/20 hover:-translate-y-1">
-                                            {contents[0].button.text}
-                                        </span>
-                                    </div>
+                                    {/* SVG Display */}
+                                    {contents[0].svgUrl && (
+                                        <div className="relative w-full h-full mx-auto flex items-center justify-center">
+                                            <Image
+                                                src={contents[0].svgUrl}
+                                                alt="SVG Icon"
+                                                width={500}
+                                                height={500}
+                                                className="object-contain"
+                                            />
+                                        </div>
+                                    )}
 
-                                    <div className="flex gap-4 pt-8 border-t border-border/30">
+                                    <div className="flex justify-center gap-4 pt-8 border-t border-border/30">
                                         <button
                                             onClick={() => {
                                                 setDeleteId(contents[0].id!)
@@ -236,21 +256,6 @@ export default function HomeLayout() {
                                     </div>
                                 </div>
                             </motion.div>
-
-                            {/* Image Section */}
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.5, delay: 0.3 }}
-                                className="relative h-[200px] md:h-[300px] lg:h-full min-h-[300px] bg-background-dark/50 overflow-hidden group"
-                            >
-                                <Image
-                                    src={contents[0].imageUrl}
-                                    alt={contents[0].title}
-                                    fill
-                                    className="object-cover"
-                                />
-                            </motion.div>
                         </div>
                     </motion.div>
                 ) : (
@@ -279,6 +284,8 @@ export default function HomeLayout() {
                 setFormData={setFormData}
                 selectedImage={selectedImage}
                 setSelectedImage={setSelectedImage}
+                selectedSvg={selectedSvg}
+                setSelectedSvg={setSelectedSvg}
                 handleSubmit={handleSubmit}
                 isSubmitting={isSubmitting}
                 isEditing={isEditing}
