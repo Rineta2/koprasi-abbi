@@ -10,6 +10,8 @@ import Legalisasi from '@/components/ui/legalisasi/Legalisasi'
 
 import TrendBisnis from '@/components/ui/trend-bisnis/Trend-Bisnis'
 
+import Insplentasi from '@/components/ui/insplenstasi/Insplentasi'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -18,6 +20,7 @@ export default function HomeScreen() {
       <TentangKami />
       <Legalisasi />
       <TrendBisnis />
+      <Insplentasi />
     </Fragment>
   )
 }
