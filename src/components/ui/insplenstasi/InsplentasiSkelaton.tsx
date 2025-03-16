@@ -1,55 +1,36 @@
-export default function TrendModernSkelaton() {
+export default function InsplentasiSkelaton() {
     return (
-        <section className="relative min-h-screen py-12 md:py-20 overflow-hidden">
-            <div className="container px-4 sm:px-6 lg:px-8 relative z-10">
-                {/* Header Section Skeleton */}
-                <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 mb-12 md:mb-16">
-                    {/* Garuda image skeleton */}
-                    <div className="w-20 h-20 md:w-28 md:h-28 bg-border rounded-full relative overflow-hidden">
-                        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-border via-card to-border"></div>
-                    </div>
+        <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden py-20 md:py-24">
+            {/* Background skeleton */}
+            <div className='absolute top-0 left-0 w-full h-full bg-gray-800' />
 
-                    {/* Title skeleton */}
-                    <div className="h-12 md:h-14 lg:h-16 bg-border rounded-lg relative overflow-hidden w-1/2">
-                        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-border via-card to-border"></div>
-                    </div>
-
-                    {/* Coin image skeleton */}
-                    <div className="w-20 h-20 md:w-28 md:h-28 bg-border rounded-full relative overflow-hidden">
-                        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-border via-card to-border"></div>
-                    </div>
-                </div>
-
-                {/* Content Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-                    {/* Left content */}
-                    <div className="flex flex-col gap-8 order-2 lg:order-1">
-                        {/* Icon skeleton */}
-                        <div className="w-16 h-16 md:w-20 md:h-20 bg-border rounded-lg relative overflow-hidden">
-                            <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-border via-card to-border"></div>
-                        </div>
-
-                        {/* Description skeleton */}
-                        <div className="space-y-4">
-                            {[1, 2, 3].map((line) => (
-                                <div
-                                    key={line}
-                                    className="h-6 md:h-7 bg-border rounded relative overflow-hidden"
-                                    style={{ width: `${Math.random() * 20 + 80}%` }}
-                                >
-                                    <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-border via-card to-border"></div>
-                                </div>
-                            ))}
+            <div className="container relative z-10 px-4 md:px-8 lg:px-12">
+                <div className='flex flex-col items-center justify-center gap-8 md:gap-12 lg:gap-16 max-w-7xl mx-auto backdrop-blur-md bg-white/20 p-6 md:p-10 lg:p-12 rounded-[2rem] shadow-2xl'>
+                    {/* Title section skeleton */}
+                    <div className='flex flex-col md:flex-row items-center justify-center gap-6 bg-white/95 p-6 md:p-8 rounded-2xl relative'>
+                        <div className='flex flex-wrap items-center justify-center gap-6'>
+                            {/* Garuda skeleton */}
+                            <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-300 rounded-full animate-pulse" />
+                            {/* Title skeleton */}
+                            <div className="h-8 md:h-10 bg-gray-300 rounded-lg w-48 md:w-64 animate-pulse" />
+                            {/* Coin skeleton */}
+                            <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-300 rounded-full animate-pulse" />
                         </div>
                     </div>
 
-                    {/* Right content - Image skeleton */}
-                    <div className="order-1 lg:order-2">
-                        <div className="relative w-full aspect-square lg:aspect-[4/3] overflow-hidden rounded-3xl">
-                            <div className="absolute inset-0 bg-border">
-                                <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-border via-card to-border"></div>
-                            </div>
-                        </div>
+                    {/* Main image skeleton */}
+                    <div className='relative w-full overflow-hidden rounded-2xl bg-white/95 shadow-xl'>
+                        <div className="w-full aspect-video bg-gray-300 animate-pulse" />
+                    </div>
+
+                    {/* Arrow skeleton */}
+                    <div className='flex items-center justify-center'>
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-gray-300 rounded animate-pulse" />
+                    </div>
+
+                    {/* SVG image skeleton */}
+                    <div className='relative w-full max-w-4xl mx-auto'>
+                        <div className="w-full aspect-[2/1] bg-gray-300 rounded-lg animate-pulse" />
                     </div>
                 </div>
             </div>

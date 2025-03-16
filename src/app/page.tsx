@@ -12,6 +12,8 @@ import TrendBisnis from '@/components/ui/trend-bisnis/Trend-Bisnis'
 
 import Insplentasi from '@/components/ui/insplenstasi/Insplentasi'
 
+import Assets from '@/components/ui/assets/Assets'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -21,6 +23,7 @@ export default function HomeScreen() {
       <Legalisasi />
       <TrendBisnis />
       <Insplentasi />
+      <Assets />
     </Fragment>
   )
 }
