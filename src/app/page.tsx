@@ -14,6 +14,8 @@ import Insplentasi from '@/components/ui/insplenstasi/Insplentasi'
 
 import Assets from '@/components/ui/assets/Assets'
 
+import DataBlockHain from '@/components/ui/data-blockhain/DataBlockHain'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -24,6 +26,7 @@ export default function HomeScreen() {
       <TrendBisnis />
       <Insplentasi />
       <Assets />
+      <DataBlockHain />
     </Fragment>
   )
 }

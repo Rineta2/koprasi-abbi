@@ -8,11 +8,11 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: "Koprasi Abbi",
-  description: "Koprasi Abbi",
+  title: "Koperasi ABBI",
+  description: "Koperasi ABBI",
   favicon: "/favicon.ico",
   authors: [{ name: "Rizki Ramadhan" }],
-  keywords: ["Koprasi Abbi", "Koprasi", "Abbi", "Rizki Ramadhan"],
+  keywords: ["Koperasi ABBI", "Koperasi", "ABBI", "Rizki Ramadhan"],
 
   icons: {
     icon: [
@@ -40,25 +40,25 @@ export const metadata = {
 
   openGraph: {
     type: "website",
-    title: "Koprasi Abbi",
-    description: "Koprasi Abbi",
+    title: "Koperasi ABBI",
+    description: "Koperasi ABBI",
     url: BASE_URL,
-    siteName: "Koprasi Abbi",
+    siteName: "Koperasi ABBI",
     locale: "id_ID",
     images: [
       {
         url: "/favicon.ico",
         width: 1920,
         height: 1080,
-        alt: "Icon for Koprasi Abbi",
+        alt: "Icon for Koperasi ABBI",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Koprasi Abbi",
-    description: "Koprasi Abbi",
+    title: "Koperasi ABBI",
+    description: "Koperasi ABBI",
     creator: "@rizki_ramadhan",
     site: "@rizki_ramadhan",
     images: ["/favicon.ico"],
