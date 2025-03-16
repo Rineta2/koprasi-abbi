@@ -16,6 +16,8 @@ import Assets from '@/components/ui/assets/Assets'
 
 import DataBlockHain from '@/components/ui/data-blockhain/DataBlockHain'
 
+import ImpianAnda from '@/components/ui/impian-anda/ImpianAnda'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -27,6 +29,7 @@ export default function HomeScreen() {
       <Insplentasi />
       <Assets />
       <DataBlockHain />
+      <ImpianAnda />
     </Fragment>
   )
 }

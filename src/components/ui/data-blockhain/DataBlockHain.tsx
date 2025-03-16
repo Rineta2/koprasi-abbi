@@ -76,14 +76,20 @@ export default function DataBlockHain() {
 
             <div className="container px-4 sm:px-6 relative z-10">
                 {dataBlockHain.length > 0 && (
-                    <div className="max-w-7xl mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                        className="max-w-7xl mx-auto"
+                    >
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 xl:gap-16 items-center">
-                            {/* Enhanced Image Container with Animation */}
+                            {/* Image Container */}
                             <motion.div
                                 initial={{ opacity: 0, x: -50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.8, ease: "easeOut" }}
+                                whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
                                 className="group relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white"
                             >
                                 <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-secondary/30 opacity-30 
@@ -100,12 +106,12 @@ export default function DataBlockHain() {
                                 </div>
                             </motion.div>
 
-                            {/* Enhanced Content Container with Animation */}
+                            {/* Content Container */}
                             <motion.div
                                 initial={{ opacity: 0, x: 50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+                                whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
+                                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
                                 className="space-y-4 sm:space-y-6 p-4 sm:p-8 bg-white/5 dark:bg-gray-800/20 backdrop-blur-md 
                                           rounded-2xl sm:rounded-3xl border border-gray-200/10 hover:border-primary/20
                                           hover:shadow-2xl hover:shadow-primary/10 transition-all duration-700 relative"
@@ -157,7 +163,7 @@ export default function DataBlockHain() {
                                 </div>
                             </motion.div>
                         </div>
-                    </div>
+                    </motion.div>
                 )}
             </div>
         </section>
