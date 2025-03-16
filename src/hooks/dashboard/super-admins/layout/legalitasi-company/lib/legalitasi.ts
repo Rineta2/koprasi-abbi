@@ -17,9 +17,9 @@ export interface LegalitasiCompanyContent {
     koperasiRegistration: string;
   };
   management: {
-    chairman: string;
-    secretary: string;
-    treasurer: string;
+    ketua: string;
+    sekretaris: string;
+    bendahara: string;
   };
   address: {
     street: string;

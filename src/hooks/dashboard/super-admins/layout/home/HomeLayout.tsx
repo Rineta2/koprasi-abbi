@@ -119,23 +119,23 @@ export default function HomeLayout() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className='min-h-screen px-0 sm:px-2 flex flex-col items-center justify-center'
+            className='min-h-screen px-0 sm:px-2'
         >
             <AnimatePresence mode="wait">
-                {contents.length === 0 && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8 bg-card/80 backdrop-blur-sm p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
-                    >
-                        <div className="space-y-3">
-                            <h1 className='text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent'>
-                                Home
-                            </h1>
-                            <p className='text-text-dark/80 text-lg'>Manage your home page hero section</p>
-                        </div>
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8 bg-card/80 backdrop-blur-sm p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                >
+                    <div className="space-y-3">
+                        <h1 className='text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent'>
+                            Home
+                        </h1>
+                        <p className='text-text-dark/80 text-lg'>Kelola bagian hero beranda Anda</p>
+                    </div>
+                    {contents.length === 0 && (
 
                         <button
                             className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-primary-dark text-white rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-primary/20 hover:-translate-y-1"
@@ -153,8 +153,8 @@ export default function HomeLayout() {
                             </svg>
                             Create Content
                         </button>
-                    </motion.div>
-                )}
+                    )}
+                </motion.div>
             </AnimatePresence>
 
             {/* Hero Content Display */}

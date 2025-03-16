@@ -46,25 +46,25 @@ export default function AboutLayout() {
 
     return (
         <motion.section
-            className='min-h-screen py-0 px-0 sm:py-4 sm:px-4 flex flex-col items-center justify-center'
+            className='min-h-screen py-0 px-0 sm:py-4 sm:px-4'
             initial="hidden"
             animate="visible"
             variants={containerVariants}
         >
-            {images.length === 0 && (
-                <motion.div
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="bg-gradient-to-r from-card to-card/80 backdrop-blur-sm rounded-3xl border p-8 mb-8 border-gray-100/10 dark:border-gray-800/20 shadow-lg shadow-primary/5"
-                >
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-                        <div className="space-y-2">
-                            <h1 className='text-3xl sm:text-4xl font-bold bg-gradient-to-r from-text to-primary bg-clip-text text-transparent'>
-                                About Us
-                            </h1>
-                            <p className='text-text-dark/80 text-lg'>Manage your about us content</p>
-                        </div>
+            <motion.div
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-gradient-to-r from-card to-card/80 backdrop-blur-sm rounded-3xl border p-8 mb-8 border-gray-100/10 dark:border-gray-800/20 shadow-lg shadow-primary/5"
+            >
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                    <div className="space-y-2">
+                        <h1 className='text-3xl sm:text-4xl font-bold bg-gradient-to-r from-text to-primary bg-clip-text text-transparent'>
+                            About Us
+                        </h1>
+                        <p className='text-text-dark/80 text-lg'>Kelola konten tentang kami</p>
+                    </div>
+                    {images.length === 0 && (
 
                         <button
                             onClick={() => {
@@ -86,9 +86,9 @@ export default function AboutLayout() {
                             </svg>
                             <span className="font-medium">Add Content</span>
                         </button>
-                    </div>
-                </motion.div>
-            )}
+                    )}
+                </div>
+            </motion.div>
 
             {images.map((item) => {
                 return (

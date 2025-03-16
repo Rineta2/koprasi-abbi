@@ -12,9 +12,9 @@ export interface LegalisasiType {
     tdp: string;
   };
   management: {
-    chairman: string;
-    secretary: string;
-    treasurer: string;
+    ketua: string;
+    sekretaris: string;
+    bendahara: string;
   };
   address: {
     street: string;

@@ -167,7 +167,7 @@ export default function Legalisasi() {
                             </div>
                         </motion.div>
 
-                        {/* Address Section */}
+                        {/* Alamat Section */}
                         <motion.div
                             initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -180,14 +180,14 @@ export default function Legalisasi() {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
                                 </svg>
                                 <h3 className='text-2xl md:text-3xl font-bold text-text'>
-                                    Address
+                                    Alamat
                                 </h3>
                             </div>
 
                             <div className='grid grid-cols-1 gap-6'>
                                 <div className='bg-card/50 backdrop-blur p-6 rounded-2xl shadow-lg hover:shadow-xl hover:shadow-primary/10 transition-all duration-500 border border-border/30 hover:border-primary/40 hover:bg-card-hover/50 group transform'>
                                     <h4 className='text-md font-medium text-text-dark/70 mb-3 group-hover:text-primary transition-colors uppercase'>
-                                        Street Address
+                                        Alamat
                                     </h4>
 
                                     <p className='font-semibold text-text text-lg leading-relaxed'>

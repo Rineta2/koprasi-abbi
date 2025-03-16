@@ -17,7 +17,7 @@ export const PartnerHeader = ({ onCreateClick }: PartnerHeaderProps) => {
                     <h1 className='text-3xl sm:text-4xl font-bold bg-gradient-to-r from-text to-primary bg-clip-text text-transparent'>
                         Partner
                     </h1>
-                    <p className='text-text-dark/80 text-lg'>Manage and organize your partner content</p>
+                    <p className='text-text-dark/80 text-lg'>Kelola dan organisir konten partner Anda</p>
                 </div>
 
                 <button

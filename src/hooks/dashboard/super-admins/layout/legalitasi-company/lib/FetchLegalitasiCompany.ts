@@ -17,7 +17,7 @@ import imagekitInstance from "@/utils/imagekit";
 
 import { compressImage } from "@/base/helper/ImageCompression";
 
-import { LegalitasiCompanyContent } from "./legalitasi";
+import { LegalitasiCompanyContent } from "@/hooks/dashboard/super-admins/layout/legalitasi-company/lib/legalitasi";
 
 export function useLegalitasiCompanyData() {
   const [isLoading, setIsLoading] = useState(true);

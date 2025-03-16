@@ -180,39 +180,39 @@ export function ContentModal({
                                             <div className="space-y-2">
                                                 <input
                                                     type="text"
-                                                    placeholder="Chairman"
-                                                    value={formData.management.chairman}
+                                                    placeholder="Ketua"
+                                                    value={formData.management.ketua}
                                                     onChange={(e) => setFormData({
                                                         ...formData,
                                                         management: {
                                                             ...formData.management,
-                                                            chairman: e.target.value
+                                                            ketua: e.target.value
                                                         }
                                                     })}
                                                     className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
-                                                    placeholder="Secretary"
-                                                    value={formData.management.secretary}
+                                                    placeholder="Sekretaris"
+                                                    value={formData.management.sekretaris}
                                                     onChange={(e) => setFormData({
                                                         ...formData,
                                                         management: {
                                                             ...formData.management,
-                                                            secretary: e.target.value
+                                                            sekretaris: e.target.value
                                                         }
                                                     })}
                                                     className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
-                                                    placeholder="Treasurer"
-                                                    value={formData.management.treasurer}
+                                                    placeholder="Bendahara"
+                                                    value={formData.management.bendahara}
                                                     onChange={(e) => setFormData({
                                                         ...formData,
                                                         management: {
                                                             ...formData.management,
-                                                            treasurer: e.target.value
+                                                            bendahara: e.target.value
                                                         }
                                                     })}
                                                     className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
