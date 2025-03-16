@@ -18,6 +18,8 @@ import DataBlockHain from '@/components/ui/data-blockhain/DataBlockHain'
 
 import ImpianAnda from '@/components/ui/impian-anda/ImpianAnda'
 
+import PendaftaranAnggotaKoperasi from '@/components/ui/pendaftaran-anggota-koperasi/PendaftaranAnggotaKoperasi'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -30,6 +32,7 @@ export default function HomeScreen() {
       <Assets />
       <DataBlockHain />
       <ImpianAnda />
+      <PendaftaranAnggotaKoperasi />
     </Fragment>
   )
 }
