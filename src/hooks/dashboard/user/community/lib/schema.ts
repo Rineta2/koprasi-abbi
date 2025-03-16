@@ -33,3 +33,9 @@ export interface ReferralNetwork {
     updatedAt: Timestamp;
     supporters: Supporter[];
 }
+
+
+export interface User {
+    username: string;
+    joinedAt: Timestamp;
+}
