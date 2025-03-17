@@ -134,6 +134,17 @@ export const menuItems = [
     icon: GoProject,
     label: "Product",
     href: "/dashboard/super-admins/product",
+    subItems: [
+      {
+        label: "Product",
+        href: "/dashboard/super-admins/product",
+      },
+
+      {
+        label: "Status",
+        href: "/dashboard/super-admins/product/status",
+      },
+    ],
   },
 
   {
