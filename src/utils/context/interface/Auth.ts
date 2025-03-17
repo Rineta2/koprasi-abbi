@@ -16,6 +16,7 @@ export interface UserAccount {
   updatedAt: Date;
   isActive: boolean;
   referralCode: string;
+  status: 'reguler' | 'premium';
 }
 
 export interface AuthContextType {
@@ -36,7 +37,8 @@ export interface AuthContextType {
     fullName: string,
     username: string,
     phoneNumber: string,
-    referralCode: string
+    referralCode: string,
+    status?: 'reguler' | 'premium'
   ) => Promise<string>;
   forgotPassword: (email: string) => Promise<void>;
   showInactiveModal: boolean;

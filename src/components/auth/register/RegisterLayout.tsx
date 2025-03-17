@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import loginImg from "@/base/assets/auth/register.jpg"
 
@@ -21,12 +21,17 @@ import { db } from '@/utils/firebase'
 import { collection, query, where, getDocs, addDoc, updateDoc, doc, arrayUnion } from 'firebase/firestore'
 
 import { useRouter } from 'next/navigation'
+
 import { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore'
+
+import toast from 'react-hot-toast'
 
 interface NetworkData extends DocumentData {
     ownerReferralCode: string;
+    ownerStatus: string;
     supporters: Array<{
         referralCode: string;
+        status: string;
     }>;
 }
 
@@ -36,6 +41,9 @@ export default function RegisterLayout() {
     const [isLoading, setIsLoading] = useState(false)
     const [showReferralModal, setShowReferralModal] = useState(false)
     const [generatedReferralCode, setGeneratedReferralCode] = useState('')
+    const [selectedStatus, setSelectedStatus] = useState<'reguler' | 'premium'>('reguler')
+    const [showInfoModal, setShowInfoModal] = useState(false)
+    const [infoModalContent, setInfoModalContent] = useState<{ title: string, description: string }>({ title: '', description: '' })
     const router = useRouter()
 
     // Custom validation function to check username availability
@@ -74,6 +82,7 @@ export default function RegisterLayout() {
             .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
             .regex(/[0-9]/, 'Password must contain at least one number'),
         referralCode: z.string().optional(),
+        status: z.enum(['reguler', 'premium']).default('reguler'), // Set default value
     })
 
     type RegisterFormData = z.infer<typeof registerSchema>
@@ -84,13 +93,22 @@ export default function RegisterLayout() {
         formState: { errors },
         setError,
         clearErrors,
+        setValue,
     } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
+        defaultValues: {
+            status: 'reguler' // Add default values for the form
+        }
     })
+
+    useEffect(() => {
+        setValue('status', selectedStatus); 
+    }, [setValue, selectedStatus]);
 
     const onSubmit = async (data: RegisterFormData) => {
         try {
             setIsLoading(true)
+            console.log("Form submission started", data) // Debug log
 
             // Generate referral code
             let generatedReferralCode = '';
@@ -193,7 +211,8 @@ export default function RegisterLayout() {
                 data.fullName,
                 data.username,
                 data.phoneNumber,
-                generatedReferralCode
+                generatedReferralCode,
+                data.status as 'reguler' | 'premium' // Explicitly cast to the union type
             )
 
             // If user used a referral code, update referral network
@@ -216,6 +235,7 @@ export default function RegisterLayout() {
                             type: 'support',
                             joinedAt: new Date(),
                             referredBy: data.referralCode,
+                            status: data.status, // Add user status to supporter data
                             count: 0, // Initialize count for new supporter
                             usedBy: [] // Initialize empty array for tracking who uses this SUP code
                         }),
@@ -229,6 +249,7 @@ export default function RegisterLayout() {
                     ownerUsername: data.username.toLowerCase(),
                     ownerReferralCode: generatedReferralCode,
                     type: 'affiliate',
+                    ownerStatus: data.status, // Add owner status to network data
                     supporters: [], // Empty array of supporters with count field
                     createdAt: new Date(),
                     updatedAt: new Date()
@@ -247,13 +268,23 @@ export default function RegisterLayout() {
 
         } catch (error) {
             console.error('Registration error:', error)
+            // Add detailed error logging
             if (error instanceof Error) {
+                console.error('Error message:', error.message);
+                console.error('Error stack:', error.stack);
+                
                 if (error.message.includes('Username already taken')) {
                     setError('username', {
                         type: 'manual',
                         message: 'Username already taken'
                     })
+                } else {
+                    // Display general error message for any other errors
+                    toast.error(`Registration failed: ${error.message}`);
                 }
+            } else {
+                console.error('Unknown error type:', error);
+                toast.error('An unexpected error occurred during registration');
             }
         } finally {
             setIsLoading(false)
@@ -296,16 +327,22 @@ export default function RegisterLayout() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20">
                     {/* Left side - Form */}
                     <div className='flex items-center justify-center p-6 lg:p-12 w-full'>
-                        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md space-y-6">
+                        <form 
+                            onSubmit={(e) => {
+                                console.log('Form submit event triggered');
+                                handleSubmit(onSubmit)(e);
+                            }}
+                            className="w-full max-w-md space-y-6"
+                        >
                             <div className="text-center space-y-3">
                                 <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">Registrasi</h2>
-                                <p className="text-text/60 dark:text-gray-400">Let&apos;s get you all set up so you can access your personal account.</p>
+                                <p className="text-text/60 dark:text-gray-400">Mari kita siapkan semuanya agar Anda dapat mengakses akun pribadi Anda.</p>
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <div className="form-control w-full">
                                     <label className="label">
-                                        <span className="label-text">Full Name</span>
+                                        <span className="label-text">Nama Lengkap</span>
                                     </label>
                                     <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background overflow-hidden">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -349,7 +386,7 @@ export default function RegisterLayout() {
                                     {isChecking && (
                                         <label className="label">
                                             <span className="label-text-alt text-info">
-                                                Checking username availability...
+                                                Memeriksa ketersediaan nama pengguna...
                                             </span>
                                         </label>
                                     )}
@@ -381,7 +418,7 @@ export default function RegisterLayout() {
 
                             <div className="form-control w-full">
                                 <label className="label">
-                                    <span className="label-text">Phone Number</span>
+                                    <span className="label-text">Nomor Telepon</span>
                                 </label>
                                 <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" viewBox="0 0 20 20" fill="currentColor">
@@ -407,7 +444,7 @@ export default function RegisterLayout() {
                                 </label>
                                 <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" />
                                     </svg>
                                     <input
                                         {...register('password')}
@@ -421,6 +458,66 @@ export default function RegisterLayout() {
                                         <span className="label-text-alt text-error">{errors.password.message}</span>
                                     </label>
                                 )}
+                            </div>
+
+                            <div className="form-control w-full">
+                                <label className="label">
+                                    <span className="label-text">Status</span>
+                                </label>
+                                <div className="flex gap-4">
+                                    <div 
+                                        className={`flex-1 cursor-pointer h-[48px] flex items-center justify-center rounded-lg border-[1px] transition-all ${selectedStatus === 'reguler' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-black border-gray-300'}`}
+                                        onClick={() => {
+                                            setSelectedStatus('reguler');
+                                            setValue('status', 'reguler');
+                                        }}
+                                    >
+                                        <span className="font-medium">Reguler</span>
+                                        <button
+                                            type="button"
+                                            className="ml-2 focus:outline-none"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setInfoModalContent({
+                                                    title: 'Akun Reguler',
+                                                    description: 'Hanya dengan Rp 10.000, kamu bisa mencicil emas di koperasi. Cara mudah dan aman untuk investasi masa depan. Yuk, mulai sekarang'
+                                                });
+                                                setShowInfoModal(true);
+                                            }}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div 
+                                        className={`flex-1 cursor-pointer h-[48px] flex items-center justify-center rounded-lg border-[1px] transition-all ${selectedStatus === 'premium' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-black border-gray-300'}`}
+                                        onClick={() => {
+                                            setSelectedStatus('premium');
+                                            setValue('status', 'premium');
+                                        }}
+                                    >
+                                        <span className="font-medium">Premium</span>
+                                        <button
+                                            type="button"
+                                            className="ml-2 focus:outline-none"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setInfoModalContent({
+                                                    title: 'Akun Premium',
+                                                    description: 'Premium! Untuk Anda yang siap berinvestasi lebih besar, jadilah anggota dengan belanja koin aset Litbinex senilai Rp 8.050.000. Keuntungan maksimal menanti.'
+                                                });
+                                                setShowInfoModal(true);
+                                            }}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                {/* Add hidden input for status */}
+                                <input type="hidden" {...register('status')} value={selectedStatus} />
                             </div>
 
                             <div className="form-control w-full">
@@ -444,6 +541,9 @@ export default function RegisterLayout() {
                                 type="submit"
                                 className="btn w-full bg-primary text-text hover:bg-primary/80 border-0"
                                 disabled={isLoading}
+                                onClick={() => {
+                                    console.log('Register button clicked'); // Debug log
+                                }}
                             >
                                 {isLoading ? (
                                     <>
@@ -511,6 +611,59 @@ export default function RegisterLayout() {
                         >
                             Got it, let&apos;s login!
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Status Info Modal */}
+            {showInfoModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-all">
+                    <div 
+                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md transform transition-all overflow-hidden animate-fade-in-up"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Modal header with gradient background */}
+                        <div className="bg-gradient-to-r from-primary to-purple-600 p-5 text-white relative">
+                            <h3 className="text-2xl font-bold">
+                                {infoModalContent.title}
+                            </h3>
+                            <button 
+                                onClick={() => setShowInfoModal(false)}
+                                className="absolute top-5 right-5 text-white hover:text-white/80 transition-colors"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        {/* Modal body with content */}
+                        <div className="p-6 text-gray-700 dark:text-gray-200">
+                            <div className="flex items-start mb-4">
+                                <div className="flex-shrink-0 mr-4">
+                                    {infoModalContent.title.includes('Premium') ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zm7-10a1 1 0 01.707.293l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L13.586 6H10a1 1 0 110-2h3.586l-1.293-1.293A1 1 0 0112 2z" clipRule="evenodd" />
+                                        </svg>
+                                    ) : (
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                        </svg>
+                                    )}
+                                </div>
+                                <p className="text-lg">{infoModalContent.description}</p>
+                            </div>
+                        </div>
+                        
+                        {/* Modal footer with action button */}
+                        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 flex justify-end">
+                            <button
+                                onClick={() => setShowInfoModal(false)}
+                                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                            >
+                                Mengerti
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

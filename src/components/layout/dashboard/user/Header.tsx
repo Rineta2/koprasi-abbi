@@ -85,34 +85,36 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
 
             {/* Profile Section */}
             <div className="p-4 mt-2 mb-2 border-b border-border">
-                <div className="flex items-center gap-3 group">
-                    {user?.photoURL ? (
-                        <div className="relative">
-                            <Image
-                                src={user?.photoURL}
-                                alt="Profile"
-                                width={48}
-                                height={48}
-                                className="rounded-2xl object-cover w-12 h-12 ring-2 ring-background-dark transition-transform duration-300 group-hover:scale-105"
-                            />
-                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-card"></div>
-                        </div>
-                    ) : (
-                        <div className="relative">
-                            <div className="rounded-2xl object-cover w-12 h-12 bg-background-dark flex items-center justify-center ring-2 ring-background-dark transition-transform duration-300 group-hover:scale-105">
-                                <FaUser className="w-5 h-5 text-text-dark" />
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 group">
+                        {user?.photoURL ? (
+                            <div className="relative">
+                                <Image
+                                    src={user?.photoURL}
+                                    alt="Profile"
+                                    width={48}
+                                    height={48}
+                                    className="rounded-2xl object-cover w-12 h-12 ring-2 ring-background-dark transition-transform duration-300 group-hover:scale-105"
+                                />
+                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-card"></div>
                             </div>
-                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-card"></div>
-                        </div>
-                    )}
+                        ) : (
+                            <div className="relative">
+                                <div className="rounded-2xl object-cover w-12 h-12 bg-background-dark flex items-center justify-center ring-2 ring-background-dark transition-transform duration-300 group-hover:scale-105">
+                                    <FaUser className="w-5 h-5 text-text-dark" />
+                                </div>
+                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-card"></div>
+                            </div>
+                        )}
 
-                    <div className="flex flex-col">
-                        <p className="text-[15px] font-semibold text-text group-hover:text-primary transition-colors duration-300">
-                            {user?.fullName}
-                        </p>
-                        <span className="text-xs text-text-dark">
-                            Online
-                        </span>
+                        <div className="flex flex-col">
+                            <p className="text-[15px] font-semibold text-text group-hover:text-primary transition-colors duration-300">
+                                {user?.fullName}
+                            </p>
+                            <span className="text-xs text-text-dark">
+                                Online
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -127,8 +129,8 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
                                     href={item.href}
                                     onClick={handleLinkClick}
                                     className={`flex items-center gap-3 py-2.5 px-3 rounded-xl transition-all duration-300 ${isLinkActive(item.href)
-                                            ? 'bg-primary text-white shadow-md'
-                                            : 'text-text-dark hover:bg-background-dark hover:text-text'
+                                        ? 'bg-primary text-white shadow-md'
+                                        : 'text-text-dark hover:bg-background-dark hover:text-text'
                                         }`}
                                 >
                                     <item.icon className="w-5 h-5" />
@@ -139,8 +141,8 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
                                     <button
                                         onClick={() => toggleDropdown(index)}
                                         className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl transition-all duration-300 ${item.subItems?.some(subItem => isLinkActive(subItem.href))
-                                                ? 'bg-primary text-white shadow-md'
-                                                : 'text-text-dark hover:bg-background-dark hover:text-text'
+                                            ? 'bg-primary text-white shadow-md'
+                                            : 'text-text-dark hover:bg-background-dark hover:text-text'
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">
@@ -167,8 +169,8 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
                                                         href={subItem.href}
                                                         onClick={handleLinkClick}
                                                         className={`block py-2 px-4 text-sm rounded-xl transition-all duration-300 ${isLinkActive(subItem.href)
-                                                                ? 'text-primary font-medium bg-primary/10'
-                                                                : 'text-text-dark hover:text-text hover:bg-background-dark'
+                                                            ? 'text-primary font-medium bg-primary/10'
+                                                            : 'text-text-dark hover:text-text hover:bg-background-dark'
                                                             }`}
                                                     >
                                                         {subItem.label}

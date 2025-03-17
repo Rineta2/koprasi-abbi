@@ -14,6 +14,8 @@ import UserHeader from "@/components/layout/dashboard/user/Header";
 
 import AccessDenied from "@/components/layout/dashboard/AccessDenied";
 
+import ThemeToggle from "@/components/layout/header/hooks/ThemaToggle";
+
 export default function DashboardLayout({
     children,
 }: {
@@ -21,15 +23,15 @@ export default function DashboardLayout({
 }) {
     const { hasRole, user } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
-        // Check if window exists (client-side) and set initial state based on screen width
         if (typeof window !== 'undefined') {
-            return window.innerWidth >= 1024; // 1024px is the 'lg' breakpoint in Tailwind
+            return window.innerWidth >= 1024;
         }
         return false; // Default to closed on server-side
     });
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [currentRole, setCurrentRole] = useState<Role | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isThemeOpen, setIsThemeOpen] = useState(false);
 
     useEffect(() => {
         if (!user) {
@@ -175,6 +177,9 @@ export default function DashboardLayout({
 
                         {/* Right side buttons updated with dark mode classes */}
                         <div className="flex items-center gap-2">
+                            {/* Theme Toggle */}
+                            <ThemeToggle isOpen={isThemeOpen} setIsOpen={setIsThemeOpen} />
+
                             <button className="relative group">
                                 <div className="p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200">
                                     <svg

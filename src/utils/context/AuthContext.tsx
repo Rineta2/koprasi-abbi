@@ -185,7 +185,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         fullName: string,
         username: string,
         phoneNumber: string,
-        referralCode: string
+        referralCode: string,
+        status: 'reguler' | 'premium' = 'reguler'
     ): Promise<string> => {
         try {
             if (!process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS) {
@@ -204,23 +205,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 throw new Error('Username already taken');
             }
 
+            // Create user in Firebase Authentication
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userId = userCredential.user.uid;
 
-            const userData: UserAccount = {
-                uid: userCredential.user.uid,
-                email: email,
-                fullName: fullName,
+            // Create user document in Firestore
+            await setDoc(doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS, userId), {
+                uid: userId,
+                email,
+                fullName,
                 username: username.toLowerCase(),
-                phoneNumber: phoneNumber,
+                phoneNumber,
+                referralCode,
+                status,
                 role: Role.USER,
+                isActive: true,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                isActive: true,
-                referralCode: referralCode
-            };
-
-            const userDocRef = doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS, userCredential.user.uid);
-            await setDoc(userDocRef, userData);
+            });
 
             // Sign out immediately after creating account
             await signOut(auth);
