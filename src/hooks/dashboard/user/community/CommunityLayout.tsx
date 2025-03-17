@@ -86,7 +86,7 @@ export default function CommunityLayout() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="bg-card/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-border/40 p-8 sm:p-10"
+                className="bg-gradient-to-br from-card/90 to-card/70 backdrop-blur-xl rounded-3xl shadow-2xl border border-border/40 p-8 sm:p-10"
             >
                 <div className="space-y-3">
                     <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-primary-dark to-primary bg-clip-text text-transparent">
@@ -103,32 +103,45 @@ export default function CommunityLayout() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: index * 0.1 }}
                         key={referral.id}
-                        className="bg-card/90 backdrop-blur-md rounded-2xl border border-border/40 shadow-xl p-6 sm:p-8"
+                        className="bg-card/90 backdrop-blur-md rounded-2xl border border-border/40 shadow-xl p-6 sm:p-8 overflow-hidden"
                     >
                         <div className="flex flex-col lg:flex-row gap-8">
                             {/* Owner Info */}
                             <div className="flex-1 space-y-6">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center shadow-inner">
                                         <Icons.Check />
                                     </div>
                                     <div>
-                                        <h3 className="text-2xl font-bold text-primary">{referral.ownerUsername}</h3>
-                                        <p className="text-sm text-text-dark/80">Code: {referral.ownerReferralCode}</p>
+                                        <div className="flex items-center gap-2">
+                                            <h3 className="text-2xl font-bold text-primary">{referral.ownerUsername}</h3>
+                                            <span className={`px-3 py-0.5 text-xs font-medium rounded-full ${referral.ownerStatus === 'premium'
+                                                ? 'bg-primary/20 text-primary'
+                                                : 'bg-gray-200 text-gray-700'
+                                                }`}>
+                                                {referral.ownerStatus || 'N/A'}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm text-text-dark/80 mt-1 flex items-center gap-1">
+                                            <span className="font-medium">Referral Code:</span>
+                                            <span className="font-mono bg-card-hover/50 px-2 py-0.5 rounded">{referral.ownerReferralCode}</span>
+                                        </p>
                                     </div>
                                 </div>
-                                <div className="grid gap-3 text-sm bg-card/50 p-4 rounded-xl border border-border/70">
-                                    <p className="flex items-center gap-2 text-text-dark/80">
-                                        <span>Created:</span>
+                                <div className="grid gap-3 text-sm bg-card/50 p-5 rounded-xl border border-border/70">
+                                    <p className="flex items-center justify-between gap-2 text-text-dark/80">
+                                        <span className="font-medium">Bergabung:</span>
                                         <span className="text-primary">{formatDate(referral.createdAt as FirebaseTimestamp)}</span>
                                     </p>
-                                    <p className="flex items-center gap-2 text-text-dark/80">
-                                        <span>Type:</span>
-                                        <span className="text-primary">{referral.type}</span>
-                                    </p>
-                                    <p className="flex items-center gap-2 text-text-dark/80">
-                                        <span>Updated:</span>
+
+                                    <p className="flex items-center justify-between gap-2 text-text-dark/80">
+                                        <span className="font-medium">Diperbarui:</span>
                                         <span className="text-primary">{formatDate(referral.updatedAt as FirebaseTimestamp)}</span>
+                                    </p>
+
+                                    <p className="flex items-center justify-between gap-2 text-text-dark/80">
+                                        <span className="font-medium">Tipe:</span>
+                                        <span className="text-primary bg-primary/10 px-2 py-0.5 rounded">{referral.type}</span>
                                     </p>
                                 </div>
                             </div>
@@ -141,9 +154,14 @@ export default function CommunityLayout() {
 
                             {/* Supporters Section */}
                             <div className="flex-[2]">
-                                <h4 className="text-lg font-semibold mb-4">
-                                    Supporters ({referral.supporters.length})
-                                </h4>
+                                <div className="flex items-center justify-between mb-4">
+                                    <h4 className="text-lg font-semibold flex items-center gap-2">
+                                        Supporters
+                                        <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-sm">
+                                            {referral.supporters.length}
+                                        </span>
+                                    </h4>
+                                </div>
                                 <div className="grid gap-4">
                                     {referral.supporters
                                         .slice(0, expandedReferrals[referral.id] ? undefined : 3)
@@ -160,11 +178,12 @@ export default function CommunityLayout() {
                                 {referral.supporters.length > 3 && (
                                     <button
                                         onClick={() => toggleShowMoreSupporters(referral.id)}
-                                        className="mt-4 text-sm text-primary hover:text-primary-dark transition-colors duration-200"
+                                        className="mt-5 w-full text-sm bg-card-hover/50 hover:bg-card-hover/80 text-primary hover:text-primary-dark transition-all duration-200 py-3 rounded-xl border border-border/30 hover:border-border/60 flex items-center justify-center gap-2"
                                     >
                                         {expandedReferrals[referral.id]
                                             ? 'Show Less'
                                             : `Show More (${referral.supporters.length - 3} more)`}
+                                        <Icons.ChevronDown className={`transform transition-transform duration-300 ${expandedReferrals[referral.id] ? "rotate-180" : ""}`} />
                                     </button>
                                 )}
                             </div>
@@ -172,6 +191,16 @@ export default function CommunityLayout() {
                     </motion.div>
                 ))}
             </div>
+
+            {referralData.length === 0 && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="bg-card/80 rounded-2xl p-8 text-center"
+                >
+                    <p className="text-text-dark/80 text-lg">No referral networks found.</p>
+                </motion.div>
+            )}
         </section>
     )
 }
