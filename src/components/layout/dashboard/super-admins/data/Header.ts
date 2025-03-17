@@ -144,6 +144,11 @@ export const menuItems = [
         label: "Status",
         href: "/dashboard/super-admins/product/status",
       },
+
+      {
+        label: "Category",
+        href: "/dashboard/super-admins/product/category",
+      },
     ],
   },
 

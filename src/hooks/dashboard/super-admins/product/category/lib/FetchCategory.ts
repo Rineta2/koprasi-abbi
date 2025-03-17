@@ -10,13 +10,13 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 
-import { StatusContent } from "@/hooks/dashboard/super-admins/product/status/lib/schema";
+import { Category } from "@/hooks/dashboard/super-admins/product/category/lib/schema";
 
 const COLLECTION_NAME = process.env
-  .NEXT_PUBLIC_COLLECTIONS_STATUS_PRODUCTS as string;
+  .NEXT_PUBLIC_COLLECTIONS_CATEGORY_PRODUCTS as string;
 
-export const statusService = {
-  fetchStatus: async () => {
+export const categoryService = {
+  fetchCategory: async () => {
     const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
     return querySnapshot.docs
       .map(
@@ -24,22 +24,22 @@ export const statusService = {
           ({
             id: doc.id,
             ...doc.data(),
-          } as StatusContent)
+          } as Category)
       )
       .sort(
         (a, b) =>
           (b.createdAt?.toMillis() ?? 0) - (a.createdAt?.toMillis() ?? 0)
-      ) as StatusContent[];
+      ) as Category[];
   },
 
-  createStatus: async (data: StatusContent) => {
+  createCategory: async (data: Category) => {
     return await addDoc(collection(db, COLLECTION_NAME), {
       ...data,
       createdAt: new Date(),
     });
   },
 
-  updateStatus: async (id: string, data: StatusContent) => {
+  updateCategory: async (id: string, data: Category) => {
     const docRef = doc(db, COLLECTION_NAME, id);
     return await updateDoc(docRef, {
       ...data,
@@ -47,26 +47,26 @@ export const statusService = {
     });
   },
 
-  deleteStatus: async (id: string) => {
+  deleteCategory: async (id: string) => {
     const docRef = doc(db, COLLECTION_NAME, id);
     return await deleteDoc(docRef);
   },
 
-  subscribeToStatus: (callback: (data: StatusContent[]) => void) => {
+  subscribeToCategory: (callback: (data: Category[]) => void) => {
     return onSnapshot(collection(db, COLLECTION_NAME), (snapshot) => {
-      const statusList = snapshot.docs
+      const categoryList = snapshot.docs
         .map(
           (doc) =>
             ({
               id: doc.id,
               ...doc.data(),
-            } as StatusContent)
+            } as Category)
         )
         .sort(
           (a, b) =>
             (b.createdAt?.toMillis() ?? 0) - (a.createdAt?.toMillis() ?? 0)
-        ) as StatusContent[];
-      callback(statusList);
+        ) as Category[];
+      callback(categoryList);
     });
   },
 };
