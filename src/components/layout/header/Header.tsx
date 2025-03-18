@@ -42,6 +42,8 @@ export default function Header() {
 
     const [activeLink, setActiveLink] = useState("home");
 
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
+
     useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY;
@@ -83,6 +85,34 @@ export default function Header() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        e.preventDefault();
+        const targetId = href.replace('#', '');
+        const element = document.getElementById(targetId);
+
+        if (element) {
+            // Close the mobile menu first
+            setActiveDropdown(null);
+
+            // Add small delay to ensure smooth transition
+            setTimeout(() => {
+                const isMobile = window.innerWidth < 768; // md breakpoint
+                const headerOffset = isMobile ? 70 : 100; // Adjust these values based on your header height
+
+                const offsetTop = element.offsetTop;
+                window.scrollTo({
+                    top: offsetTop - headerOffset,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+    };
+
+    const toggleMobileMenu = () => {
+        setShowMobileMenu(!showMobileMenu);
+        setActiveDropdown(null);
+    };
+
     return (
         <>
             <TopBar />
@@ -111,7 +141,7 @@ export default function Header() {
                                     className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 object-contain"
                                     priority
                                 />
-                                <span className='text-sm sm:text-base md:text-lg font-bold tracking-tight hidden sm:block'>
+                                <span className='text-sm sm:text-base md:text-lg font-bold tracking-tight hidden sm:block bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text'>
                                     Koperasi ABBI
                                 </span>
                             </Link>
@@ -132,9 +162,10 @@ export default function Header() {
                                         href={link.href}
                                         className={`relative text-md font-medium transition-all duration-300 py-2
                                             after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-gradient-to-r 
-                                            after:from-primary after:to-primary/70 after:transition-all after:duration-300 
-                                            hover:-translate-y-[1px] text-text/80 hover:text-text 
+                                            after:from-primary after:via-primary/80 after:to-primary/60 after:transition-all after:duration-300 
+                                            hover:-translate-y-[1px] text-text/70 hover:text-text 
                                             ${activeLink === link.active ? 'text-text after:w-full' : 'after:w-0 hover:after:w-full'}`}
+                                        onClick={(e) => handleNavClick(e, link.href)}
                                     >
                                         {link.label}
                                     </Link>
@@ -158,8 +189,9 @@ export default function Header() {
                                 <motion.button
                                     variants={itemVariants}
                                     className='flex items-center gap-2 sm:gap-2.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full
-                                        bg-gradient-to-r from-primary to-primary/90 text-white shadow-sm shadow-primary/20
-                                        hover:shadow-md hover:shadow-primary/30 transition-all duration-300'
+                                        bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-white 
+                                        shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 
+                                        transition-all duration-300 hover:translate-y-[-1px]'
                                     onClick={handleLogin}
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
@@ -178,69 +210,51 @@ export default function Header() {
 
                             <motion.button
                                 variants={itemVariants}
-                                className="dropdown-trigger md:hidden text-text/80 hover:text-text ml-1.5 p-1.5 hover:bg-primary/5 rounded-full transition-colors duration-200"
-                                onClick={() => setActiveDropdown(activeDropdown === 'menu' ? null : 'menu')}
+                                className="dropdown-trigger md:hidden text-text/80 hover:text-text ml-1.5 p-1.5 
+                                    hover:bg-primary/10 rounded-full transition-all duration-300"
+                                onClick={toggleMobileMenu}
                             >
                                 <HiMenuAlt3 className="w-6 h-6" />
                             </motion.button>
                         </motion.div>
                     </div>
 
-                    {activeDropdown === 'menu' && (
-                        <>
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className="fixed inset-0 bg-black/20 z-40 md:hidden"
-                                onClick={() => setActiveDropdown(null)}
-                            />
-                            <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.2 }}
-                                className="md:hidden absolute top-full left-0 right-0 backdrop-blur-xl bg-background/95 border-t shadow-lg z-50 max-h-[calc(100vh-4rem)] overflow-y-auto"
-                            >
-                                <ul className='flex flex-col container mx-auto px-4 py-4 sm:py-5'>
-                                    {navLink.map((link, index) => (
-                                        <motion.li
-                                            key={index}
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{
-                                                delay: index * 0.1,
-                                                duration: 0.2
-                                            }}
-                                            whileHover={{ x: 6 }}
-                                            className="w-full"
-                                        >
-                                            <Link
-                                                href={link.href}
-                                                className={`block py-2.5 sm:py-3 px-4 text-sm sm:text-base font-medium 
-                                                    transition-all duration-200 rounded-lg relative group
-                                                    ${activeLink === link.active
-                                                        ? 'text-text bg-primary/5 pl-6'
-                                                        : 'text-text/80 hover:text-text hover:bg-primary/5 hover:pl-6'
-                                                    }`}
-                                                onClick={() => setActiveDropdown(null)}
-                                            >
-                                                {link.label}
-                                                <span className={`absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full 
-                                                    transition-all duration-200 
-                                                    ${activeLink === link.active
-                                                        ? 'bg-primary scale-100'
-                                                        : 'bg-primary/70 scale-0 group-hover:scale-100'
-                                                    }`}
-                                                />
-                                            </Link>
-                                        </motion.li>
-                                    ))}
-                                </ul>
-                            </motion.div>
-                        </>
-                    )}
+                    {/* Mobile Menu */}
+                    <motion.div
+                        initial={false}
+                        animate={showMobileMenu ? "open" : "closed"}
+                        variants={{
+                            open: { opacity: 1, y: 0, display: "block" },
+                            closed: { opacity: 0, y: -20, transitionEnd: { display: "none" } }
+                        }}
+                        transition={{ duration: 0.2 }}
+                        className="md:hidden absolute top-full left-0 right-0 bg-background shadow-lg"
+                    >
+                        <ul className="px-4 py-2">
+                            {navLink.map((link, index) => (
+                                <motion.li
+                                    key={index}
+                                    variants={linkVariants}
+                                    className="mb-1 last:mb-0"
+                                >
+                                    <Link
+                                        href={link.href}
+                                        className={`block py-3.5 text-sm font-medium transition-all duration-300
+                                            ${activeLink === link.active
+                                                ? 'text-primary bg-primary/5 rounded-lg px-3 -mx-3'
+                                                : 'text-text/70 hover:text-text hover:bg-primary/5 hover:rounded-lg hover:px-3 hover:-mx-3'
+                                            }`}
+                                        onClick={(e) => {
+                                            handleNavClick(e, link.href);
+                                            setShowMobileMenu(false);
+                                        }}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </motion.li>
+                            ))}
+                        </ul>
+                    </motion.div>
                 </nav>
             </motion.header>
         </>
