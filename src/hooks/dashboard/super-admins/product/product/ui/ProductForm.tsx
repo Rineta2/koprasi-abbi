@@ -77,17 +77,20 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
 
     const handleTagClick = (tagId: string) => {
         setSelectedTags(prev => {
-            if (prev.includes(tagId)) {
-                return prev.filter(id => id !== tagId);
-            }
-            return [...prev, tagId];
+            const newTags = prev.includes(tagId)
+                ? prev.filter(id => id !== tagId)
+                : [...prev, tagId];
+            // Update form value when tags change
+            setValue('tags', newTags);
+            return newTags;
         });
     };
 
     const onSubmit = async (data: ProductFormData) => {
-        setIsSubmitting(true);
-
         try {
+            setIsSubmitting(true);
+            console.log('Form submitted with data:', data);
+
             const selectedStatus = statusList.find(s => s.id === data.status);
             const selectedCategory = categoryList.find(c => c.id === data.category);
 
@@ -95,8 +98,14 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
                 throw new Error('Status or category not found');
             }
 
+            // Validate required image for new products
+            if (!isEditing && !image) {
+                toast.error('Please select an image');
+                return;
+            }
+
             const selectedTagsTitles = tagsList
-                .filter(tag => data.tags.includes(tag.id))
+                .filter(tag => selectedTags.includes(tag.id))
                 .map(tag => tag.title);
 
             const priceNumber = parseInt(data.price.replace(/,/g, ''), 10);
@@ -118,16 +127,10 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
             if (isEditing && editingProduct) {
                 await updateProduct(editingProduct.id, productData, image || undefined);
             } else {
-                if (!image) {
-                    throw new Error('Please select an image');
-                }
-                await createProduct(productData, image);
+                await createProduct(productData, image!);
             }
 
-            const modal = document.getElementById('product_modal') as HTMLDialogElement;
-            if (modal) {
-                modal.close();
-            }
+            toast.success(isEditing ? 'Product updated successfully!' : 'Product created successfully!');
             onClose();
         } catch (error) {
             console.error('Error saving product:', error);
@@ -135,14 +138,6 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
         } finally {
             setIsSubmitting(false);
         }
-    };
-
-    const closeModal = () => {
-        const modal = document.getElementById('product_modal') as HTMLDialogElement;
-        if (modal) {
-            modal.close();
-        }
-        onClose();
     };
 
     return (
@@ -154,7 +149,7 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
                         {isEditing ? 'Edit Product' : 'Create New Product'}
                     </h3>
                     <button
-                        onClick={closeModal}
+                        onClick={onClose}
                         className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -175,7 +170,7 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
                                     <div className="relative w-12 h-12 flex-shrink-0">
                                         {user?.photoURL ? (
                                             <Image
-                                                src={user.photoURL}
+                                                src={user.photoURL || '/images/default-avatar.png'}
                                                 alt={user.fullName || ''}
                                                 fill
                                                 className="rounded-full object-cover"
@@ -387,11 +382,11 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
                         </div>
                     </div>
 
-                    {/* Modal Footer - Pindahkan ke dalam form */}
+                    {/* Modal Footer */}
                     <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-8 py-2 flex justify-end gap-4 z-10">
                         <button
                             type="button"
-                            onClick={closeModal}
+                            onClick={onClose}
                             className="px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-xl transition-all"
                             disabled={isSubmitting}
                         >

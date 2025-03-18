@@ -14,11 +14,14 @@ import ProductSkelaton from '@/hooks/dashboard/super-admins/product/product/Prod
 
 import { Product } from '@/hooks/dashboard/super-admins/product/product/lib/Product'
 
+import { Pagination } from '@/base/helper/Pagination'
+
 export default function ProductLayout() {
     const [showForm, setShowForm] = useState(false)
     const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+    const [currentPage, setCurrentPage] = useState(0)
 
-    const { products, loading, statusList, tagsList, categoryList } = useProduct()
+    const { products, loading, statusList, tagsList, categoryList, totalPages, fetchProducts } = useProduct()
 
     const openModal = (product?: Product) => {
         const modal = document.getElementById('product_modal') as HTMLDialogElement;
@@ -30,6 +33,11 @@ export default function ProductLayout() {
         }
         setShowForm(true);
     };
+
+    const handlePageChange = (selectedItem: { selected: number }) => {
+        setCurrentPage(selectedItem.selected);
+        fetchProducts(selectedItem.selected);
+    }
 
     if (loading) {
         return <ProductSkelaton />
@@ -73,6 +81,13 @@ export default function ProductLayout() {
             <ProductList
                 products={products}
                 onEdit={(product) => openModal(product)}
+            />
+
+            {/* Pagination */}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages || 1}
+                onPageChange={handlePageChange}
             />
 
             {/* Product Form Modal */}

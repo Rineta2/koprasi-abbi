@@ -13,6 +13,9 @@ import {
   getDoc,
   Timestamp,
   updateDoc,
+  onSnapshot,
+  limit,
+  startAfter,
 } from "firebase/firestore";
 
 import { useAuth } from "@/utils/context/AuthContext";
@@ -31,6 +34,7 @@ export const useProduct = () => {
   const [statusList, setStatusList] = useState<StatusProduct[]>([]);
   const [tagsList, setTagsList] = useState<StatusProduct[]>([]);
   const [categoryList, setCategoryList] = useState<StatusProduct[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
@@ -46,7 +50,6 @@ export const useProduct = () => {
       );
 
       if (!accountDoc.exists()) {
-        console.warn(`Author document not found for userId: ${userId}`);
         return {
           id: userId,
           fullName: "Unknown User",
@@ -60,10 +63,9 @@ export const useProduct = () => {
         id: userId,
         fullName: accountData.fullName || "Unknown User",
         email: accountData.email || "",
-        photoUrl: accountData.photoUrl || "",
+        photoUrl: accountData.photoURL || "",
       };
-    } catch (error) {
-      console.error("Error in getAuthorData:", error);
+    } catch {
       return {
         id: userId,
         fullName: "Unknown User",
@@ -87,8 +89,7 @@ export const useProduct = () => {
         title: doc.data().title,
       }));
       setStatusList(statusData);
-    } catch (error) {
-      console.error("Error fetching status list:", error);
+    } catch {
       toast.error("Gagal mengambil data status");
     }
   };
@@ -107,8 +108,7 @@ export const useProduct = () => {
         title: doc.data().title,
       }));
       setTagsList(tagsData);
-    } catch (error) {
-      console.error("Error fetching tags list:", error);
+    } catch {
       toast.error("Gagal mengambil data tags");
     }
   };
@@ -127,53 +127,93 @@ export const useProduct = () => {
         title: doc.data().title,
       }));
       setCategoryList(categoryData);
-    } catch (error) {
-      console.error("Error fetching category list:", error);
+    } catch {
       toast.error("Gagal mengambil data kategori");
     }
   };
 
-  // Fetch products
-  const fetchProducts = async () => {
+  // Fetch products with realtime updates
+  const fetchProducts = async (page: number = 0) => {
     try {
       setLoading(true);
-      console.log("Fetching products...");
+      const ITEMS_PER_PAGE = 10;
 
       const productsRef = collection(
         db,
         process.env.NEXT_PUBLIC_COLLECTIONS_PRODUCTS as string
       );
-      const q = query(productsRef, orderBy("createdAt", "desc"));
-      const querySnapshot = await getDocs(q);
 
-      const productsData: Product[] = [];
+      // Pertama, ambil total dokumen untuk perhitungan halaman
+      const totalSnapshot = await getDocs(productsRef);
+      const totalDocs = totalSnapshot.size;
+      setTotalPages(Math.ceil(totalDocs / ITEMS_PER_PAGE));
 
-      for (const doc of querySnapshot.docs) {
-        const data = doc.data();
-        const authorData = await getAuthorData(data.author?.id || "unknown");
+      // Buat query dengan pagination
+      let q = query(
+        productsRef,
+        orderBy("createdAt", "desc"),
+        limit(ITEMS_PER_PAGE)
+      );
 
-        productsData.push({
-          id: doc.id,
-          title: data.title || "",
-          slug: data.slug || "",
-          price: data.price || 0,
-          image: data.image || "",
-          status: data.status || "",
-          description: data.description || "",
-          author: authorData,
-          createdAt: data.createdAt,
-          updatedAt: data.updatedAt,
-          tags: data.tags || [],
-          category: data.category || "",
-        });
+      // Jika bukan halaman pertama, tambahkan startAfter
+      if (page > 0) {
+        const lastVisible = await getDocs(
+          query(
+            productsRef,
+            orderBy("createdAt", "desc"),
+            limit(page * ITEMS_PER_PAGE)
+          )
+        );
+        const lastDoc = lastVisible.docs[lastVisible.docs.length - 1];
+        q = query(
+          productsRef,
+          orderBy("createdAt", "desc"),
+          startAfter(lastDoc),
+          limit(ITEMS_PER_PAGE)
+        );
       }
 
-      setProducts(productsData);
-      console.log(`Successfully processed ${productsData.length} products`);
-    } catch (error) {
-      console.error("Error in fetchProducts:", error);
+      // Replace getDocs with onSnapshot
+      const unsubscribe = onSnapshot(
+        q,
+        async (querySnapshot) => {
+          const productsData: Product[] = [];
+
+          for (const doc of querySnapshot.docs) {
+            const data = doc.data();
+            const authorData = await getAuthorData(
+              data.author?.id || "unknown"
+            );
+
+            productsData.push({
+              id: doc.id,
+              title: data.title || "",
+              slug: data.slug || "",
+              price: data.price || 0,
+              image: data.image || "",
+              status: data.status || "",
+              description: data.description || "",
+              author: authorData,
+              createdAt: data.createdAt,
+              updatedAt: data.updatedAt,
+              tags: data.tags || [],
+              category: data.category || "",
+            });
+          }
+
+          setProducts(productsData);
+          setLoading(false);
+        },
+        () => {
+          toast.error("Gagal mengambil data produk");
+          setLoading(false);
+        }
+      );
+
+      // Return unsubscribe function
+      return unsubscribe;
+    } catch {
       toast.error("Gagal mengambil data produk");
-    } finally {
       setLoading(false);
     }
   };
@@ -203,17 +243,13 @@ export const useProduct = () => {
         updatedAt: now,
       };
 
-      const docRef = await addDoc(
+      await addDoc(
         collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_PRODUCTS as string),
         productData
       );
-      console.log("Product created with ID:", docRef.id);
-
-      toast.success("Produk berhasil ditambahkan");
       await fetchProducts();
-    } catch (error) {
-      console.error("Error in createProduct:", error);
-      toast.error("Gagal menambahkan produk");
+    } catch {
+      toast.error("Gagal membuat produk");
     } finally {
       setLoading(false);
     }
@@ -238,38 +274,24 @@ export const useProduct = () => {
         reader.onerror = (error) => reject(error);
         reader.readAsDataURL(file);
       });
-    } catch (error) {
-      console.error("Error in uploadImage:", error);
+    } catch {
       throw new Error("Gagal mengupload gambar");
     }
   };
 
   // Delete product
-  const deleteProduct = async (id: string, imageUrl: string) => {
+  const deleteProduct = async (id: string) => {
     try {
       setLoading(true);
 
-      // Delete from ImageKit
-      const fileId = imageUrl.split("/").pop()?.split(".")[0];
-      if (fileId) {
-        try {
-          await imagekitInstance.deleteFile(fileId);
-          console.log("Image deleted from ImageKit");
-        } catch (error) {
-          console.error("Error deleting image from ImageKit:", error);
-        }
-      }
-
-      // Delete from Firestore
+      // Delete from Firestore only
       await deleteDoc(
         doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_PRODUCTS as string, id)
       );
-      console.log("Product deleted from Firestore");
 
       toast.success("Produk berhasil dihapus");
       await fetchProducts();
-    } catch (error) {
-      console.error("Error in deleteProduct:", error);
+    } catch {
       toast.error("Gagal menghapus produk");
     } finally {
       setLoading(false);
@@ -284,27 +306,18 @@ export const useProduct = () => {
   ) => {
     try {
       setLoading(true);
-      console.log("Updating product:", id, data);
-
       let imageUrl = data.image;
 
-      // If there's a new image, upload it and delete the old one
       if (newImage) {
-        console.log("Uploading new image...");
-        // Delete old image if it exists
         const oldFileId = data.image.split("/").pop()?.split(".")[0];
         if (oldFileId) {
           try {
             await imagekitInstance.deleteFile(oldFileId);
-            console.log("Old image deleted");
-          } catch (error) {
-            console.error("Error deleting old image:", error);
+          } catch {
+            // Silently handle error
           }
         }
-
-        // Upload new image
         imageUrl = await uploadImage(newImage);
-        console.log("New image uploaded:", imageUrl);
       }
 
       const now = Timestamp.now();
@@ -321,33 +334,36 @@ export const useProduct = () => {
         updatedAt: now,
       };
 
-      console.log("Updating document with data:", updateData);
-
       await updateDoc(productRef, updateData);
-      console.log("Document updated successfully");
-
-      toast.success("Produk berhasil diperbarui");
-      await fetchProducts(); // Refresh the products list
-    } catch (error) {
-      console.error("Error in updateProduct:", error);
-      toast.error("Gagal memperbarui produk");
-      throw error; // Re-throw the error to be caught by the form
+      await fetchProducts();
+    } catch {
+      toast.error("Gagal mengupdate produk");
     } finally {
       setLoading(false);
     }
   };
 
-  // Initial fetch
+  // Update useEffect to handle cleanup
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+
     const init = async () => {
+      unsubscribe = await fetchProducts();
       await Promise.all([
-        fetchProducts(),
         fetchStatusList(),
         fetchTagsList(),
         fetchCategoryList(),
       ]);
     };
+
     init();
+
+    // Cleanup function
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
@@ -360,5 +376,6 @@ export const useProduct = () => {
     deleteProduct,
     updateProduct,
     fetchProducts,
+    totalPages,
   };
 };

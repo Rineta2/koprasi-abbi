@@ -112,6 +112,24 @@ export default function CommunitySkelaton() {
                     </div>
                 </div>
             ))}
+
+            {/* Pagination Skeleton */}
+            <div className="py-6 px-4 mt-4">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                        <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded-full relative overflow-hidden">
+                            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700"></div>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        {[...Array(3)].map((_, i) => (
+                            <div key={i} className="h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full relative overflow-hidden">
+                                <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700"></div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </section>
     );
 }
