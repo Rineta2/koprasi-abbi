@@ -7,6 +7,8 @@ export interface Product {
   price: number;
   image: string;
   status: string;
+  category: string;
+  tags: string[];
   description: string;
   author: {
     id: string;
@@ -21,4 +23,15 @@ export interface Product {
 export interface StatusProduct {
   id: string;
   title: string;
+}
+
+// Form
+
+export interface ProductFormProps {
+  onClose: () => void;
+  statusList: StatusProduct[];
+  tagsList: StatusProduct[];
+  categoryList: StatusProduct[];
+  isEditing: boolean;
+  editingProduct?: Product | null;
 }

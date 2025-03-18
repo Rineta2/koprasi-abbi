@@ -12,6 +12,7 @@ import {
   orderBy,
   getDoc,
   Timestamp,
+  updateDoc,
 } from "firebase/firestore";
 
 import { useAuth } from "@/utils/context/AuthContext";
@@ -28,6 +29,8 @@ import imagekitInstance from "@/utils/imagekit";
 export const useProduct = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [statusList, setStatusList] = useState<StatusProduct[]>([]);
+  const [tagsList, setTagsList] = useState<StatusProduct[]>([]);
+  const [categoryList, setCategoryList] = useState<StatusProduct[]>([]);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
@@ -73,7 +76,12 @@ export const useProduct = () => {
   // Fetch status list
   const fetchStatusList = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "statusProduct"));
+      const querySnapshot = await getDocs(
+        collection(
+          db,
+          process.env.NEXT_PUBLIC_COLLECTIONS_STATUS_PRODUCTS as string
+        )
+      );
       const statusData: StatusProduct[] = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         title: doc.data().title,
@@ -85,13 +93,56 @@ export const useProduct = () => {
     }
   };
 
+  // Fetch tags list
+  const fetchTagsList = async () => {
+    try {
+      const querySnapshot = await getDocs(
+        collection(
+          db,
+          process.env.NEXT_PUBLIC_COLLECTIONS_TAGS_PRODUCTS as string
+        )
+      );
+      const tagsData: StatusProduct[] = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        title: doc.data().title,
+      }));
+      setTagsList(tagsData);
+    } catch (error) {
+      console.error("Error fetching tags list:", error);
+      toast.error("Gagal mengambil data tags");
+    }
+  };
+
+  // Fetch category list
+  const fetchCategoryList = async () => {
+    try {
+      const querySnapshot = await getDocs(
+        collection(
+          db,
+          process.env.NEXT_PUBLIC_COLLECTIONS_CATEGORY_PRODUCTS as string
+        )
+      );
+      const categoryData: StatusProduct[] = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        title: doc.data().title,
+      }));
+      setCategoryList(categoryData);
+    } catch (error) {
+      console.error("Error fetching category list:", error);
+      toast.error("Gagal mengambil data kategori");
+    }
+  };
+
   // Fetch products
   const fetchProducts = async () => {
     try {
       setLoading(true);
       console.log("Fetching products...");
 
-      const productsRef = collection(db, "products");
+      const productsRef = collection(
+        db,
+        process.env.NEXT_PUBLIC_COLLECTIONS_PRODUCTS as string
+      );
       const q = query(productsRef, orderBy("createdAt", "desc"));
       const querySnapshot = await getDocs(q);
 
@@ -112,6 +163,8 @@ export const useProduct = () => {
           author: authorData,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
+          tags: data.tags || [],
+          category: data.category || "",
         });
       }
 
@@ -150,7 +203,10 @@ export const useProduct = () => {
         updatedAt: now,
       };
 
-      const docRef = await addDoc(collection(db, "products"), productData);
+      const docRef = await addDoc(
+        collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_PRODUCTS as string),
+        productData
+      );
       console.log("Product created with ID:", docRef.id);
 
       toast.success("Produk berhasil ditambahkan");
@@ -205,7 +261,9 @@ export const useProduct = () => {
       }
 
       // Delete from Firestore
-      await deleteDoc(doc(db, "products", id));
+      await deleteDoc(
+        doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_PRODUCTS as string, id)
+      );
       console.log("Product deleted from Firestore");
 
       toast.success("Produk berhasil dihapus");
@@ -218,10 +276,76 @@ export const useProduct = () => {
     }
   };
 
+  // Add updateProduct function
+  const updateProduct = async (
+    id: string,
+    data: Omit<Product, "id" | "author" | "createdAt" | "updatedAt">,
+    newImage?: File
+  ) => {
+    try {
+      setLoading(true);
+      console.log("Updating product:", id, data);
+
+      let imageUrl = data.image;
+
+      // If there's a new image, upload it and delete the old one
+      if (newImage) {
+        console.log("Uploading new image...");
+        // Delete old image if it exists
+        const oldFileId = data.image.split("/").pop()?.split(".")[0];
+        if (oldFileId) {
+          try {
+            await imagekitInstance.deleteFile(oldFileId);
+            console.log("Old image deleted");
+          } catch (error) {
+            console.error("Error deleting old image:", error);
+          }
+        }
+
+        // Upload new image
+        imageUrl = await uploadImage(newImage);
+        console.log("New image uploaded:", imageUrl);
+      }
+
+      const now = Timestamp.now();
+
+      const productRef = doc(
+        db,
+        process.env.NEXT_PUBLIC_COLLECTIONS_PRODUCTS as string,
+        id
+      );
+
+      const updateData = {
+        ...data,
+        image: imageUrl,
+        updatedAt: now,
+      };
+
+      console.log("Updating document with data:", updateData);
+
+      await updateDoc(productRef, updateData);
+      console.log("Document updated successfully");
+
+      toast.success("Produk berhasil diperbarui");
+      await fetchProducts(); // Refresh the products list
+    } catch (error) {
+      console.error("Error in updateProduct:", error);
+      toast.error("Gagal memperbarui produk");
+      throw error; // Re-throw the error to be caught by the form
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Initial fetch
   useEffect(() => {
     const init = async () => {
-      await Promise.all([fetchProducts(), fetchStatusList()]);
+      await Promise.all([
+        fetchProducts(),
+        fetchStatusList(),
+        fetchTagsList(),
+        fetchCategoryList(),
+      ]);
     };
     init();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -229,9 +353,12 @@ export const useProduct = () => {
   return {
     products,
     statusList,
+    tagsList,
+    categoryList,
     loading,
     createProduct,
     deleteProduct,
+    updateProduct,
     fetchProducts,
   };
 };

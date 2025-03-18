@@ -12,15 +12,21 @@ import ProductList from '@/hooks/dashboard/super-admins/product/product/ui/Produ
 
 import ProductSkelaton from '@/hooks/dashboard/super-admins/product/product/ProductSkelaton'
 
+import { Product } from '@/hooks/dashboard/super-admins/product/product/lib/Product'
+
 export default function ProductLayout() {
     const [showForm, setShowForm] = useState(false)
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null)
 
-    const { products, loading, statusList } = useProduct()
+    const { products, loading, statusList, tagsList, categoryList } = useProduct()
 
-    const openModal = () => {
+    const openModal = (product?: Product) => {
         const modal = document.getElementById('product_modal') as HTMLDialogElement;
         if (modal) {
             modal.showModal();
+        }
+        if (product) {
+            setEditingProduct(product)
         }
         setShowForm(true);
     };
@@ -45,7 +51,7 @@ export default function ProductLayout() {
                     </div>
 
                     <button
-                        onClick={openModal}
+                        onClick={() => openModal()}
                         className="group w-full sm:w-auto px-8 py-3.5 bg-primary hover:bg-primary/90 text-white rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 transform hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20"
                     >
                         <svg
@@ -64,14 +70,23 @@ export default function ProductLayout() {
 
             {/* Product List */}
 
-            <ProductList products={products} />
+            <ProductList
+                products={products}
+                onEdit={(product) => openModal(product)}
+            />
 
             {/* Product Form Modal */}
             {showForm && (
                 <ProductForm
-                    onClose={() => setShowForm(false)}
+                    onClose={() => {
+                        setShowForm(false)
+                        setEditingProduct(null)
+                    }}
                     statusList={statusList}
-                    isEditing={false}
+                    tagsList={tagsList}
+                    categoryList={categoryList}
+                    isEditing={!!editingProduct}
+                    editingProduct={editingProduct}
                 />
             )}
         </section>
