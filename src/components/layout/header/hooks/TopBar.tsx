@@ -38,7 +38,7 @@ export default function TopBar() {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="w-full sticky top-0 py-2 sm:py-3 bg-background dark:bg-[#0f1729] z-40"
+            className="w-full sticky top-0 py-2 sm:py-3 bg-primary z-40"
         >
             <div className='container mx-auto px-3 sm:px-4 lg:px-6'>
                 <div className="flex flex-col sm:flex-row items-center justify-between py-2 sm:py-2 text-sm gap-2 sm:gap-0">
@@ -49,14 +49,14 @@ export default function TopBar() {
                         className="group w-full sm:w-auto"
                     >
                         <Link href="mailto:koprasiabbi@gmail.com"
-                            className='flex items-center justify-center sm:justify-start gap-2.5 text-text group-hover:text-text-dark text-xs md:text-sm font-medium transition-all duration-300'>
+                            className='flex items-center justify-center sm:justify-start gap-2.5 text-white group-hover:text-white/90 text-xs md:text-sm font-medium transition-all duration-300'>
                             <motion.span
                                 whileHover={{ rotate: 15 }}
-                                className="text-lg text-primary group-hover:text-primary-dark"
+                                className="text-lg text-white group-hover:text-white/90"
                             >
                                 <CgMail />
                             </motion.span>
-                            <span className='group-hover:text-text-dark'>koprasiabbi@gmail.com</span>
+                            <span className='group-hover:text-white/90'>koprasiabbi@gmail.com</span>
                         </Link>
                     </motion.div>
 
@@ -68,11 +68,11 @@ export default function TopBar() {
                     >
                         <motion.div
                             whileHover={{ rotate: 15 }}
-                            className="text-lg text-primary group-hover:text-primary-dark"
+                            className="text-lg text-white group-hover:text-white/90"
                         >
                             <IoLocation />
                         </motion.div>
-                        <p className="text-xs md:text-sm text-text group-hover:text-text-dark text-center sm:text-left">
+                        <p className="text-xs md:text-sm text-white group-hover:text-white/90 text-center sm:text-left">
                             Jl. KH. Abdul Hamid KM.1 Cemplang, Desa Sukamulya
                         </p>
                     </motion.div>

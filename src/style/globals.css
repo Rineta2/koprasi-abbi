@@ -2,56 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  input:-webkit-autofill {
-    background-clip: text !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: var(--text) !important;
-    -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
+@layer utilities {
+  /* Updated custom scrollbar styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
 
-  input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f3f4f6; /* gray-100 */
+    border-radius: 9999px;
   }
 
-  .dark input:-webkit-autofill,
-  .dark input:-webkit-autofill:hover,
-  .dark input:-webkit-autofill:focus,
-  .dark input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px rgb(17, 24, 39) inset !important;
-    -webkit-text-fill-color: rgb(255, 255, 255) !important;
-    caret-color: rgb(255, 255, 255) !important;
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #d1d5db; /* gray-300 */
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af; /* gray-400 */
+  }
+
+  /* For Firefox */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f3f4f6;
   }
 }
 
+/* Rest of your existing CSS */
 :root {
   --background: #ffffff;
-  --background-dark: #f1f5f9;
-  --text: #1e293b;
-  --text-dark: #475569;
-  --primary: #0ea5e9;
-  --primary-dark: #0284c7;
-  --border: #e2e8f0;
-  --card: #ffffff;
-  --card-hover: #f8fafc;
+  --text: #333333;
+  --primary: #1091cc;
+  --secondary: #018744;
+  --font-open-sans: "Open Sans", sans-serif;
 }
 
-.dark {
-  --background: #0f172a;
-  --background-dark: #1e293b;
-  --text: #f1f5f9;
-  --text-dark: #94a3b8;
-  --primary: #0ea5e9;
-  --primary-dark: #38bdf8;
-  --border: #1e293b;
-  --card: #1e293b;
-  --card-hover: #334155;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
 }
 
 body {
   color: var(--text);
   background: var(--background);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-open-sans);
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 100%;
+
+  @media only screen and (max-width: 1366px) {
+    font-size: 85%;
+  }
 }
 
 .container {
@@ -59,7 +68,29 @@ body {
   margin: 0 auto;
 }
 
-html {
-  font-size: 85%;
-  scroll-behavior: smooth;
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db; /* gray-300 */
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af; /* gray-400 */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
 }

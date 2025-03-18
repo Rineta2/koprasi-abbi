@@ -6,15 +6,11 @@ import { AuthProvider } from "@/utils/context/AuthContext";
 
 const queryClient = new QueryClient();
 
-import { ThemeProvider } from "@/router/context/ThemaProvider";
-
 export default function Providers({ children }: { children: React.ReactNode }) {
     return (
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
-                <ThemeProvider>
-                    {children}
-                </ThemeProvider>
+                {children}
             </AuthProvider>
         </QueryClientProvider>
     );

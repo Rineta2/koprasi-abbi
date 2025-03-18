@@ -9,6 +9,7 @@ import { useAuth } from '@/utils/context/AuthContext'
 import React from 'react'
 
 import WelcomeBanner from '@/components/auth/login/ui/Banner'
+
 import { z } from 'zod'
 
 export default function LoginLayout() {
@@ -73,17 +74,17 @@ export default function LoginLayout() {
                     <div className='flex items-center justify-center p-6 lg:p-12'>
                         <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
                             <div className="text-center space-y-2">
-                                <h2 className="text-3xl font-bold text-text">Selamat Datang Kembali</h2>
-                                <p className="text-text/60">Silahkan masukkan email dan password untuk masuk</p>
+                                <h2 className="text-3xl font-bold text-white">Selamat Datang Kembali</h2>
+                                <p className="text-white/60">Silahkan masukkan email dan password untuk masuk</p>
                             </div>
 
                             <div className="space-y-4">
                                 <div className="form-control w-full">
                                     <label className="label">
-                                        <span className="label-text">Email</span>
+                                        <span className="label-text text-white">Email</span>
                                     </label>
 
-                                    <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background">
+                                    <label className="input input-bordered flex items-center gap-2 bg-background">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
@@ -99,17 +100,17 @@ export default function LoginLayout() {
                                     </label>
                                     {errors.email && (
                                         <label className="label">
-                                            <span className="label-text-alt text-error">{errors.email}</span>
+                                            <span className="label-text-alt text-white">{errors.email}</span>
                                         </label>
                                     )}
                                 </div>
 
                                 <div className="form-control w-full">
                                     <label className="label">
-                                        <span className="label-text">Password</span>
+                                        <span className="label-text text-white">Password</span>
                                     </label>
 
-                                    <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background">
+                                    <label className="input input-bordered flex items-center gap-2 bg-background">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                                         </svg>
@@ -140,7 +141,7 @@ export default function LoginLayout() {
                                     </label>
                                     {errors.password && (
                                         <label className="label">
-                                            <span className="label-text-alt text-error">{errors.password}</span>
+                                            <span className="label-text-alt text-white">{errors.password}</span>
                                         </label>
                                     )}
                                 </div>
@@ -154,9 +155,10 @@ export default function LoginLayout() {
                                         checked={rememberMe}
                                         onChange={(e) => setRememberMe(e.target.checked)}
                                     />
-                                    <span className="label-text">Ingat saya</span>
+                                    <span className="label-text text-white">Ingat saya</span>
                                 </label>
-                                <Link href="/auth/forgot-password" className="link link-primary text-sm">
+
+                                <Link href="/auth/forgot-password" className="link text-white text-sm">
                                     Lupa password?
                                 </Link>
                             </div>
@@ -164,18 +166,18 @@ export default function LoginLayout() {
                             <div className="space-y-4">
                                 <button
                                     type="submit"
-                                    className="btn w-full bg-primary text-text hover:bg-primary/80"
+                                    className="btn w-full bg-primary text-white hover:bg-primary/80"
                                     disabled={isLoading}
                                 >
                                     {isLoading ? 'Memproses...' : 'Masuk'}
                                 </button>
                             </div>
 
-                            <div className="divider">OR</div>
+                            <div className="divider text-white">OR</div>
 
-                            <p className="text-center">
+                            <p className="text-center text-white">
                                 Belum punya akun?{' '}
-                                <Link href="/auth/register" className="link link-primary">
+                                <Link href="/auth/register" className="link text-white">
                                     Daftar
                                 </Link>
                             </p>

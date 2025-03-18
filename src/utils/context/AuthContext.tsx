@@ -186,7 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         username: string,
         phoneNumber: string,
         referralCode: string,
-        status: 'reguler' | 'premium' = 'reguler'
+        accountType: 'reguler' | 'premium' = 'reguler'
     ): Promise<string> => {
         try {
             if (!process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS) {
@@ -217,7 +217,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 username: username.toLowerCase(),
                 phoneNumber,
                 referralCode,
-                status,
+                accountType,
                 role: Role.USER,
                 isActive: true,
                 createdAt: new Date(),

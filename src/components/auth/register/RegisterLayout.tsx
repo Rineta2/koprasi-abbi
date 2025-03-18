@@ -28,10 +28,10 @@ import toast from 'react-hot-toast'
 
 interface NetworkData extends DocumentData {
     ownerReferralCode: string;
-    ownerStatus: string;
+    ownerAccountType: string;
     supporters: Array<{
         referralCode: string;
-        status: string;
+        accountType: string;
     }>;
 }
 
@@ -41,7 +41,7 @@ export default function RegisterLayout() {
     const [isLoading, setIsLoading] = useState(false)
     const [showReferralModal, setShowReferralModal] = useState(false)
     const [generatedReferralCode, setGeneratedReferralCode] = useState('')
-    const [selectedStatus, setSelectedStatus] = useState<'reguler' | 'premium'>('reguler')
+    const [selectedAccountType, setSelectedAccountType] = useState<'reguler' | 'premium'>('reguler')
     const [showInfoModal, setShowInfoModal] = useState(false)
     const [infoModalContent, setInfoModalContent] = useState<{ title: string, description: string }>({ title: '', description: '' })
     const router = useRouter()
@@ -83,7 +83,7 @@ export default function RegisterLayout() {
             .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
             .regex(/[0-9]/, 'Password must contain at least one number'),
         referralCode: z.string().optional(),
-        status: z.enum(['reguler', 'premium']).default('reguler'), // Set default value
+        accountType: z.enum(['reguler', 'premium']).default('reguler'),
     })
 
     type RegisterFormData = z.infer<typeof registerSchema>
@@ -98,13 +98,13 @@ export default function RegisterLayout() {
     } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
-            status: 'reguler' // Add default values for the form
+            accountType: 'reguler' // Add default values for the form
         }
     })
 
     useEffect(() => {
-        setValue('status', selectedStatus);
-    }, [setValue, selectedStatus]);
+        setValue('accountType', selectedAccountType);
+    }, [setValue, selectedAccountType]);
 
     const onSubmit = async (data: RegisterFormData) => {
         try {
@@ -213,7 +213,7 @@ export default function RegisterLayout() {
                 data.username,
                 data.phoneNumber,
                 generatedReferralCode,
-                data.status as 'reguler' | 'premium' // Explicitly cast to the union type
+                data.accountType as 'reguler' | 'premium'
             )
 
             // If user used a referral code, update referral network
@@ -236,9 +236,9 @@ export default function RegisterLayout() {
                             type: 'support',
                             joinedAt: new Date(),
                             referredBy: data.referralCode,
-                            status: data.status, // Add user status to supporter data
-                            count: 0, // Initialize count for new supporter
-                            usedBy: [] // Initialize empty array for tracking who uses this SUP code
+                            accountType: data.accountType,
+                            count: 0,
+                            usedBy: []
                         }),
                         updatedAt: new Date()
                     });
@@ -250,8 +250,8 @@ export default function RegisterLayout() {
                     ownerUsername: data.username.toLowerCase(),
                     ownerReferralCode: generatedReferralCode,
                     type: 'affiliate',
-                    ownerStatus: data.status, // Add owner status to network data
-                    supporters: [], // Empty array of supporters with count field
+                    ownerAccountType: data.accountType,
+                    supporters: [],
                     createdAt: new Date(),
                     updatedAt: new Date()
                 });
@@ -336,19 +336,21 @@ export default function RegisterLayout() {
                             className="w-full max-w-md space-y-6"
                         >
                             <div className="text-center space-y-3">
-                                <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">Registrasi</h2>
-                                <p className="text-text/60 dark:text-gray-400">Mari kita siapkan semuanya agar Anda dapat mengakses akun pribadi Anda.</p>
+                                <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">Registrasi</h2>
+                                <p className="text-gray-600 dark:text-gray-400">Mari kita siapkan semuanya agar Anda dapat mengakses akun pribadi Anda.</p>
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <div className="form-control w-full">
                                     <label className="label">
-                                        <span className="label-text">Nama Lengkap</span>
+                                        <span className="label-text text-white">Nama Lengkap</span>
                                     </label>
-                                    <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background overflow-hidden">
+
+                                    <label className="input input-bordered flex items-center gap-2 bg-white bg-background overflow-hidden">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
+
                                         <input
                                             {...register('fullName')}
                                             type="text"
@@ -358,15 +360,16 @@ export default function RegisterLayout() {
                                     </label>
                                     {errors.fullName && (
                                         <label className="label">
-                                            <span className="label-text-alt text-error">{errors.fullName.message}</span>
+                                            <span className="label-text-alt text-white">{errors.fullName.message}</span>
                                         </label>
                                     )}
                                 </div>
 
                                 <div className="form-control w-full overflow-hidden">
                                     <label className="label">
-                                        <span className="label-text">Username</span>
+                                        <span className="label-text text-white">Username</span>
                                     </label>
+
                                     <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -381,12 +384,12 @@ export default function RegisterLayout() {
                                     </label>
                                     {errors.username && (
                                         <label className="label">
-                                            <span className="label-text-alt text-error">{errors.username.message}</span>
+                                            <span className="label-text-alt text-white">{errors.username.message}</span>
                                         </label>
                                     )}
                                     {isChecking && (
                                         <label className="label">
-                                            <span className="label-text-alt text-info">
+                                            <span className="label-text-alt text-white">
                                                 Memeriksa ketersediaan nama pengguna...
                                             </span>
                                         </label>
@@ -396,7 +399,7 @@ export default function RegisterLayout() {
 
                             <div className="form-control w-full">
                                 <label className="label">
-                                    <span className="label-text">Email</span>
+                                    <span className="label-text text-white">Email</span>
                                 </label>
                                 <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" viewBox="0 0 20 20" fill="currentColor">
@@ -412,16 +415,16 @@ export default function RegisterLayout() {
                                 </label>
                                 {errors.email && (
                                     <label className="label">
-                                        <span className="label-text-alt text-error">{errors.email.message}</span>
+                                        <span className="label-text-alt text-white">{errors.email.message}</span>
                                     </label>
                                 )}
                             </div>
 
                             <div className="form-control w-full">
                                 <label className="label">
-                                    <span className="label-text">Nomor Telepon</span>
+                                    <span className="label-text text-white">Nomor Telepon</span>
                                 </label>
-                                <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background">
+                                <label className="input input-bordered flex items-center gap-2 bg-white bg-background">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" viewBox="0 0 20 20" fill="currentColor">
                                         <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                                     </svg>
@@ -434,19 +437,20 @@ export default function RegisterLayout() {
                                 </label>
                                 {errors.phoneNumber && (
                                     <label className="label">
-                                        <span className="label-text-alt text-error">{errors.phoneNumber.message}</span>
+                                        <span className="label-text-alt text-white">{errors.phoneNumber.message}</span>
                                     </label>
                                 )}
                             </div>
 
                             <div className="form-control w-full">
                                 <label className="label">
-                                    <span className="label-text">Password</span>
+                                    <span className="label-text text-white">Password</span>
                                 </label>
-                                <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background">
+                                <label className="input input-bordered flex items-center gap-2 bg-background">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" />
                                     </svg>
+
                                     <input
                                         {...register('password')}
                                         type={showPassword ? "text" : "password"}
@@ -473,21 +477,21 @@ export default function RegisterLayout() {
                                 </label>
                                 {errors.password && (
                                     <label className="label">
-                                        <span className="label-text-alt text-error">{errors.password.message}</span>
+                                        <span className="label-text-alt text-white">{errors.password.message}</span>
                                     </label>
                                 )}
                             </div>
 
                             <div className="form-control w-full">
                                 <label className="label">
-                                    <span className="label-text">Status</span>
+                                    <span className="label-text text-white">Account Type</span>
                                 </label>
                                 <div className="flex gap-4">
                                     <div
-                                        className={`flex-1 cursor-pointer h-[48px] flex items-center justify-center rounded-lg border-[1px] transition-all ${selectedStatus === 'reguler' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-black border-gray-300'}`}
+                                        className={`flex-1 cursor-pointer h-[48px] flex items-center justify-center rounded-lg border-[1px] transition-all ${selectedAccountType === 'reguler' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-black border-gray-300'}`}
                                         onClick={() => {
-                                            setSelectedStatus('reguler');
-                                            setValue('status', 'reguler');
+                                            setSelectedAccountType('reguler');
+                                            setValue('accountType', 'reguler');
                                         }}
                                     >
                                         <span className="font-medium">Reguler</span>
@@ -509,10 +513,10 @@ export default function RegisterLayout() {
                                         </button>
                                     </div>
                                     <div
-                                        className={`flex-1 cursor-pointer h-[48px] flex items-center justify-center rounded-lg border-[1px] transition-all ${selectedStatus === 'premium' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-black border-gray-300'}`}
+                                        className={`flex-1 cursor-pointer h-[48px] flex items-center justify-center rounded-lg border-[1px] transition-all ${selectedAccountType === 'premium' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-black border-gray-300'}`}
                                         onClick={() => {
-                                            setSelectedStatus('premium');
-                                            setValue('status', 'premium');
+                                            setSelectedAccountType('premium');
+                                            setValue('accountType', 'premium');
                                         }}
                                     >
                                         <span className="font-medium">Premium</span>
@@ -534,13 +538,13 @@ export default function RegisterLayout() {
                                         </button>
                                     </div>
                                 </div>
-                                {/* Add hidden input for status */}
-                                <input type="hidden" {...register('status')} value={selectedStatus} />
+                                {/* Add hidden input for accountType */}
+                                <input type="hidden" {...register('accountType')} value={selectedAccountType} />
                             </div>
 
                             <div className="form-control w-full">
                                 <label className="label">
-                                    <span className="label-text">Referral Code (Optional)</span>
+                                    <span className="label-text text-white">Referral Code (Optional)</span>
                                 </label>
                                 <label className="input input-bordered flex items-center gap-2 bg-white dark:bg-background">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-70" viewBox="0 0 20 20" fill="currentColor">
@@ -557,11 +561,8 @@ export default function RegisterLayout() {
 
                             <button
                                 type="submit"
-                                className="btn w-full bg-primary text-text hover:bg-primary/80 border-0"
+                                className="btn w-full bg-primary hover:bg-primary/90 text-white border-0 transition-all duration-300"
                                 disabled={isLoading}
-                                onClick={() => {
-                                    console.log('Register button clicked'); // Debug log
-                                }}
                             >
                                 {isLoading ? (
                                     <>
@@ -604,7 +605,7 @@ export default function RegisterLayout() {
             {showReferralModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
                     <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full space-y-4 relative">
-                        <h3 className="text-2xl font-bold text-center bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                        <h3 className="text-2xl font-bold text-center bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                             Registration Successful!
                         </h3>
                         <div className="text-center space-y-2">
@@ -625,7 +626,7 @@ export default function RegisterLayout() {
                                 setShowReferralModal(false)
                                 router.push('/auth/login')
                             }}
-                            className="btn btn-primary w-full"
+                            className="btn bg-primary hover:bg-primary/90 text-white w-full border-0 transition-all duration-300"
                         >
                             Got it, let&apos;s login!
                         </button>
@@ -641,7 +642,7 @@ export default function RegisterLayout() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Modal header with gradient background */}
-                        <div className="bg-gradient-to-r from-primary to-purple-600 p-5 text-white relative">
+                        <div className="bg-gradient-to-r from-primary to-blue-600 p-5 text-white relative">
                             <h3 className="text-2xl font-bold">
                                 {infoModalContent.title}
                             </h3>

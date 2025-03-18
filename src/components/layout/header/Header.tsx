@@ -16,8 +16,6 @@ import { motion } from 'framer-motion'
 
 import ProfileDropdown from '@/components/layout/header/hooks/Profile'
 
-import ThemeToggle from '@/components/layout/header/hooks/ThemaToggle'
-
 import TopBar from '@/components/layout/header/hooks/TopBar'
 
 import Image from 'next/image'
@@ -38,7 +36,7 @@ import {
 export default function Header() {
     const { user } = useAuth()
     const router = useRouter()
-    const [activeDropdown, setActiveDropdown] = useState<'profile' | 'theme' | 'menu' | null>(null)
+    const [activeDropdown, setActiveDropdown] = useState<'profile' | 'menu' | null>(null)
 
     const [activeLink, setActiveLink] = useState("home");
 
@@ -200,13 +198,6 @@ export default function Header() {
                                     <span className='text-xs sm:text-sm font-medium hidden sm:block'>Login</span>
                                 </motion.button>
                             )}
-
-                            <motion.div variants={itemVariants}>
-                                <ThemeToggle
-                                    isOpen={activeDropdown === 'theme'}
-                                    setIsOpen={(open) => setActiveDropdown(open ? 'theme' : null)}
-                                />
-                            </motion.div>
 
                             <motion.button
                                 variants={itemVariants}

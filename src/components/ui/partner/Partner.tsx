@@ -32,56 +32,77 @@ export default function Partner() {
     }
 
     return (
-        <div className="container relative px-4 md:px-6">
-            <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="relative text-center text-2xl md:text-3xl font-bold mb-12 md:mb-16
-                    bg-gradient-to-r from-white via-white/90 to-gray-400 bg-clip-text text-transparent
-                    after:absolute after:content-[''] after:w-24 md:after:w-32 after:h-1 
-                    after:bg-gradient-to-r after:from-white/40 after:to-transparent
-                    after:bottom-[-0.75rem] md:after:bottom-[-1rem] after:left-1/2 after:-translate-x-1/2
-                    after:rounded-full after:blur-sm
-                    tracking-tight">
-                Bekerja Sama Dengan
-            </motion.h2>
-            <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-background via-background/80 to-transparent z-10" />
-            <Marquee
-                gradient={false}
-                speed={35}
-                pauseOnHover={true}
-                autoFill={true}
-                loop={0}
-                className='overflow-hidden'
-            >
-                {partner.map((item) => (
-                    <div
-                        key={item.id}
-                        className='group relative flex items-center justify-center p-4 md:p-8 mx-3 md:mx-6 
-                        rounded-xl md:rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.08]
-                        hover:from-white/[0.05] hover:to-white/[0.12]
-                        backdrop-blur-xl border border-white/10 
-                        transition-all duration-500 ease-out 
-                        hover:shadow-[0_8px_32px_rgba(255,255,255,0.1)] 
-                        hover:-translate-y-1 hover:scale-[1.02]'
+        <section className="py-12 md:py-20 overflow-hidden">
+            <div className="container relative px-4 md:px-6">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="mb-12 md:mb-16 text-center max-w-2xl mx-auto"
+                >
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold 
+                        bg-gradient-to-r from-primary via-primary/90 to-primary/80 
+                        bg-clip-text text-transparent
+                        tracking-tight mb-3">
+                        Bekerja Sama Dengan
+                    </h2>
+                    <div className="h-1 w-20 md:w-24 bg-gradient-to-r from-primary to-primary/30 
+                        rounded-full mx-auto"></div>
+                    <p className="text-text/70 mt-4 text-sm md:text-base max-w-xl mx-auto">
+                        Kami bermitra dengan berbagai organisasi untuk memberikan layanan terbaik bagi anggota kami
+                    </p>
+                </motion.div>
+
+                <div className="relative">
+                    {/* Left gradient fade */}
+                    <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 
+                        bg-gradient-to-r from-background to-transparent z-10" />
+
+                    <Marquee
+                        gradient={false}
+                        speed={30}
+                        pauseOnHover={true}
+                        autoFill={true}
+                        loop={0}
+                        className='overflow-hidden py-4'
                     >
-                        <div className="w-[120px] md:w-[160px] h-[60px] md:h-[80px] relative flex items-center justify-center">
-                            <Image
-                                src={item.imageUrl}
-                                alt={item.id}
-                                fill
-                                className='object-contain opacity-50 group-hover:opacity-100 
-                                transition-all duration-500 scale-95 group-hover:scale-100
-                                filter group-hover:brightness-110'
-                                sizes="(max-width: 768px) 120px, 160px"
-                            />
-                        </div>
-                    </div>
-                ))}
-            </Marquee>
-            <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-background via-background/80 to-transparent z-10" />
-        </div>
+                        {partner.map((item) => (
+                            <motion.div
+                                key={item.id}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.5 }}
+                                whileHover={{ y: -5, boxShadow: '0 12px 24px rgba(16,145,204,0.15)' }}
+                                className='group flex items-center justify-center mx-3 md:mx-5 lg:mx-6
+                                    p-4 sm:p-6 md:p-8 
+                                    h-28 sm:h-32 md:h-36 lg:h-40
+                                    rounded-xl bg-white/[0.03]
+                                    backdrop-blur-sm border border-primary/10
+                                    transition-all duration-300 ease-out'
+                            >
+                                <div className="w-[140px] sm:w-[160px] md:w-[180px] lg:w-[200px] h-full 
+                                    relative flex items-center justify-center">
+                                    <Image
+                                        src={item.imageUrl}
+                                        alt={item.id}
+                                        fill
+                                        className='object-contain opacity-85 group-hover:opacity-100
+                                            transition-all duration-300 scale-90 group-hover:scale-95
+                                            filter group-hover:brightness-110 group-hover:drop-shadow-md'
+                                        sizes="(max-width: 640px) 140px, (max-width: 768px) 160px, (max-width: 1024px) 180px, 200px"
+                                        priority={true}
+                                    />
+                                </div>
+                            </motion.div>
+                        ))}
+                    </Marquee>
+
+                    {/* Right gradient fade */}
+                    <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 
+                        bg-gradient-to-l from-background to-transparent z-10" />
+                </div>
+            </div>
+        </section>
     )
 }

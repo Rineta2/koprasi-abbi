@@ -55,7 +55,7 @@ export default function Legalisasi() {
                 <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-primary-dark rounded-full shadow-[0_0_8px_4px_var(--primary-dark)] animate-glow-delayed"></div>
             </div>
 
-            <div className="container mx-auto max-w-6xl relative z-10 py-16">
+            <div className="container mx-auto relative z-10 py-16">
                 {/* Header Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
