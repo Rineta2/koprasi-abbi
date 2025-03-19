@@ -4,8 +4,6 @@ import React from "react";
 
 import { usePathname } from "next/navigation";
 
-import Script from "next/script";
-
 import Header from "@/components/layout/header/Header";
 
 import Footer from "@/components/layout/footer/Footer";
@@ -17,15 +15,11 @@ const Pathname = ({ children }: { children: React.ReactNode }) => {
 
     // Check for all dashboard/admin routes
     const isAdminRoute = pathname?.includes("/dashboard") ||
-        pathname?.includes("/auth") || false;
+        pathname?.includes("/auth") ||
+        pathname?.includes("/payment") || false;
 
     return (
         <main>
-            <Script
-                src="https://app.midtrans.com/snap/snap.js"
-                data-client-key={process.env.MIDTRANS_CLIENT_KEY}
-                strategy="lazyOnload"
-            />
             <Toaster
                 position="top-center"
                 toastOptions={{

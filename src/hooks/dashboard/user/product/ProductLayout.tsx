@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react'
 
 import { db } from '@/utils/firebase'
 
+import { getAuth } from 'firebase/auth'
+
 import { collection, onSnapshot } from 'firebase/firestore'
 
 import Image from 'next/image'
@@ -18,11 +20,16 @@ import { motion } from 'framer-motion'
 
 import Link from 'next/link'
 
+import { useRouter } from 'next/navigation'
+
+import { MidtransSuccessResult, MidtransPendingResult, MidtransErrorResult } from '@/types/midtrans'
+
 export default function ProductLayout() {
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState(true)
     const [copyMessage, setCopyMessage] = useState('')
     const { user } = useAuth()
+    const router = useRouter()
 
     useEffect(() => {
         // Membuat listener untuk products
@@ -69,6 +76,137 @@ export default function ProductLayout() {
             setTimeout(() => {
                 setCopyMessage('');
             }, 3000);
+        }
+    };
+
+    const handlePayment = async (product: Product) => {
+        try {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+
+            if (!currentUser) {
+                throw new Error('Silakan login terlebih dahulu untuk melakukan pembayaran');
+            }
+
+            // Get fresh ID token
+            const idToken = await currentUser.getIdToken(true);
+
+            const paymentData = {
+                product: {
+                    id: product.id,
+                    price: product.price,
+                    title: product.title,
+                    description: product.description,
+                    status: product.status,
+                    image: product.image,
+                    author: {
+                        id: product.author.id,
+                        fullName: product.author.fullName,
+                        photoUrl: product.author.photoUrl
+                    },
+                    tags: product.tags
+                },
+                user: {
+                    id: currentUser.uid,
+                    email: currentUser.email,
+                    fullName: user?.fullName || currentUser.email?.split('@')[0],
+                    photoURL: currentUser.photoURL || '',
+                    accountType: user?.accountType
+                },
+                transaction: {
+                    orderId: `ORDER-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+                    amount: product.price,
+                    status: 'pending',
+                    createdAt: new Date().toISOString(),
+                    paymentMethod: 'midtrans',
+                    currency: 'IDR'
+                }
+            };
+
+            console.log('Sending payment request with data:', paymentData);
+
+            const response = await fetch('/api/payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}`
+                },
+                body: JSON.stringify(paymentData),
+            });
+
+            const data = await response.json();
+            console.log('Payment API response:', data);
+
+            if (!response.ok) {
+                throw new Error(data.error || data.details || 'Gagal memproses pembayaran');
+            }
+
+            if (!data.token) {
+                throw new Error('Token pembayaran tidak diterima');
+            }
+
+            if (typeof window !== 'undefined' && window.snap) {
+                const snapConfig = {
+                    onSuccess: async function (result: MidtransSuccessResult) {
+                        console.log('Payment success:', result);
+                        try {
+                            const newToken = await currentUser.getIdToken(true);
+                            const notificationResponse = await fetch('/api/payment/notification', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${newToken}`
+                                },
+                                body: JSON.stringify({
+                                    orderId: data.orderId,
+                                    status: 'success',
+                                    transaction_id: result.transaction_id,
+                                    payment_type: result.payment_type,
+                                    transaction_time: result.transaction_time,
+                                    transaction_status: result.transaction_status,
+                                    gross_amount: result.gross_amount,
+                                    status_message: result.status_message,
+                                    status_code: result.status_code,
+                                    product: {
+                                        id: product.id,
+                                        title: product.title,
+                                        price: product.price,
+                                        status: product.status,
+                                        image: product.image,
+                                    }
+                                })
+                            });
+
+                            if (!notificationResponse.ok) {
+                                throw new Error('Gagal memperbarui status transaksi');
+                            }
+
+                            router.push(`/payment/status/${data.orderId}`);
+                        } catch (error) {
+                            console.error('Error updating transaction:', error);
+                            router.push(`/payment/status/${data.orderId}`);
+                        }
+                    },
+                    onPending: function (result: MidtransPendingResult) {
+                        console.log('Payment pending:', result);
+                        router.push(`/payment/status/${data.orderId}`);
+                    },
+                    onError: function (result: MidtransErrorResult) {
+                        console.error('Payment error:', result);
+                        router.push(`/payment/status/${data.orderId}`);
+                    },
+                    onClose: function () {
+                        console.log('Customer closed the popup without finishing the payment');
+                    }
+                };
+
+                window.snap.pay(data.token, snapConfig);
+            } else {
+                throw new Error('Midtrans Snap belum dimuat. Silakan muat ulang halaman.');
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            alert(error instanceof Error ? error.message : 'Terjadi kesalahan saat memproses pembayaran');
         }
     };
 
@@ -149,7 +287,10 @@ export default function ProductLayout() {
                                 </div>
 
                                 <div className='flex items-center gap-3 pt-4'>
-                                    <button className='flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl shadow-md shadow-primary/10 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300'>
+                                    <button
+                                        onClick={() => handlePayment(product)}
+                                        className='flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl shadow-md shadow-primary/10 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300'
+                                    >
                                         Bayar Sekarang
                                     </button>
 
