@@ -23,6 +23,7 @@
     "framer-motion": "^12.4.2",
     "imagekit": "^6.0.0",
     "lucide-react": "^0.475.0",
+    "midtrans-client": "^1.4.2",
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.3.0",

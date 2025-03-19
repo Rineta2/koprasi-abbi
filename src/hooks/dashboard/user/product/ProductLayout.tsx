@@ -17,8 +17,7 @@ import ProductSkelaton from './ProductSkelaton'
 import { motion } from 'framer-motion'
 
 import { toast } from 'react-hot-toast'
-
-import { Toaster } from 'react-hot-toast'
+import Link from 'next/link'
 
 export default function ProductLayout() {
     const [products, setProducts] = useState<Product[]>([])
@@ -58,19 +57,10 @@ export default function ProductLayout() {
     const copyToClipboard = async () => {
         const text = '7153470752';
         try {
+            // Try using the modern clipboard API first
             await navigator.clipboard.writeText(text);
-            toast.success('Nomor rekening berhasil disalin!', {
-                duration: 3000,
-                position: 'top-center',
-                style: {
-                    background: '#10B981',
-                    color: '#fff',
-                    padding: '12px 24px',
-                    borderRadius: '12px',
-                },
-                icon: '📋',
-            });
         } catch {
+            // Fallback to older method if clipboard API fails
             const textArea = document.createElement('textarea');
             textArea.value = text;
             textArea.style.position = 'fixed';
@@ -83,17 +73,6 @@ export default function ProductLayout() {
             try {
                 document.execCommand('copy');
                 textArea.remove();
-                toast.success('Nomor rekening berhasil disalin!', {
-                    duration: 3000,
-                    position: 'top-center',
-                    style: {
-                        background: '#10B981',
-                        color: '#fff',
-                        padding: '12px 24px',
-                        borderRadius: '12px',
-                    },
-                    icon: '📋',
-                });
             } catch (err) {
                 console.error('Gagal menyalin:', err);
                 toast.error('Gagal menyalin nomor rekening', {
@@ -106,8 +85,22 @@ export default function ProductLayout() {
                         borderRadius: '12px',
                     },
                 });
+                return;
             }
         }
+
+        // Show success toast only once after successful copy
+        toast.success('Nomor rekening berhasil disalin!', {
+            duration: 3000,
+            position: 'top-center',
+            style: {
+                background: '#10B981',
+                color: '#fff',
+                padding: '12px 24px',
+                borderRadius: '12px',
+            },
+            icon: '📋',
+        });
     };
 
     if (loading) {
@@ -123,77 +116,77 @@ export default function ProductLayout() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="bg-white rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.1)] p-8 mb-8"
+                    className="bg-white rounded-3xl shadow-md backdrop-blur-sm bg-opacity-90 p-8 mb-8"
                 >
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div className="space-y-2">
-                            <h1 className='text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-indigo-500 text-transparent bg-clip-text'>
+                            <h1 className='text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text'>
                                 Produk
                             </h1>
-                            <p className='text-text-dark/80 text-lg'>Beberapa produk yang kami tawarkan</p>
+                            <p className='text-gray-600 text-base'>Beberapa produk yang kami tawarkan</p>
                         </div>
                     </div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {products.map((product) => (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.3 }}
                             key={product.id}
-                            className="group bg-white rounded-2xl p-6 border border-gray-200"
+                            className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-primary/30 shadow-sm hover:shadow-lg transition-all duration-300"
                         >
-                            <div className="relative w-full h-56 mb-5 overflow-hidden rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+                            <div className="relative w-full aspect-[4/3] mb-6 overflow-hidden rounded-xl">
                                 <Image
                                     src={product.image}
                                     alt={product.title}
                                     fill
-                                    className="object-cover transform group-hover:scale-105 transition-transform duration-300"
+                                    className="object-cover transform group-hover:scale-105 transition-transform duration-500"
                                 />
                             </div>
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-xl font-bold text-gray-800">{product.title}</h2>
-                                    <span className="px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-600 shadow-[0_2px_8px_rgba(59,130,246,0.1)]">
+                                    <h2 className="text-2xl font-bold text-gray-800">{product.title}</h2>
+                                    <span className="px-4 py-1.5 text-sm font-semibold rounded-full bg-blue-50 text-blue-600 border border-blue-100">
                                         {product.status}
                                     </span>
                                 </div>
-                                <p className="text-gray-600 text-sm line-clamp-2">{product.description}</p>
-                                <p className="text-xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-transparent bg-clip-text">
+                                <p className="text-gray-600 text-base line-clamp-2">{product.description}</p>
+                                <p className="text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-transparent bg-clip-text">
                                     Rp {product.price.toLocaleString('id-ID')}
                                 </p>
-                                <div className="flex items-center space-x-3">
-                                    <div className="relative w-8 h-8">
+                                <div className="flex items-center space-x-4">
+                                    <div className="relative w-10 h-10">
                                         <Image
                                             src={product.author.photoUrl}
                                             alt={product.author.fullName}
                                             fill
-                                            className="rounded-full ring-2 ring-white ring-offset-2 shadow-md"
+                                            className="rounded-full ring-2 ring-primary/20 shadow-md"
                                         />
                                     </div>
-                                    <span className="text-sm text-gray-700 font-medium">{product.author.fullName}</span>
+                                    <span className="text-sm text-gray-700 font-semibold">{product.author.fullName}</span>
                                 </div>
 
                                 <div className="flex flex-wrap gap-2">
                                     {product.tags.map((tag, index) => (
                                         <span
                                             key={index}
-                                            className="px-3 py-1 text-xs font-medium bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors shadow-[0_2px_4px_rgba(0,0,0,0.05)]"
+                                            className="px-4 py-1.5 text-xs font-semibold bg-gray-50 hover:bg-gray-100 rounded-full text-gray-700 transition-colors"
                                         >
                                             #{tag}
                                         </span>
                                     ))}
                                 </div>
 
-                                <div className='flex items-center gap-3 pt-2'>
-                                    <button className='flex-1 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-xl shadow-[0_4px_12px_rgba(59,130,246,0.2)] hover:shadow-[0_8px_16px_rgba(59,130,246,0.3)] transition-all duration-200'>
+                                <div className='flex items-center gap-3 pt-4'>
+                                    <button className='flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl shadow-md shadow-primary/10 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300'>
                                         Bayar Sekarang
                                     </button>
 
                                     <button
                                         onClick={handleOpenModal}
-                                        className='flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl shadow-[0_4px_12px_rgba(239,68,68,0.2)] hover:shadow-[0_8px_16px_rgba(239,68,68,0.3)] transition-all duration-200'
+                                        className='flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl shadow-md shadow-red-500/10 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300'
                                     >
                                         Bayar Nanti
                                     </button>
@@ -203,15 +196,12 @@ export default function ProductLayout() {
                     ))}
                 </div>
 
-                {/* Modal */}
                 <dialog
                     id="payment_modal"
-                    className="modal fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+                    className="modal fixed inset-0 bg-black/50 backdrop-blur-[2px] flex items-center justify-center p-4 z-50"
                 >
-                    <div className="relative bg-white w-full max-w-md rounded-2xl p-8 shadow-2xl transform transition-all">
-                        <Toaster />
+                    <div className="relative bg-white w-full max-w-lg rounded-2xl p-6 shadow-xl transform transition-all">
                         <div className="flex flex-col space-y-6">
-                            {/* Header */}
                             <div className="text-center">
                                 <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                                     <svg
@@ -236,7 +226,6 @@ export default function ProductLayout() {
                                 </p>
                             </div>
 
-                            {/* Content */}
                             <div className="bg-gray-50/50 rounded-2xl p-6 space-y-4 border border-gray-100">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-2 text-gray-600">
@@ -255,8 +244,9 @@ export default function ProductLayout() {
                                         </svg>
                                         <label className="text-sm">Bank</label>
                                     </div>
-                                    <p className="font-semibold text-gray-900 pl-6">Koperasi ABBI</p>
+                                    <p className="font-semibold text-gray-900 pl-6">BSI Koperasi ABBI</p>
                                 </div>
+
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-2 text-gray-600">
                                         <svg
@@ -298,14 +288,47 @@ export default function ProductLayout() {
                                         </button>
                                     </div>
                                 </div>
+
+                                <div className="mt-4 p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+                                    <div className="flex items-start gap-3">
+                                        <svg
+                                            className="w-5 h-5 text-yellow-600 mt-0.5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                            />
+                                        </svg>
+                                        <p className="text-sm text-yellow-800">
+                                            Setelah melakukan pembayaran, mohon kirimkan bukti screenshot pembayaran ke WhatsApp dibawah ini
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <Link
+                                    href='https://wa.me/6281398726682'
+                                    target='_blank'
+                                    className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg"
+                                >
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+                                    </svg>
+                                    Kirim Bukti Pembayaran via WhatsApp
+                                </Link>
                             </div>
 
-                            {/* Actions */}
                             <div className="pt-2">
                                 <form method="dialog">
-                                    <button
-                                        className="w-full px-4 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-xl transition-all duration-200 hover:shadow-lg flex items-center justify-center gap-2"
-                                    >
+                                    <button className="w-full px-6 py-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-2xl transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
                                         <svg
                                             className="w-5 h-5"
                                             fill="none"
