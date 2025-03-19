@@ -15,9 +15,9 @@ export const ContentModal: React.FC<ContentModalProps> = ({
 }) => {
     return (
         <dialog id="content_modal" className="modal">
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 overflow-y-auto">
+            <div className="fixed inset-0 bg-text/60 backdrop-blur-sm z-50 overflow-y-auto">
                 <div className="flex items-center justify-center min-h-screen p-4">
-                    <div className="bg-background rounded-2xl shadow-xl max-w-5xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
+                    <div className="bg-background rounded-2xl shadow-xl border border-border max-w-5xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
                         <form
                             method="dialog"
                             onSubmit={(e) => {
@@ -29,7 +29,7 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-8">
                                     {/* Basic Information Section */}
-                                    <div className="bg-background-dark/50 p-6 rounded-2xl space-y-6 border border-background-dark">
+                                    <div className="bg-card p-6 rounded-2xl space-y-6 border border-border">
                                         <div className="flex items-center gap-2 mb-2">
                                             <div className="p-2 bg-primary/10 rounded-lg">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -47,7 +47,7 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                                                 id="title"
                                                 value={formData.title}
                                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                                className="w-full px-4 py-2 bg-background border border-background-dark rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                                                 required
                                             />
                                         </div>
@@ -59,7 +59,7 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                                                 id="primaryText"
                                                 value={formData.primaryText}
                                                 onChange={(e) => setFormData({ ...formData, primaryText: e.target.value })}
-                                                className="w-full px-4 py-2 bg-background border border-background-dark rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                                                 required
                                             />
                                         </div>
@@ -71,7 +71,7 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                                                 id="text"
                                                 value={formData.text}
                                                 onChange={(e) => setFormData({ ...formData, text: e.target.value })}
-                                                className="w-full px-4 py-2 bg-background border border-background-dark rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                                                 required
                                             />
                                         </div>
@@ -83,7 +83,7 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                                                 id="description"
                                                 value={formData.description}
                                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                                className="w-full px-4 py-2 bg-background border border-background-dark rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                                                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none"
                                                 rows={4}
                                                 required
                                             />
@@ -91,7 +91,7 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                                     </div>
 
                                     {/* Button Settings */}
-                                    <div className="bg-background-dark/50 p-6 rounded-2xl space-y-6 border border-background-dark">
+                                    <div className="bg-card p-6 rounded-2xl space-y-6 border border-border">
                                         <div className="flex items-center gap-2 mb-2">
                                             <div className="p-2 bg-primary/10 rounded-lg">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -115,7 +115,7 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                                                             ...formData,
                                                             button: { ...formData.button, text: e.target.value }
                                                         })}
-                                                        className="px-4 py-2 bg-background border border-background-dark rounded-lg"
+                                                        className="px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                                                         required
                                                     />
                                                 </label>
@@ -130,7 +130,7 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                                                             ...formData,
                                                             button: { ...formData.button, link: e.target.value }
                                                         })}
-                                                        className="px-4 py-2 bg-background border border-background-dark rounded-lg"
+                                                        className="px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                                                         required
                                                     />
                                                 </label>
@@ -141,7 +141,7 @@ export const ContentModal: React.FC<ContentModalProps> = ({
 
                                 {/* Image Upload Section */}
                                 <div className="space-y-8">
-                                    <div className="bg-background-dark/50 p-6 rounded-2xl space-y-6 border border-background-dark">
+                                    <div className="bg-card p-6 rounded-2xl space-y-6 border border-border">
                                         <div className="flex items-center gap-2 mb-2">
                                             <div className="p-2 bg-primary/10 rounded-lg">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -159,7 +159,7 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                                                 className="w-full text-text-dark"
                                             />
                                             {(selectedImage || formData.imageUrl) && (
-                                                <div className="relative w-full h-48 bg-background-dark rounded-lg overflow-hidden">
+                                                <div className="relative w-full h-48 bg-card rounded-lg overflow-hidden">
                                                     <Image
                                                         src={selectedImage ? URL.createObjectURL(selectedImage) : formData.imageUrl}
                                                         alt="Preview"
@@ -179,14 +179,14 @@ export const ContentModal: React.FC<ContentModalProps> = ({
                                                 const modal = document.getElementById('content_modal') as HTMLDialogElement;
                                                 modal?.close();
                                             }}
-                                            className="px-6 py-2 text-text-dark hover:bg-background-dark rounded-lg"
+                                            className="px-6 py-2 text-text-dark hover:bg-card rounded-lg transition-all"
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             type="submit"
                                             disabled={isSubmitting}
-                                            className="px-6 py-2 bg-primary text-background rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                                            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-all"
                                         >
                                             {isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Create'}
                                         </button>

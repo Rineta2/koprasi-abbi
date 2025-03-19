@@ -16,9 +16,9 @@ export default function AboutForm({
 }: AboutFormProps) {
     return (
         <dialog id="about_modal" className="modal">
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 overflow-y-auto">
+            <div className="fixed inset-0 bg-text/60 backdrop-blur-sm z-50 overflow-y-auto">
                 <div className="flex items-center justify-center min-h-screen p-4">
-                    <div className="bg-card rounded-2xl max-w-5xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+                    <div className="bg-card rounded-2xl max-w-5xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto border border-border shadow-md custom-scrollbar">
                         <div className="flex items-center justify-between mb-8">
                             <div className="space-y-1">
                                 <h3 className="text-2xl font-bold text-text">
@@ -31,7 +31,7 @@ export default function AboutForm({
 
                             <button
                                 onClick={() => (document.getElementById('about_modal') as HTMLDialogElement)?.close()}
-                                className="p-2 hover:bg-background-dark rounded-xl transition-colors duration-200"
+                                className="p-2 hover:bg-background rounded-xl transition-colors duration-200"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-text-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -43,7 +43,7 @@ export default function AboutForm({
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {/* Left Column - Basic Information */}
                                 <div className="space-y-8">
-                                    <div className="bg-background-dark p-6 rounded-2xl space-y-6 border border-border">
+                                    <div className="bg-background p-6 rounded-2xl space-y-6 border border-border">
                                         <div className="space-y-5">
                                             <div className="form-control">
                                                 <label className="block text-sm font-medium text-text mb-1.5">Title</label>
@@ -85,7 +85,7 @@ export default function AboutForm({
                                 {/* Right Column - Image Upload */}
                                 <div className="space-y-8">
                                     {formData.image ? (
-                                        <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-gray-100 group">
+                                        <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-background group">
                                             <Image
                                                 src={URL.createObjectURL(formData.image)}
                                                 alt="Content preview"
@@ -104,7 +104,7 @@ export default function AboutForm({
                                             </button>
                                         </div>
                                     ) : selectedImage?.imageUrl ? (
-                                        <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-gray-100 group">
+                                        <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-background group">
                                             <Image
                                                 src={selectedImage.imageUrl}
                                                 alt="Current content"
@@ -124,13 +124,13 @@ export default function AboutForm({
                                         </div>
                                     ) : (
                                         <div className="flex items-center justify-center w-full">
-                                            <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-xl border-2 border-gray-300 border-dashed cursor-pointer hover:bg-gray-50 transition-colors duration-200">
+                                            <label className="w-full flex flex-col items-center px-4 py-6 bg-background rounded-xl border-2 border-border border-dashed cursor-pointer hover:bg-background/60 transition-colors duration-200">
                                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                    <svg className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg className="w-10 h-10 mb-3 text-text-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                                     </svg>
-                                                    <p className="mb-2 text-sm text-gray-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                                    <p className="mb-2 text-sm text-text-dark"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                                                    <p className="text-xs text-text-dark">PNG, JPG, GIF up to 10MB</p>
                                                 </div>
                                                 <input
                                                     type="file"
@@ -149,7 +149,7 @@ export default function AboutForm({
                             <div className="flex justify-end gap-3 pt-6 border-t border-border">
                                 <button
                                     type="button"
-                                    className="px-5 py-2.5 text-text hover:bg-background-dark rounded-xl transition-all duration-200 hover:shadow-md font-medium"
+                                    className="px-5 py-2.5 text-text hover:bg-background rounded-xl transition-all duration-200 hover:shadow-md font-medium"
                                     disabled={loading}
                                     onClick={() => (document.getElementById('about_modal') as HTMLDialogElement)?.close()}
                                 >

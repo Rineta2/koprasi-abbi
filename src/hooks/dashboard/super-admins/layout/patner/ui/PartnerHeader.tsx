@@ -10,7 +10,7 @@ export const PartnerHeader = ({ onCreateClick }: PartnerHeaderProps) => {
             initial="hidden"
             animate="visible"
             variants={headerVariants}
-            className="bg-gradient-to-r from-card to-card/80 backdrop-blur-sm rounded-3xl border p-8 mb-8 border-gray-100/10 dark:border-gray-800/20 shadow-lg shadow-primary/5"
+            className="bg-gradient-to-r from-card to-card/80 backdrop-blur-sm rounded-3xl border p-8 mb-8 border-border shadow-lg shadow-primary/5"
         >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                 <div className="space-y-2">

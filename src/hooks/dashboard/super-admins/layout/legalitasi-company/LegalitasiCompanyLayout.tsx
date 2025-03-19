@@ -137,7 +137,7 @@ export default function LegalitasiCompanyLayout() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className='min-h-full px-0 sm:px-2'
+            className='min-h-full px-0 sm:px-2 custom-scrollbar'
         >
             <AnimatePresence mode="wait">
                 <motion.div
@@ -145,7 +145,7 @@ export default function LegalitasiCompanyLayout() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8 bg-card/80 backdrop-blur-sm p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                    className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8 bg-card backdrop-blur-sm p-8 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 border border-border"
                 >
                     <div className="space-y-3">
                         <h1 className='text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent'>
@@ -187,7 +187,7 @@ export default function LegalitasiCompanyLayout() {
                             ease: [0.4, 0, 0.2, 1],
                             staggerChildren: 0.1
                         }}
-                        className='w-full bg-gradient-to-br from-card/90 to-card/70 backdrop-blur-xl rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden border border-white/10 pt-4'
+                        className='w-full bg-card backdrop-blur-xl rounded-3xl shadow-md hover:shadow-lg transition-all duration-500 overflow-hidden border border-border pt-4'
                     >
                         <div className="flex flex-col">
                             {/* Image Section */}
@@ -195,7 +195,7 @@ export default function LegalitasiCompanyLayout() {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.5, delay: 0.3 }}
-                                className="relative h-full w-full flex items-center justify-center bg-background-dark/50 overflow-hidden group"
+                                className="relative h-full w-full flex items-center justify-center bg-background overflow-hidden group"
                             >
                                 <Image
                                     src={contents[0].imageUrl}
@@ -204,7 +204,7 @@ export default function LegalitasiCompanyLayout() {
                                     height={500}
                                     className="object-cover w-40 h-40"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-background-dark/50 to-transparent opacity-60" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent opacity-60" />
                             </motion.div>
 
                             {/* Content Section */}
@@ -224,7 +224,7 @@ export default function LegalitasiCompanyLayout() {
                                             {contents[0].legalType}
                                         </h3>
 
-                                        <div className='space-y-6 backdrop-blur-sm bg-white/5 p-6 rounded-2xl border border-white/10'>
+                                        <div className='space-y-6 backdrop-blur-sm bg-background p-6 rounded-2xl border border-border'>
                                             <div className="flex items-center gap-3">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -241,7 +241,7 @@ export default function LegalitasiCompanyLayout() {
                                             </div>
                                         </div>
 
-                                        <div className='space-y-6 backdrop-blur-sm bg-white/5 p-6 rounded-2xl border border-white/10'>
+                                        <div className='space-y-6 backdrop-blur-sm bg-background p-6 rounded-2xl border border-border'>
                                             <div className="flex items-center gap-3">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -258,7 +258,7 @@ export default function LegalitasiCompanyLayout() {
                                             </div>
                                         </div>
 
-                                        <div className='space-y-4 backdrop-blur-sm bg-white/5 p-6 rounded-2xl border border-white/10'>
+                                        <div className='space-y-4 backdrop-blur-sm bg-background p-6 rounded-2xl border border-border'>
                                             <div className="flex items-center gap-3">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -274,7 +274,7 @@ export default function LegalitasiCompanyLayout() {
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-white/10 justify-center">
+                                    <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-border justify-center">
                                         <button
                                             onClick={() => {
                                                 setDeleteId(contents[0].id!)
@@ -314,7 +314,7 @@ export default function LegalitasiCompanyLayout() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                        className="bg-card/80 backdrop-blur-sm rounded-3xl shadow-xl p-12 md:p-16 text-center"
+                        className="bg-card backdrop-blur-sm rounded-3xl shadow-sm p-12 md:p-16 text-center border border-border"
                     >
                         <div className="max-w-md mx-auto space-y-6">
                             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">

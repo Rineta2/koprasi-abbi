@@ -48,7 +48,7 @@ export default function ProductLayout() {
             <motion.div
                 initial="hidden"
                 animate="visible"
-                className="bg-gradient-to-r from-card to-card/80 backdrop-blur-sm rounded-3xl border p-8 mb-8 border-border dark:border-border-dark shadow-lg"
+                className="bg-gradient-to-r from-card to-card/80 backdrop-blur-sm rounded-3xl border p-8 mb-8 border-border shadow-lg"
             >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                     <div className="space-y-2">
@@ -77,11 +77,12 @@ export default function ProductLayout() {
             </motion.div>
 
             {/* Product List */}
-
-            <ProductList
-                products={products}
-                onEdit={(product) => openModal(product)}
-            />
+            <div className="custom-scrollbar">
+                <ProductList
+                    products={products}
+                    onEdit={(product) => openModal(product)}
+                />
+            </div>
 
             {/* Pagination */}
             <Pagination

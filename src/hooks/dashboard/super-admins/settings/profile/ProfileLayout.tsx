@@ -192,11 +192,11 @@ export default function ProfileContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="bg-background/50 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100/20 dark:border-gray-800/30 p-8 mb-8"
+                className="bg-card backdrop-blur-xl rounded-3xl shadow-xl border border-border p-8 mb-8"
             >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                     <div className="space-y-2">
-                        <h1 className='text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-indigo-500 text-transparent bg-clip-text'>
+                        <h1 className='text-3xl sm:text-4xl font-bold bg-gradient-to-r from-text to-primary text-transparent bg-clip-text'>
                             Profil Saya
                         </h1>
                         <p className='text-text-dark/80 text-lg'>Kelola informasi profil Anda untuk mengontrol, melindungi dan mengamankan akun</p>
@@ -205,7 +205,7 @@ export default function ProfileContent() {
                     {!isEditing && (
                         <button
                             onClick={handleEdit}
-                            className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-indigo-500 hover:from-primary/90 hover:to-indigo-600 
+                            className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-primary hover:opacity-90
                                 text-white rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 
                                 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transform hover:-translate-y-1"
                         >
@@ -222,9 +222,9 @@ export default function ProfileContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="bg-background/40 backdrop-blur-2xl rounded-3xl shadow-2xl border border-gray-100/10 dark:border-gray-800/30 p-10"
+                className="bg-background backdrop-blur-2xl rounded-3xl shadow-2xl border border-border p-10"
             >
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="custom-scrollbar">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                         {/* Left side - Profile Image */}
                         <motion.div
@@ -233,7 +233,7 @@ export default function ProfileContent() {
                             className="flex flex-col items-center space-y-8 order-1 lg:order-2"
                         >
                             <div className="relative group">
-                                <div className="w-48 h-48 rounded-full overflow-hidden ring-4 ring-indigo-50 shadow-xl">
+                                <div className="w-48 h-48 rounded-full overflow-hidden ring-4 ring-primary/10 shadow-xl">
                                     {profile.photoURL ? (
                                         <Image
                                             src={profile.photoURL}
@@ -243,8 +243,8 @@ export default function ProfileContent() {
                                             className="object-cover w-full h-full transition duration-300 group-hover:scale-110"
                                         />
                                     ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-                                            <FiUser className="w-16 h-16 text-gray-400" />
+                                        <div className="w-full h-full bg-gradient-to-br from-card to-background flex items-center justify-center">
+                                            <FiUser className="w-16 h-16 text-text-dark" />
                                         </div>
                                     )}
                                 </div>
@@ -262,9 +262,9 @@ export default function ProfileContent() {
                                         />
                                         <label
                                             htmlFor="profile-image-upload"
-                                            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-600 
-                                                rounded-xl hover:bg-indigo-50 transition-all duration-300 font-medium 
-                                                border-2 border-indigo-100 hover:border-indigo-200 shadow-sm
+                                            className="inline-flex items-center gap-2 px-6 py-3 bg-background text-primary 
+                                                rounded-xl hover:bg-primary/10 transition-all duration-300 font-medium 
+                                                border-2 border-border hover:border-primary/20 shadow-sm
                                                 active:scale-95"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -274,7 +274,7 @@ export default function ProfileContent() {
                                         </label>
                                     </>
                                 )}
-                                <p className="text-sm text-gray-500 mt-4">
+                                <p className="text-sm text-text-dark mt-4">
                                     Ukuran gambar: maks. 1 MB
                                     <br />
                                     Format gambar: JPEG, PNG
@@ -326,9 +326,9 @@ export default function ProfileContent() {
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ duration: 0.3, delay: index * 0.1 }}
                                         whileHover={{ scale: 1.01 }}
-                                        className="group p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-2xl hover:bg-white/70 
-                                            dark:hover:bg-gray-800/70 transition duration-300 hover:shadow-xl hover:shadow-gray-100/20 
-                                            dark:hover:shadow-gray-900/30 border border-gray-200/50 dark:border-gray-700/50"
+                                        className="group p-6 bg-card backdrop-blur-lg rounded-2xl hover:bg-card/70 
+                                            transition duration-300 hover:shadow-xl hover:shadow-primary/5
+                                            border border-border"
                                     >
                                         <label className="text-sm font-medium text-text-dark block mb-2">{field.label}</label>
                                         <div className="mt-1">
@@ -345,7 +345,7 @@ export default function ProfileContent() {
                                                     name={field.name}
                                                     value={field.value || ''}
                                                     onChange={handleChange}
-                                                    className="w-full p-3 bg-background border-2 border-gray-200 dark:border-gray-700 
+                                                    className="w-full p-3 bg-background border-2 border-border
                                                         rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all 
                                                         duration-200 hover:border-primary/50 text-text"
                                                     placeholder={`Masukkan ${field.label}`}
@@ -367,17 +367,17 @@ export default function ProfileContent() {
                                         <button
                                             type="button"
                                             onClick={handleCancel}
-                                            className="px-8 py-4 bg-gray-100 dark:bg-gray-800 text-text rounded-2xl hover:bg-gray-200 
-                                                dark:hover:bg-gray-700 transition-all duration-300 font-medium border border-gray-200/50 
-                                                dark:border-gray-700/50 hover:shadow-lg active:scale-98"
+                                            className="px-8 py-4 bg-card text-text rounded-2xl hover:bg-card/70
+                                                transition-all duration-300 font-medium border border-border 
+                                                hover:shadow-lg active:scale-98"
                                             disabled={isSaving}
                                         >
                                             Batal
                                         </button>
                                         <button
                                             type="submit"
-                                            className="px-8 py-4 bg-gradient-to-r from-primary to-indigo-500 hover:from-primary/90 
-                                                hover:to-indigo-600 text-white rounded-2xl transition-all duration-300 font-medium 
+                                            className="px-8 py-4 bg-gradient-to-r from-primary to-primary hover:opacity-90
+                                                text-white rounded-2xl transition-all duration-300 font-medium 
                                                 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 active:scale-98 
                                                 disabled:opacity-70"
                                             disabled={isSaving}

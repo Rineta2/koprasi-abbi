@@ -142,30 +142,30 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
 
     return (
         <dialog id="product_modal" className="modal">
-            <div className="modal-box bg-white dark:bg-gray-800 max-w-6xl p-0 overflow-hidden rounded-2xl shadow-xl">
+            <div className="modal-box bg-background max-w-6xl p-0 overflow-hidden rounded-2xl shadow-xl">
                 {/* Modal Header */}
-                <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-8 py-6 flex justify-between items-center z-10">
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <div className="sticky top-0 bg-background border-b border-border px-8 py-6 flex justify-between items-center z-10">
+                    <h3 className="text-2xl font-bold text-text">
                         {isEditing ? 'Edit Product' : 'Create New Product'}
                     </h3>
                     <button
                         onClick={onClose}
-                        className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        className="rounded-full p-2 hover:bg-card transition-colors"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-text" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
 
-                {/* Form wrapper - Pindahkan form ke sini */}
+                {/* Form wrapper */}
                 <form onSubmit={handleSubmit(onSubmit)}>
                     {/* Modal Body */}
-                    <div className="p-8 overflow-y-auto max-h-[calc(100vh-12rem)]">
+                    <div className="p-8 overflow-y-auto max-h-[calc(100vh-12rem)] custom-scrollbar">
                         <div className="space-y-8">
                             {/* Author Info Card */}
-                            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6">
-                                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4">Author Information</h3>
+                            <div className="bg-card rounded-2xl p-6">
+                                <h3 className="text-sm font-medium text-text-dark mb-4">Author Information</h3>
                                 <div className="flex items-center gap-4">
                                     <div className="relative w-12 h-12 flex-shrink-0">
                                         {user?.photoURL ? (
@@ -195,15 +195,15 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {/* Title Field */}
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block text-sm font-medium text-text">
                                         Product Title
                                     </label>
                                     <input
                                         {...register('title')}
                                         type="text"
                                         onChange={handleTitleChange}
-                                        className={`w-full px-4 py-3 bg-white dark:bg-gray-900 border ${errors.title ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
-                                            } rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                                        className={`w-full px-4 py-3 bg-background border ${errors.title ? 'border-red-500' : 'border-border'
+                                            } rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all`}
                                         placeholder="Enter product title"
                                     />
                                     {errors.title && (
@@ -213,30 +213,30 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
 
                                 {/* Slug Field */}
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Slug <span className="text-xs text-gray-500">(Auto-generated)</span>
+                                    <label className="block text-sm font-medium text-text">
+                                        Slug <span className="text-xs text-text-dark">(Auto-generated)</span>
                                     </label>
                                     <input
                                         {...register('slug')}
                                         type="text"
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl cursor-not-allowed"
+                                        className="w-full px-4 py-3 bg-card border border-border rounded-xl cursor-not-allowed"
                                         readOnly
                                     />
                                 </div>
 
                                 {/* Price Field */}
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Price</label>
+                                    <label className="block text-sm font-medium text-text">Price</label>
                                     <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-dark">
                                             Rp
                                         </span>
                                         <input
                                             {...register('price')}
                                             type="text"
                                             onChange={handlePriceChange}
-                                            className={`w-full px-4 py-3 pl-12 bg-white dark:bg-gray-900 border ${errors.price ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
-                                                } rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                                            className={`w-full px-4 py-3 pl-12 bg-background border ${errors.price ? 'border-red-500' : 'border-border'
+                                                } rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all`}
                                             placeholder="0"
                                         />
                                     </div>
@@ -247,11 +247,11 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
 
                                 {/* Status Dropdown */}
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                                    <label className="block text-sm font-medium text-text">Status</label>
                                     <select
                                         {...register('status')}
-                                        className={`w-full px-4 py-3 bg-white dark:bg-gray-900 border ${errors.status ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
-                                            } rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                                        className={`w-full px-4 py-3 bg-background border ${errors.status ? 'border-red-500' : 'border-border'
+                                            } rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all`}
                                     >
                                         <option value="">Select Status</option>
                                         {statusList.map((status) => (
@@ -267,9 +267,9 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
 
                                 {/* Image Upload */}
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Image</label>
+                                    <label className="block text-sm font-medium text-text">Image</label>
                                     {preview ? (
-                                        <div className="relative w-full h-56 rounded-xl overflow-hidden border border-gray-300 dark:border-gray-700 group">
+                                        <div className="relative w-full h-56 rounded-xl overflow-hidden border border-border group">
                                             <Image
                                                 src={preview}
                                                 alt="Preview"
@@ -307,18 +307,18 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
                                             type="file"
                                             onChange={handleImageChange}
                                             accept="image/*"
-                                            className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
+                                            className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90"
                                         />
                                     )}
                                 </div>
 
                                 {/* Category Field */}
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+                                    <label className="block text-sm font-medium text-text">Category</label>
                                     <select
                                         {...register('category')}
-                                        className={`w-full px-4 py-3 bg-white dark:bg-gray-900 border ${errors.category ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
-                                            } rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                                        className={`w-full px-4 py-3 bg-background border ${errors.category ? 'border-red-500' : 'border-border'
+                                            } rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all`}
                                     >
                                         <option value="">Select Category</option>
                                         {categoryList.map((category) => (
@@ -335,11 +335,11 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
 
                             {/* Tags Section */}
                             <div className="space-y-4">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-text">
                                     Tags
-                                    <span className="ml-2 text-xs text-gray-500">(Click to select multiple)</span>
+                                    <span className="ml-2 text-xs text-text-dark">(Click to select multiple)</span>
                                 </label>
-                                <div className="flex flex-wrap gap-2 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
+                                <div className="flex flex-wrap gap-2 p-4 bg-card rounded-xl border border-border">
                                     {tagsList.map((tag) => (
                                         <button
                                             key={tag.id}
@@ -348,8 +348,8 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
                                             className={`
                                                 px-4 py-2 rounded-full transition-all
                                                 ${selectedTags.includes(tag.id)
-                                                    ? 'bg-blue-500 text-white shadow-sm hover:bg-blue-600'
-                                                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500'
+                                                    ? 'bg-primary text-white shadow-sm hover:bg-primary/90'
+                                                    : 'bg-background text-text-dark border border-border hover:border-primary'
                                                 }
                                         `}
                                         >
@@ -368,11 +368,11 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
 
                             {/* Description Field */}
                             <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                                <label className="block text-sm font-medium text-text">Description</label>
                                 <textarea
                                     {...register('description')}
-                                    className={`w-full px-4 py-3 bg-white dark:bg-gray-900 border ${errors.description ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
-                                        } rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all min-h-[120px] resize-none`}
+                                    className={`w-full px-4 py-3 bg-background border ${errors.description ? 'border-red-500' : 'border-border'
+                                        } rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all min-h-[120px] resize-none`}
                                     placeholder="Enter product description..."
                                 />
                                 {errors.description && (
@@ -383,11 +383,11 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
                     </div>
 
                     {/* Modal Footer */}
-                    <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-8 py-2 flex justify-end gap-4 z-10">
+                    <div className="sticky bottom-0 bg-background border-t border-border px-8 py-2 flex justify-end gap-4 z-10">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-xl transition-all"
+                            className="px-6 py-3 bg-card hover:bg-card/80 text-text rounded-xl transition-all"
                             disabled={isSubmitting}
                         >
                             Cancel
@@ -395,7 +395,7 @@ export default function ProductForm({ onClose, statusList, tagsList, categoryLis
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all flex items-center gap-2"
+                            className="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl transition-all flex items-center gap-2"
                         >
                             {isSubmitting ? (
                                 <>

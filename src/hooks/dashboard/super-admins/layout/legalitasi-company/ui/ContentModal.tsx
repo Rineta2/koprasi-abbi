@@ -25,9 +25,9 @@ export function ContentModal({
 }: ContentModalProps) {
     return (
         <dialog id="content_modal" className="modal">
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 overflow-y-auto">
+            <div className="fixed inset-0 bg-text/60 backdrop-blur-sm z-50 overflow-y-auto">
                 <div className="flex items-center justify-center min-h-screen p-4">
-                    <div className="bg-background rounded-2xl shadow-xl max-w-5xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
+                    <div className="bg-card rounded-2xl shadow-md max-w-5xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto custom-scrollbar border border-border bg-background">
                         <h3 className="font-bold text-lg mb-4">
                             {isEditing ? 'Edit Content' : 'Create New Content'}
                         </h3>
@@ -43,7 +43,7 @@ export function ContentModal({
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-8">
                                     {/* Basic Information Section */}
-                                    <div className="bg-background-dark/50 p-6 rounded-2xl space-y-6 border border-background-dark">
+                                    <div className="bg-background p-6 rounded-2xl space-y-6 border border-border">
                                         <div className="flex items-center gap-2 mb-2">
                                             <div className="p-2 bg-primary/10 rounded-lg">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -60,7 +60,7 @@ export function ContentModal({
                                                 id="companyName"
                                                 value={formData.companyName}
                                                 onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                                                className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 required
                                             />
                                         </div>
@@ -72,7 +72,7 @@ export function ContentModal({
                                                 id="legalType"
                                                 value={formData.legalType}
                                                 onChange={(e) => setFormData({ ...formData, legalType: e.target.value })}
-                                                className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 required
                                             />
                                         </div>
@@ -88,7 +88,7 @@ export function ContentModal({
                                                     ...formData,
                                                     registrationLabel: e.target.value
                                                 })}
-                                                className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                             />
 
                                             <h5 className="text-sm font-medium text-text-dark">Registration Numbers</h5>
@@ -104,7 +104,7 @@ export function ContentModal({
                                                             skKoperasi: e.target.value
                                                         }
                                                     })}
-                                                    className="px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -117,7 +117,7 @@ export function ContentModal({
                                                             npwp: e.target.value
                                                         }
                                                     })}
-                                                    className="px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -130,7 +130,7 @@ export function ContentModal({
                                                             siup: e.target.value
                                                         }
                                                     })}
-                                                    className="px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -143,7 +143,7 @@ export function ContentModal({
                                                             tdp: e.target.value
                                                         }
                                                     })}
-                                                    className="px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -156,7 +156,7 @@ export function ContentModal({
                                                             nib: e.target.value
                                                         }
                                                     })}
-                                                    className="px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -169,7 +169,7 @@ export function ContentModal({
                                                             koperasiRegistration: e.target.value
                                                         }
                                                     })}
-                                                    className="px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                             </div>
                                         </div>
@@ -189,7 +189,7 @@ export function ContentModal({
                                                             ketua: e.target.value
                                                         }
                                                     })}
-                                                    className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -202,7 +202,7 @@ export function ContentModal({
                                                             sekretaris: e.target.value
                                                         }
                                                     })}
-                                                    className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -215,7 +215,7 @@ export function ContentModal({
                                                             bendahara: e.target.value
                                                         }
                                                     })}
-                                                    className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                             </div>
                                         </div>
@@ -235,7 +235,7 @@ export function ContentModal({
                                                             street: e.target.value
                                                         }
                                                     })}
-                                                    className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -248,7 +248,7 @@ export function ContentModal({
                                                             village: e.target.value
                                                         }
                                                     })}
-                                                    className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -261,7 +261,7 @@ export function ContentModal({
                                                             district: e.target.value
                                                         }
                                                     })}
-                                                    className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -274,7 +274,7 @@ export function ContentModal({
                                                             city: e.target.value
                                                         }
                                                     })}
-                                                    className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                                 <input
                                                     type="text"
@@ -287,7 +287,7 @@ export function ContentModal({
                                                             postalCode: e.target.value
                                                         }
                                                     })}
-                                                    className="w-full px-4 py-2 bg-background border border-gray-300 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                                                    className="w-full px-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
                                                 />
                                             </div>
                                         </div>
@@ -296,7 +296,7 @@ export function ContentModal({
 
                                 {/* Image Upload Section */}
                                 <div className="space-y-8">
-                                    <div className="bg-background-dark/50 p-6 rounded-2xl space-y-6 border border-background-dark">
+                                    <div className="bg-background p-6 rounded-2xl space-y-6 border border-border">
                                         <div className="flex items-center gap-2 mb-2">
                                             <div className="p-2 bg-primary/10 rounded-lg">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -314,7 +314,7 @@ export function ContentModal({
                                                 className="w-full text-text-dark"
                                             />
                                             {(selectedImage || formData.imageUrl) && (
-                                                <div className="relative w-full h-48 bg-background-dark rounded-lg overflow-hidden">
+                                                <div className="relative w-full h-48 bg-background rounded-lg overflow-hidden">
                                                     <Image
                                                         src={selectedImage ? URL.createObjectURL(selectedImage) : formData.imageUrl}
                                                         alt="Preview"

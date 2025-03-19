@@ -115,7 +115,7 @@ export default function StatusProductLayout() {
 
                     <button
                         onClick={openModal}
-                        className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary-dark hover:opacity-90 text-white rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-primary/20 hover:shadow-lg transform hover:-translate-y-0.5"
+                        className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary hover:opacity-90 text-white rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-primary/20 hover:shadow-lg transform hover:-translate-y-0.5"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -125,11 +125,13 @@ export default function StatusProductLayout() {
                 </div>
             </div>
 
-            <StatusTable
-                status={status}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+            <div className="custom-scrollbar">
+                <StatusTable
+                    status={status}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
+            </div>
 
             <StatusModal
                 isEditing={isEditing}

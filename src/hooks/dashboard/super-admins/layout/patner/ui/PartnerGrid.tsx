@@ -23,7 +23,7 @@ export const PartnerGrid = ({ contents, onEdit, onDelete }: PartnerGridProps) =>
                         scale: 1.02,
                         transition: { duration: 0.2 }
                     }}
-                    className="group relative bg-card rounded-2xl border border-border overflow-hidden"
+                    className="group relative bg-card rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
                 >
                     <motion.div
                         className="relative aspect-video w-full overflow-hidden"

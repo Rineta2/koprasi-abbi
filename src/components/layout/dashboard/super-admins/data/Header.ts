@@ -183,16 +183,9 @@ export const menuItems = [
         href: "/dashboard/super-admins/transaction/paid",
       },
 
-      { label: "Dikirim", href: "/dashboard/super-admins/transaction/shipped" },
-
       {
         label: "Dibatalkan",
         href: "/dashboard/super-admins/transaction/cancelled",
-      },
-
-      {
-        label: "Selesai",
-        href: "/dashboard/super-admins/transaction/completed",
       },
     ],
   },

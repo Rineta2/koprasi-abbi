@@ -11,8 +11,8 @@ export default function DeleteAccountModal({ isOpen, onClose, onConfirm, isLoadi
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-background p-6 rounded-lg max-w-md w-full mx-4">
+        <div className="fixed inset-0 bg-text/50 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-background p-6 rounded-xl border border-border shadow-xl max-w-md w-full mx-4 custom-scrollbar">
                 <h2 className="text-xl font-bold mb-4 text-text">Important</h2>
 
                 <div className="text-sm text-text-dark space-y-3">
@@ -31,14 +31,14 @@ export default function DeleteAccountModal({ isOpen, onClose, onConfirm, isLoadi
                 <div className="flex justify-end gap-3 mt-6">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-text-dark hover:text-text"
+                        className="px-4 py-2 text-text-dark hover:text-text transition-colors"
                         disabled={isLoading}
                     >
                         Batal
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed"
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed"
                         disabled={isLoading}
                     >
                         {isLoading ? (

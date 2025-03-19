@@ -46,7 +46,7 @@ export default function AboutLayout() {
 
     return (
         <motion.section
-            className='min-h-screen py-0 px-0 sm:py-4 sm:px-4'
+            className='min-h-full px-0 sm:px-2'
             initial="hidden"
             animate="visible"
             variants={containerVariants}
@@ -55,7 +55,7 @@ export default function AboutLayout() {
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="bg-gradient-to-r from-card to-card/80 backdrop-blur-sm rounded-3xl border p-8 mb-8 border-gray-100/10 dark:border-gray-800/20 shadow-lg shadow-primary/5"
+                className="bg-card rounded-3xl border p-8 mb-8 border-border shadow-sm"
             >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                     <div className="space-y-2">
@@ -97,7 +97,7 @@ export default function AboutLayout() {
                         variants={itemVariants}
                         className="mb-16 last:mb-0"
                     >
-                        <div className='relative bg-gradient-to-br from-white/5 to-white/10 dark:from-black/5 dark:to-black/10 backdrop-blur-xl rounded-[2.5rem] p-8 lg:p-12 overflow-hidden'>
+                        <div className='relative bg-card backdrop-blur-xl rounded-[2.5rem] p-8 lg:p-12 overflow-hidden border border-border'>
                             {/* Background Decorative Elements */}
                             <div className="absolute inset-0 overflow-hidden">
                                 <div className="absolute -right-10 -top-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl" />
@@ -112,7 +112,7 @@ export default function AboutLayout() {
                                     className="relative group"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-[2rem] blur-2xl transform group-hover:scale-105 transition-transform duration-500" />
-                                    <div className="relative w-full aspect-[4/3] rounded-[2rem] overflow-hidden ring-1 ring-white/10 shadow-2xl shadow-black/10">
+                                    <div className="relative w-full aspect-[4/3] rounded-[2rem] overflow-hidden ring-1 ring-border shadow-sm">
                                         <Image
                                             src={item?.imageUrl || "/placeholder.jpg"}
                                             alt="Team working"
@@ -121,7 +121,7 @@ export default function AboutLayout() {
                                             height={900}
                                             priority
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-text/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                     </div>
                                 </motion.div>
 
@@ -145,7 +145,7 @@ export default function AboutLayout() {
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.5, delay: 0.1 }}
-                                            className="prose prose-lg dark:prose-invert"
+                                            className="prose prose-lg"
                                         >
                                             <span className="block text-xl text-text-dark/90 font-medium leading-relaxed">
                                                 {item?.text}
@@ -186,7 +186,7 @@ export default function AboutLayout() {
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
                                             onClick={() => handleDeleteImage(item.id)}
-                                            className="flex-1 px-8 py-4 bg-white/5 backdrop-blur-xl border-2 border-red-200/20 text-red-500 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 hover:bg-red-500/5 hover:border-red-500/30 hover:-translate-y-1 hover:shadow-xl"
+                                            className="flex-1 px-8 py-4 bg-background backdrop-blur-xl border-2 border-red-200/20 text-red-500 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 hover:bg-red-500/5 hover:border-red-500/30 hover:-translate-y-1 hover:shadow-xl"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
