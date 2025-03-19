@@ -4,6 +4,8 @@ import { GrTransaction } from "react-icons/gr";
 
 import { RiUserCommunityFill } from "react-icons/ri";
 
+import { GoProject } from "react-icons/go";
+
 export const menuItems = [
   {
     icon: FiHome,
@@ -18,6 +20,12 @@ export const menuItems = [
   },
 
   {
+    icon: GoProject,
+    label: "Product",
+    href: "/dashboard/user/product",
+  },
+
+  {
     icon: GrTransaction,
     label: "Transaksi",
     href: "/dashboard/user/transaction",
@@ -25,7 +33,6 @@ export const menuItems = [
       { label: "Daftar Transaksi", href: "/dashboard/user/transaction" },
       { label: "Transaksi Berbayar", href: "/dashboard/user/transaction/paid" },
       { label: "Belum Dibayar", href: "/dashboard/user/transaction/unpaid" },
-      { label: "Dikirim", href: "/dashboard/user/transaction/shipped" },
       { label: "Dibatalkan", href: "/dashboard/user/transaction/cancelled" },
       { label: "Selesai", href: "/dashboard/user/transaction/completed" },
     ],

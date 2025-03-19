@@ -2,9 +2,21 @@
 
 import React from 'react';
 
-import { LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-
 import { FiTrendingUp, FiUsers, FiShoppingBag, FiDollarSign } from 'react-icons/fi';
+
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip } from 'chart.js';
+
+import { Line, Doughnut } from 'react-chartjs-2';
+
+// Register ChartJS components
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    ArcElement,
+    Tooltip
+);
 
 export default function SuperAdminDashboardPage() {
     // Sample data for charts
@@ -31,18 +43,30 @@ export default function SuperAdminDashboardPage() {
         { id: 3, name: 'Caesar Salad', sales: 142, image: '🥗', trend: '+5%' },
     ];
 
-    const [chartWidth, setChartWidth] = React.useState(600);
+    // Chart.js data configuration for line chart
+    const lineChartData = {
+        labels: salesData.map(item => item.name),
+        datasets: [
+            {
+                data: salesData.map(item => item.value),
+                borderColor: '#f43f5e',
+                backgroundColor: '#f43f5e',
+                tension: 0.4,
+                pointRadius: 4,
+            }
+        ]
+    };
 
-    React.useEffect(() => {
-        const handleResize = () => {
-            setChartWidth(window.innerWidth < 768 ? 400 : 600);
-        };
-
-        handleResize(); // Set initial width
-        window.addEventListener('resize', handleResize);
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    // Chart.js data configuration for doughnut chart
+    const doughnutChartData = {
+        labels: categoryData.map(item => item.name),
+        datasets: [
+            {
+                data: categoryData.map(item => item.value),
+                backgroundColor: categoryData.map(item => item.color),
+            }
+        ]
+    };
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
@@ -101,36 +125,44 @@ export default function SuperAdminDashboardPage() {
                         <option>This Month</option>
                     </select>
                 </div>
-                <div className="relative w-full h-[300px] overflow-x-auto custom-scrollbar">
-                    <LineChart width={chartWidth} height={300} data={salesData}>
-                        <Line
-                            type="monotone"
-                            dataKey="value"
-                            stroke="#f43f5e"
-                            strokeWidth={3}
-                            dot={{ fill: '#f43f5e', strokeWidth: 2 }}
-                        />
-                    </LineChart>
+                <div className="relative w-full h-[300px]">
+                    <Line
+                        data={lineChartData}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }}
+                    />
                 </div>
             </div>
 
             {/* Category Distribution */}
             <div className="bg-white rounded-2xl p-4 md:p-6 shadow-sm">
                 <h3 className="text-lg font-semibold mb-6">Category Distribution</h3>
-                <div className="relative h-[250px] flex justify-center overflow-auto custom-scrollbar">
-                    <PieChart width={200} height={200}>
-                        <Pie
-                            data={categoryData}
-                            innerRadius={50}
-                            outerRadius={70}
-                            paddingAngle={5}
-                            dataKey="value"
-                        >
-                            {categoryData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                        </Pie>
-                    </PieChart>
+                <div className="relative h-[250px] flex justify-center">
+                    <Doughnut
+                        data={doughnutChartData}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '60%',
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }}
+                    />
                 </div>
                 <div className="mt-4 space-y-2 max-h-[200px] relative overflow-y-auto custom-scrollbar">
                     {categoryData.map((item, index) => (
