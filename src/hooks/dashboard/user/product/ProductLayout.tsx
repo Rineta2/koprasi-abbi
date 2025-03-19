@@ -16,12 +16,12 @@ import ProductSkelaton from './ProductSkelaton'
 
 import { motion } from 'framer-motion'
 
-import { toast } from 'react-hot-toast'
 import Link from 'next/link'
 
 export default function ProductLayout() {
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState(true)
+    const [copyMessage, setCopyMessage] = useState('')
     const { user } = useAuth()
 
     useEffect(() => {
@@ -57,50 +57,19 @@ export default function ProductLayout() {
     const copyToClipboard = async () => {
         const text = '7153470752';
         try {
-            // Try using the modern clipboard API first
             await navigator.clipboard.writeText(text);
-        } catch {
-            // Fallback to older method if clipboard API fails
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-
-            try {
-                document.execCommand('copy');
-                textArea.remove();
-            } catch (err) {
-                console.error('Gagal menyalin:', err);
-                toast.error('Gagal menyalin nomor rekening', {
-                    duration: 3000,
-                    position: 'top-center',
-                    style: {
-                        background: '#EF4444',
-                        color: '#fff',
-                        padding: '12px 24px',
-                        borderRadius: '12px',
-                    },
-                });
-                return;
-            }
+            setCopyMessage('Nomor rekening berhasil disalin!');
+            // Hilangkan pesan setelah 3 detik
+            setTimeout(() => {
+                setCopyMessage('');
+            }, 3000);
+        } catch (err) {
+            console.error('Gagal menyalin:', err);
+            setCopyMessage('Gagal menyalin nomor rekening');
+            setTimeout(() => {
+                setCopyMessage('');
+            }, 3000);
         }
-
-        // Show success toast only once after successful copy
-        toast.success('Nomor rekening berhasil disalin!', {
-            duration: 3000,
-            position: 'top-center',
-            style: {
-                background: '#10B981',
-                color: '#fff',
-                padding: '12px 24px',
-                borderRadius: '12px',
-            },
-            icon: '📋',
-        });
     };
 
     if (loading) {
@@ -264,28 +233,35 @@ export default function ProductLayout() {
                                         </svg>
                                         <label className="text-sm">Nomor Rekening</label>
                                     </div>
-                                    <div className="flex items-center gap-3 pl-6">
+                                    <div className="flex flex-col gap-2 pl-6">
                                         <p className="font-mono text-lg font-semibold text-gray-900 select-all">7153470752</p>
-                                        <button
-                                            onClick={copyToClipboard}
-                                            type="button"
-                                            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-all duration-200 hover:scale-105"
-                                        >
-                                            <svg
-                                                className="w-4 h-4"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
+                                        <div className="flex items-center gap-3">
+                                            {copyMessage && (
+                                                <p className={`text-sm ${copyMessage.includes('berhasil') ? 'text-green-600' : 'text-red-600'}`}>
+                                                    {copyMessage}
+                                                </p>
+                                            )}
+                                            <button
+                                                onClick={copyToClipboard}
+                                                type="button"
+                                                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-all duration-200 hover:scale-105"
                                             >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-                                                />
-                                            </svg>
-                                            Salin
-                                        </button>
+                                                <svg
+                                                    className="w-4 h-4"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                                                    />
+                                                </svg>
+                                                Salin
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
