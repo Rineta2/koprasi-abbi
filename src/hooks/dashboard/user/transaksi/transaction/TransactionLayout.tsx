@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from 'react'
 
+import toast from 'react-hot-toast'
+
 import { motion } from 'framer-motion'
 
 import { db } from '@/utils/firebase'
@@ -16,59 +18,9 @@ import Image from 'next/image'
 
 import { Transaction } from '@/hooks/dashboard/user/transaksi/transaction/lib/transaction'
 
-const ViewIcon = () => (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeWidth="2" />
-        <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" strokeWidth="2" />
-    </svg>
-);
+import { StatusBadge, CalendarIcon, ViewIcon } from '@/hooks/dashboard/user/transaksi/transaction/ui/icons'
 
-const StatusBadge = ({ status }: { status: string }) => {
-    const statusConfig = {
-        success: {
-            bg: 'bg-emerald-50',
-            text: 'text-emerald-700',
-            icon: (
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M5 13l4 4L19 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-            )
-        },
-        pending: {
-            bg: 'bg-amber-50',
-            text: 'text-amber-700',
-            icon: (
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-            )
-        },
-        failed: {
-            bg: 'bg-rose-50',
-            text: 'text-rose-700',
-            icon: (
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M6 18L18 6M6 6l12 12" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-            )
-        }
-    };
-
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
-
-    return (
-        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium ${config.bg} ${config.text} transition-colors duration-200`}>
-            {config.icon}
-            {status.charAt(0).toUpperCase() + status.slice(1)}
-        </span>
-    );
-};
-
-const CalendarIcon = () => (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-    </svg>
-);
+import { Pagination } from '@/base/helper/Pagination'
 
 export default function TransactionLayout() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -80,6 +32,8 @@ export default function TransactionLayout() {
     const { user } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const ITEMS_PER_PAGE = 9; // 3x3 grid layout
 
     const filteredTransactions = transactions.filter(transaction => {
         const matchesSearch = transaction.productDetails.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -92,6 +46,17 @@ export default function TransactionLayout() {
 
         return matchesSearch && matchesStatus && matchesDate;
     });
+
+    // Calculate pagination
+    const offset = currentPage * ITEMS_PER_PAGE;
+    const paginatedTransactions = filteredTransactions.slice(offset, offset + ITEMS_PER_PAGE);
+    const pageCount = Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE);
+
+    const handlePageChange = ({ selected }: { selected: number }) => {
+        setCurrentPage(selected);
+        // Scroll to top of the transactions section
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const calculateTotalTransactions = () => {
         return transactions.reduce((total, transaction) => {
@@ -106,32 +71,26 @@ export default function TransactionLayout() {
         try {
             if (!user?.uid) return;
 
-            // Get user's account document
-            const accountRef = doc(db, 'accounts', user.uid);
+            const accountRef = doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS as string, user.uid);
             const accountSnap = await getDoc(accountRef);
 
             if (accountSnap.exists()) {
                 const accountData = accountSnap.data();
 
-                // Debug log untuk memeriksa nilai
-                console.log('Total Amount:', totalAmount);
-                console.log('Current Account Type:', accountData.accountType);
-
-                // Mengubah pengecekan dari 'regular' menjadi 'reguler'
                 if (accountData.accountType === 'reguler' && totalAmount >= 8050000) {
-                    // Upgrade to premium
                     await updateDoc(accountRef, {
                         accountType: 'premium',
                         updatedAt: serverTimestamp()
                     });
-
-                    // Tambahkan log untuk konfirmasi update
-                    console.log('Account upgraded to premium!');
-                    console.log('Total transactions that triggered upgrade:', totalAmount);
+                    toast.success('Selamat! Akun Anda telah diupgrade ke Premium!', {
+                        duration: 5000,
+                        position: 'top-center',
+                    });
                 }
             }
         } catch (error) {
             console.error('Error upgrading account:', error);
+            toast.error('Gagal mengupgrade akun. Silakan coba lagi nanti.');
         }
     }, [user]);
 
@@ -142,10 +101,9 @@ export default function TransactionLayout() {
             try {
                 if (!user?.uid) return;
 
-                const transactionsRef = collection(db, 'transactions');
+                const transactionsRef = collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_TRANSACTIONS as string);
                 const q = query(transactionsRef, where('userId', '==', user.uid));
 
-                // Menggunakan onSnapshot untuk realtime updates
                 unsubscribe = onSnapshot(q, (querySnapshot) => {
                     const transactionData = querySnapshot.docs.map(doc => ({
                         id: doc.id,
@@ -155,7 +113,6 @@ export default function TransactionLayout() {
                     setTransactions(transactionData);
                     setLoading(false);
 
-                    // Check for account upgrade after receiving new data
                     const totalAmount = transactionData.reduce((total, transaction) => {
                         if (transaction.status === 'success') {
                             return total + transaction.amount;
@@ -164,16 +121,20 @@ export default function TransactionLayout() {
                     }, 0);
 
                     checkAndUpgradeAccount(totalAmount);
+                }, (error) => {
+                    console.error('Error fetching transactions:', error);
+                    toast.error('Gagal memuat transaksi. Silakan refresh halaman.');
+                    setLoading(false);
                 });
             } catch (error) {
                 console.error('Error setting up realtime listener:', error);
+                toast.error('Terjadi kesalahan. Silakan refresh halaman.');
                 setLoading(false);
             }
         };
 
         setupRealtimeListener();
 
-        // Cleanup listener when component unmounts
         return () => {
             if (unsubscribe) {
                 unsubscribe();
@@ -276,7 +237,7 @@ export default function TransactionLayout() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {filteredTransactions.map((transaction) => (
+                {paginatedTransactions.map((transaction) => (
                     <motion.div
                         key={transaction.id}
                         initial={{ opacity: 0, scale: 0.95 }}
@@ -327,6 +288,14 @@ export default function TransactionLayout() {
                 <div className="text-center py-12">
                     <p className="text-gray-500">Tidak ada transaksi yang sesuai dengan filter yang dipilih</p>
                 </div>
+            )}
+
+            {filteredTransactions.length > 0 && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={pageCount}
+                    onPageChange={handlePageChange}
+                />
             )}
 
             <dialog

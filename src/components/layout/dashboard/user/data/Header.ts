@@ -31,10 +31,18 @@ export const menuItems = [
     href: "/dashboard/user/transaction",
     subItems: [
       { label: "Daftar Transaksi", href: "/dashboard/user/transaction" },
-      { label: "Transaksi Berbayar", href: "/dashboard/user/transaction/paid" },
-      { label: "Belum Dibayar", href: "/dashboard/user/transaction/unpaid" },
-      { label: "Dibatalkan", href: "/dashboard/user/transaction/cancelled" },
-      { label: "Selesai", href: "/dashboard/user/transaction/completed" },
+      {
+        label: "Transaksi Berhasil",
+        href: "/dashboard/user/transaction/paid",
+      },
+      {
+        label: "Transaksi Belum Dibayar",
+        href: "/dashboard/user/transaction/unpaid",
+      },
+      {
+        label: "Transaksi Dibatalkan",
+        href: "/dashboard/user/transaction/cancelled",
+      },
     ],
   },
 
