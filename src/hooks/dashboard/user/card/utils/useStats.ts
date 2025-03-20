@@ -10,6 +10,7 @@ export function useStats() {
     totalReferralNetwork: 0,
     totalAccounts: 0,
   });
+  const [loading, setLoading] = useState(true);
 
   const { user } = useAuth();
 
@@ -59,11 +60,13 @@ export function useStats() {
         });
       } catch (error) {
         console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchStats();
   }, [user]);
 
-  return { stats };
+  return { stats, loading };
 }
