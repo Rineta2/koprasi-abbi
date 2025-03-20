@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
+
 import { auth, db } from "@/utils/firebase/firebase-admin";
+
 import { Timestamp } from "firebase-admin/firestore";
+
 import midtransClient from "midtrans-client";
 
 // Validate environment variables first
@@ -125,6 +128,7 @@ export async function POST(request: Request) {
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
         midtransToken: midtransResponse.token,
+        transactionLink: `${process.env.NEXT_PUBLIC_URL}/payment/status/${orderId}`,
         userDetails: {
           id: paymentData.user.id,
           email: paymentData.user.email,
@@ -137,6 +141,14 @@ export async function POST(request: Request) {
           method: "midtrans",
           token: midtransResponse.token,
           redirectUrl: midtransResponse.redirect_url,
+          transactionId: null,
+          paymentType: null,
+          transactionTime: null,
+          transactionStatus: "pending",
+          grossAmount: paymentData.product.price,
+          statusMessage: null,
+          statusCode: null,
+          vaNumbers: [],
         },
       };
 

@@ -22,6 +22,8 @@ const app =
   getApps().length > 0 ? getApps()[0] : initializeApp(firebaseAdminConfig);
 
 const db = getFirestore(app);
+// Set ignoreUndefinedProperties
+db.settings({ ignoreUndefinedProperties: true });
 const auth = getAuth(app);
 
 export { db, auth };

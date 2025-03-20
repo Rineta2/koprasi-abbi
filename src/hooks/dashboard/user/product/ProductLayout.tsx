@@ -28,6 +28,7 @@ export default function ProductLayout() {
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState(true)
     const [copyMessage, setCopyMessage] = useState('')
+    const [loadingProductId, setLoadingProductId] = useState<string>('')
     const { user } = useAuth()
     const router = useRouter()
 
@@ -80,6 +81,7 @@ export default function ProductLayout() {
     };
 
     const handlePayment = async (product: Product) => {
+        setLoadingProductId(product.id);
         try {
             const auth = getAuth();
             const currentUser = auth.currentUser;
@@ -96,7 +98,6 @@ export default function ProductLayout() {
                     id: product.id,
                     price: product.price,
                     title: product.title,
-                    description: product.description,
                     status: product.status,
                     image: product.image,
                     author: {
@@ -104,7 +105,6 @@ export default function ProductLayout() {
                         fullName: product.author.fullName,
                         photoUrl: product.author.photoUrl
                     },
-                    tags: product.tags
                 },
                 user: {
                     id: currentUser.uid,
@@ -207,6 +207,8 @@ export default function ProductLayout() {
         } catch (error) {
             console.error('Payment error:', error);
             alert(error instanceof Error ? error.message : 'Terjadi kesalahan saat memproses pembayaran');
+        } finally {
+            setLoadingProductId('');
         }
     };
 
@@ -289,14 +291,16 @@ export default function ProductLayout() {
                                 <div className='flex items-center gap-3 pt-4'>
                                     <button
                                         onClick={() => handlePayment(product)}
-                                        className='flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl shadow-md shadow-primary/10 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300'
+                                        disabled={loadingProductId === product.id}
+                                        className='flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl shadow-md shadow-primary/10 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
                                     >
-                                        Bayar Sekarang
+                                        {loadingProductId === product.id ? 'Memproses...' : 'Bayar Sekarang'}
                                     </button>
 
                                     <button
                                         onClick={handleOpenModal}
-                                        className='flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl shadow-md shadow-red-500/10 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300'
+                                        disabled={loadingProductId === product.id}
+                                        className='flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl shadow-md shadow-red-500/10 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
                                     >
                                         Bayar Nanti
                                     </button>
