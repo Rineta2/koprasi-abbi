@@ -22,6 +22,10 @@ import { StatusBadge, CalendarIcon, ViewIcon } from '@/hooks/dashboard/user/tran
 
 import { Pagination } from '@/base/helper/Pagination'
 
+import TransactionLeth from "@/hooks/dashboard/user/transaksi/transaction/ui/TransactionLeth"
+
+import { useRouter } from 'next/navigation'
+
 export default function TransactionLayout() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
@@ -34,6 +38,11 @@ export default function TransactionLayout() {
     const [showFilters, setShowFilters] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
     const ITEMS_PER_PAGE = 9; // 3x3 grid layout
+    const router = useRouter();
+
+    const handleBuy = () => {
+        router.push('/dashboard/user/product');
+    }
 
     const filteredTransactions = transactions.filter(transaction => {
         const matchesSearch = transaction.productDetails.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -162,6 +171,12 @@ export default function TransactionLayout() {
     if (loading) {
         return (
             <TransactionSkelaton />
+        )
+    }
+
+    if (transactions.length === 0) {
+        return (
+            <TransactionLeth handleBuy={handleBuy} />
         )
     }
 
