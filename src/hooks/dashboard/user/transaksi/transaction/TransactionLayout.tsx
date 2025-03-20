@@ -1,0 +1,474 @@
+"use client"
+
+import React, { useEffect, useState, useCallback } from 'react'
+
+import { motion } from 'framer-motion'
+
+import { db } from '@/utils/firebase'
+
+import { collection, query, where, Timestamp, doc, getDoc, updateDoc, serverTimestamp, onSnapshot } from 'firebase/firestore'
+
+import { useAuth } from '@/utils/context/AuthContext'
+
+import TransactionSkelaton from "@/hooks/dashboard/user/transaksi/transaction/TransactionSkelaton"
+
+import Image from 'next/image'
+
+import { Transaction } from '@/hooks/dashboard/user/transaksi/transaction/lib/transaction'
+
+const ViewIcon = () => (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeWidth="2" />
+        <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" strokeWidth="2" />
+    </svg>
+);
+
+const StatusBadge = ({ status }: { status: string }) => {
+    const statusConfig = {
+        success: {
+            bg: 'bg-emerald-50',
+            text: 'text-emerald-700',
+            icon: (
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M5 13l4 4L19 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+            )
+        },
+        pending: {
+            bg: 'bg-amber-50',
+            text: 'text-amber-700',
+            icon: (
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+            )
+        },
+        failed: {
+            bg: 'bg-rose-50',
+            text: 'text-rose-700',
+            icon: (
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M6 18L18 6M6 6l12 12" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+            )
+        }
+    };
+
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+
+    return (
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium ${config.bg} ${config.text} transition-colors duration-200`}>
+            {config.icon}
+            {status.charAt(0).toUpperCase() + status.slice(1)}
+        </span>
+    );
+};
+
+const CalendarIcon = () => (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+);
+
+export default function TransactionLayout() {
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [dateRange, setDateRange] = useState('');
+    const [selectedStatus, setSelectedStatus] = useState('all');
+    const { user } = useAuth();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showFilters, setShowFilters] = useState(false);
+
+    const filteredTransactions = transactions.filter(transaction => {
+        const matchesSearch = transaction.productDetails.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            transaction.orderId.toLowerCase().includes(searchQuery.toLowerCase());
+
+        const matchesStatus = selectedStatus === 'all' || transaction.status === selectedStatus;
+
+        const transactionDate = new Date(transaction.createdAt.seconds * 1000).toISOString().split('T')[0];
+        const matchesDate = !dateRange ? true : transactionDate === dateRange;
+
+        return matchesSearch && matchesStatus && matchesDate;
+    });
+
+    const calculateTotalTransactions = () => {
+        return transactions.reduce((total, transaction) => {
+            if (transaction.status === 'success') {
+                return total + transaction.amount;
+            }
+            return total;
+        }, 0);
+    };
+
+    const checkAndUpgradeAccount = useCallback(async (totalAmount: number) => {
+        try {
+            if (!user?.uid) return;
+
+            // Get user's account document
+            const accountRef = doc(db, 'accounts', user.uid);
+            const accountSnap = await getDoc(accountRef);
+
+            if (accountSnap.exists()) {
+                const accountData = accountSnap.data();
+
+                // Debug log untuk memeriksa nilai
+                console.log('Total Amount:', totalAmount);
+                console.log('Current Account Type:', accountData.accountType);
+
+                // Mengubah pengecekan dari 'regular' menjadi 'reguler'
+                if (accountData.accountType === 'reguler' && totalAmount >= 8050000) {
+                    // Upgrade to premium
+                    await updateDoc(accountRef, {
+                        accountType: 'premium',
+                        updatedAt: serverTimestamp()
+                    });
+
+                    // Tambahkan log untuk konfirmasi update
+                    console.log('Account upgraded to premium!');
+                    console.log('Total transactions that triggered upgrade:', totalAmount);
+                }
+            }
+        } catch (error) {
+            console.error('Error upgrading account:', error);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        let unsubscribe: () => void;
+
+        const setupRealtimeListener = async () => {
+            try {
+                if (!user?.uid) return;
+
+                const transactionsRef = collection(db, 'transactions');
+                const q = query(transactionsRef, where('userId', '==', user.uid));
+
+                // Menggunakan onSnapshot untuk realtime updates
+                unsubscribe = onSnapshot(q, (querySnapshot) => {
+                    const transactionData = querySnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    })) as Transaction[];
+
+                    setTransactions(transactionData);
+                    setLoading(false);
+
+                    // Check for account upgrade after receiving new data
+                    const totalAmount = transactionData.reduce((total, transaction) => {
+                        if (transaction.status === 'success') {
+                            return total + transaction.amount;
+                        }
+                        return total;
+                    }, 0);
+
+                    checkAndUpgradeAccount(totalAmount);
+                });
+            } catch (error) {
+                console.error('Error setting up realtime listener:', error);
+                setLoading(false);
+            }
+        };
+
+        setupRealtimeListener();
+
+        // Cleanup listener when component unmounts
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
+    }, [user, checkAndUpgradeAccount]);
+
+    const formatDate = (timestamp: Timestamp) => {
+        return new Date(timestamp.seconds * 1000).toLocaleString('id-ID', {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+        });
+    };
+
+    const openModal = (transaction: Transaction) => {
+        setSelectedTransaction(transaction);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedTransaction(null);
+    };
+
+    if (loading) {
+        return (
+            <TransactionSkelaton />
+        )
+    }
+
+    return (
+        <section className='min-h-full px-0 sm:px-2'>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-xl rounded-3xl shadow-lg border border-gray-100/20 p-6 sm:p-8 mb-8"
+            >
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                    <div className="space-y-3">
+                        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-primary-dark to-primary bg-clip-text text-transparent">
+                            Riwayat Transaksi
+                        </h1>
+                        <p className="text-gray-600 text-sm sm:text-base">
+                            Lihat dan kelola semua transaksi Anda di satu tempat
+                        </p>
+                    </div>
+
+                    <div className="mt-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+                        <p className="text-sm text-gray-600">Total Transaksi Sukses</p>
+                        <p className="text-2xl font-bold text-primary mt-1">
+                            Rp {calculateTotalTransactions().toLocaleString('id-ID')}
+                        </p>
+                    </div>
+                </div>
+            </motion.div>
+
+            <div className="relative mb-8">
+                <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-white text-primary rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 shadow-sm"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
+                    <span>Filter Transaksi</span>
+                </button>
+
+                {showFilters && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4"
+                    >
+                        <input
+                            type="text"
+                            placeholder="Cari transaksi..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none bg-white/80 backdrop-blur-sm transition-all duration-200"
+                        />
+                        <input
+                            type="date"
+                            value={dateRange}
+                            onChange={(e) => setDateRange(e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none bg-white/80 backdrop-blur-sm transition-all duration-200"
+                        />
+                        <select
+                            value={selectedStatus}
+                            onChange={(e) => setSelectedStatus(e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none bg-white/80 backdrop-blur-sm transition-all duration-200"
+                        >
+                            <option value="all">Semua Status</option>
+                            <option value="success">Sukses</option>
+                            <option value="pending">Pending</option>
+                            <option value="failed">Gagal</option>
+                        </select>
+                    </motion.div>
+                )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {filteredTransactions.map((transaction) => (
+                    <motion.div
+                        key={transaction.id}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
+                        className="group bg-white/90 backdrop-blur-md rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100/50 hover:border-primary/30 overflow-hidden"
+                    >
+                        <div className="p-4 sm:p-6 space-y-4">
+                            <div className="flex gap-4">
+                                <div className="relative w-24 sm:w-32 h-24 sm:h-32 flex-shrink-0 overflow-hidden rounded-xl">
+                                    <Image
+                                        src={transaction.productDetails.image}
+                                        alt={transaction.productDetails.title}
+                                        fill
+                                        className="object-cover transition-transform duration-300 group-hover:scale-110"
+                                    />
+                                </div>
+                                <div className="flex-1 min-w-0 space-y-2">
+                                    <h3 className="font-semibold text-lg sm:text-xl text-gray-800 line-clamp-2">
+                                        {transaction.productDetails.title}
+                                    </h3>
+                                    <StatusBadge status={transaction.status} />
+                                    <p className="text-base sm:text-lg font-medium text-gray-900">
+                                        Rp {transaction.amount.toLocaleString('id-ID')}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-between text-sm text-gray-600 pt-2 border-t border-gray-100">
+                                <div className="flex items-center gap-1.5">
+                                    <CalendarIcon />
+                                    <span className="text-xs sm:text-sm">{formatDate(transaction.createdAt)}</span>
+                                </div>
+                                <button
+                                    onClick={() => openModal(transaction)}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 rounded-lg text-primary hover:bg-primary/20 transition-colors"
+                                >
+                                    <ViewIcon />
+                                    <span className="text-xs sm:text-sm">Detail</span>
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+
+            {filteredTransactions.length === 0 && !loading && (
+                <div className="text-center py-12">
+                    <p className="text-gray-500">Tidak ada transaksi yang sesuai dengan filter yang dipilih</p>
+                </div>
+            )}
+
+            <dialog
+                id="transaction_modal"
+                className={`modal ${isModalOpen ? 'modal-open' : ''}`}
+                open={isModalOpen}
+            >
+                {selectedTransaction && (
+                    <div className="modal-box w-full max-w-4xl bg-white/95 backdrop-blur-xl p-4 sm:p-6 rounded-3xl shadow-2xl max-h-[90vh]">
+                        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-xl pb-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <StatusBadge status={selectedTransaction.status} />
+                                    <h3 className="font-bold text-xl sm:text-2xl text-gray-800">
+                                        Detail Transaksi
+                                    </h3>
+                                </div>
+                                <button
+                                    onClick={closeModal}
+                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                >
+                                    <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="bg-gray-50 rounded-2xl p-4 sm:p-6">
+                                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                                    <div className="w-full sm:w-1/3">
+                                        <div className="relative aspect-square rounded-xl overflow-hidden">
+                                            <Image
+                                                src={selectedTransaction.productDetails.image}
+                                                alt={selectedTransaction.productDetails.title}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-xl font-semibold text-gray-800 mb-4">
+                                            {selectedTransaction.productDetails.title}
+                                        </h4>
+                                        <div className="flex flex-wrap gap-4">
+                                            <div className="flex-1 min-w-[200px] bg-white rounded-xl p-4 border border-gray-100">
+                                                <p className="text-sm text-gray-500 mb-1">Total Pembayaran</p>
+                                                <p className="text-2xl font-bold text-primary">
+                                                    Rp {selectedTransaction.amount.toLocaleString('id-ID')}
+                                                </p>
+                                            </div>
+                                            <div className="flex-1 min-w-[200px] bg-white rounded-xl p-4 border border-gray-100">
+                                                <p className="text-sm text-gray-500 mb-1">Metode Pembayaran</p>
+                                                <p className="text-lg font-semibold capitalize">
+                                                    {selectedTransaction.paymentDetails.paymentType?.replace('_', ' ') || 'Tidak tersedia'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                <div className="bg-gray-50 rounded-2xl p-4 sm:p-6">
+                                    <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                        <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        </svg>
+                                        Info Transaksi
+                                    </h4>
+                                    <div className="space-y-3">
+                                        <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                            <p className="text-sm text-gray-500">Order ID</p>
+                                            <p className="font-medium">{selectedTransaction.orderId}</p>
+                                        </div>
+                                        <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                            <p className="text-sm text-gray-500">Status Transaksi</p>
+                                            <p className="font-medium capitalize">{selectedTransaction.paymentDetails.transactionStatus}</p>
+                                        </div>
+                                        <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                            <p className="text-sm text-gray-500">Waktu Transaksi</p>
+                                            <p className="font-medium">{selectedTransaction.paymentDetails.transactionTime}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-gray-50 rounded-2xl p-4 sm:p-6">
+                                    <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                        <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                        Info Pelanggan
+                                    </h4>
+                                    <div className="space-y-3">
+                                        <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                            <p className="text-sm text-gray-500">Nama</p>
+                                            <p className="font-medium">{selectedTransaction.userDetails.fullName}</p>
+                                        </div>
+                                        <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                            <p className="text-sm text-gray-500">Email</p>
+                                            <p className="font-medium">{selectedTransaction.userDetails.email}</p>
+                                        </div>
+                                        <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                            <p className="text-sm text-gray-500">Tipe Akun</p>
+                                            <p className="font-medium capitalize">{selectedTransaction.userDetails.accountType}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 rounded-2xl p-4 sm:p-6">
+                                <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Timeline
+                                </h4>
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                        <div className="flex-1 bg-white rounded-xl p-3 border border-gray-100">
+                                            <p className="text-sm text-gray-500">Transaksi Dibuat</p>
+                                            <p className="font-medium">{formatDate(selectedTransaction.createdAt)}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                        <div className="flex-1 bg-white rounded-xl p-3 border border-gray-100">
+                                            <p className="text-sm text-gray-500">Terakhir Diperbarui</p>
+                                            <p className="font-medium">{formatDate(selectedTransaction.updatedAt)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                <form method="dialog" className="modal-backdrop bg-black/70 backdrop-blur-sm" onClick={closeModal}>
+                    <button className="w-full h-full cursor-default">close</button>
+                </form>
+            </dialog>
+        </section>
+    )
+}
