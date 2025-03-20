@@ -1,10 +1,10 @@
 import React from 'react'
 
-export default function TransactionLeth({ handleBuy }: { handleBuy: () => void }) {
+export default function Paid({ handleBuy }: { handleBuy: () => void }) {
     return (
         <section className='min-h-full px-0 sm:px-2'>
             <div className="flex flex-col items-center justify-center h-full py-12 text-center">
-                {/* Modern SVG Illustration */}
+                {/* Empty Transaction SVG Icon */}
                 <svg
                     className="w-48 h-48 mb-8 text-gray-200"
                     viewBox="0 0 24 24"
@@ -12,35 +12,26 @@ export default function TransactionLeth({ handleBuy }: { handleBuy: () => void }
                     xmlns="http://www.w3.org/2000/svg"
                 >
                     <path
-                        d="M9 19V13C9 11.8954 8.10457 11 7 11H5C3.89543 11 3 11.8954 3 13V19C3 20.1046 3.89543 21 5 21H7C8.10457 21 9 20.1046 9 19Z"
-                        className="fill-primary/20 stroke-primary"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                    <path
-                        d="M15 19V5C15 3.89543 14.1046 3 13 3H11C9.89543 3 9 3.89543 9 5V19C9 20.1046 9.89543 21 11 21H13C14.1046 21 15 20.1046 15 19Z"
+                        d="M19.5 3.5L18 2L16.5 3.5L15 2L13.5 3.5L12 2L10.5 3.5L9 2L7.5 3.5L6 2L4.5 3.5L3 2V22L4.5 20.5L6 22L7.5 20.5L9 22L10.5 20.5L12 22L13.5 20.5L15 22L16.5 20.5L18 22L19.5 20.5L21 22V2L19.5 3.5Z"
                         className="fill-primary/10 stroke-primary"
                         strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
                     />
                     <path
-                        d="M21 19V9C21 7.89543 20.1046 7 19 7H17C15.8954 7 15 7.89543 15 9V19C15 20.1046 15.8954 21 17 21H19C20.1046 21 21 20.1046 21 19Z"
-                        className="fill-primary/5 stroke-primary"
+                        d="M16 10H8M16 14H8"
+                        className="stroke-primary"
                         strokeWidth="1.5"
                         strokeLinecap="round"
-                        strokeLinejoin="round"
                     />
                 </svg>
 
                 <div className="space-y-4">
                     <h1 className='text-2xl sm:text-3xl font-bold text-gray-800'>
-                        Belum ada transaksi
+                        Belum ada transaksi berhasil
                     </h1>
+
                     <p className='text-sm sm:text-base text-gray-500 max-w-md mx-auto'>
-                        Tidak ada transaksi yang sedang menunggu pembayaran saat ini.
-                        Semua transaksi Anda telah selesai.
+                        Tidak ada transaksi yang berhasil saat ini.
+                        Silakan lakukan transaksi untuk melihat daftar transaksi berhasil.
                     </p>
 
                     {/* Optional: Add a CTA button */}

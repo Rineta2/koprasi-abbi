@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react'
 
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 
 import { db } from '@/utils/firebase';
 
-import TransactionPaidSkelaton from '@/hooks/dashboard/user/transaksi/paid/TransactionPaidSkelaton'
+import TransactionCancelledSkelaton from '@/hooks/dashboard/user/transaksi/cancelled/TransactionCancelledSkelaton'
 
 import { useAuth } from '@/utils/context/AuthContext'
 
@@ -14,9 +14,13 @@ import Image from 'next/image'
 
 import { Pagination } from '@/base/helper/Pagination'
 
-import { Transaction, DetailRowProps } from '@/hooks/dashboard/user/transaksi/paid/lib/paid';
+import toast from 'react-hot-toast';
 
-import Paid from '@/hooks/dashboard/user/transaksi/paid/ui/paid';
+import { Toaster } from 'react-hot-toast';
+
+import { Transaction, DetailRowProps } from '@/hooks/dashboard/user/transaksi/cancelled/lib/cancelled';
+
+import Cancelled from '@/hooks/dashboard/user/transaksi/cancelled/ui/Cancelled';
 
 import { useRouter } from 'next/navigation';
 
@@ -31,7 +35,7 @@ export default function TransactionPaid() {
     const router = useRouter();
 
     const handleBuy = () => {
-        router.push('/dashboard/user/transaksi/unpaid');
+        router.push('/dashboard/user/transaction/unpaid');
     }
 
     useEffect(() => {
@@ -45,7 +49,7 @@ export default function TransactionPaid() {
                 const q = query(
                     transactionsRef,
                     where('userId', '==', user.uid),
-                    where('status', '==', 'success')
+                    where('status', '==', 'cancelled')
                 );
 
                 unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -129,21 +133,22 @@ export default function TransactionPaid() {
     };
 
     if (isLoading) {
-        return <TransactionPaidSkelaton />
+        return <TransactionCancelledSkelaton />
     }
 
     if (transactions.length === 0) {
-        return <Paid handleBuy={handleBuy} />
+        return <Cancelled handleBuy={handleBuy} />
     }
 
     return (
         <section className='min-h-full px-0 sm:px-2'>
+            <Toaster position="top-center" />
             <div className="bg-gradient-to-br from-white/90 to-white/70 backdrop-blur-xl rounded-3xl shadow-lg border border-gray-100/30 p-6 sm:p-8 mb-8 transition-all hover:shadow-xl">
                 <h1 className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent'>
-                    Transaksi Berhasil
+                    Transaksi Dibatalkan
                 </h1>
                 <p className='text-sm sm:text-base text-gray-600 mt-2'>
-                    Berikut adalah daftar transaksi berhasil yang telah Anda lakukan.
+                    Berikut adalah daftar transaksi dibatalkan yang telah Anda lakukan.
                 </p>
 
                 {/* Update search and date filter controls */}
@@ -202,15 +207,30 @@ export default function TransactionPaid() {
                                         {formatDate(transaction.createdAt)}
                                     </p>
 
-                                    <button
-                                        className="w-full bg-primary text-white py-2.5 px-4 rounded-xl hover:bg-primary/90 active:scale-95 transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2"
-                                        onClick={() => openModal(transaction.id)}
-                                    >
-                                        <span>Lihat Detail</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                        </svg>
-                                    </button>
+                                    <div className="flex gap-2">
+                                        <button
+                                            className="flex-1 bg-primary text-white py-2.5 px-4 rounded-xl hover:bg-primary/90 active:scale-95 transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2"
+                                            onClick={() => openModal(transaction.id)}
+                                        >
+                                            <span>Lihat Detail</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            className="bg-red-500 text-white py-2.5 px-4 rounded-xl hover:bg-red-600 active:scale-95 transition-all duration-200 text-sm font-medium flex items-center justify-center"
+                                            onClick={() => {
+                                                const modal = document.getElementById(`delete_modal_${transaction.id}`) as HTMLDialogElement;
+                                                if (modal) {
+                                                    modal.showModal();
+                                                }
+                                            }}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -284,7 +304,10 @@ export default function TransactionPaid() {
                                             </h4>
                                             <div className="flex flex-col gap-4">
                                                 <div className="flex-1 space-y-3 sm:space-y-4">
-                                                    <DetailRow label="Metode Pembayaran" value={transaction.paymentDetails.paymentType.replace(/_/g, ' ')} />
+                                                    <DetailRow label="Metode Pembayaran" value={transaction.paymentDetails.paymentType ?
+                                                        transaction.paymentDetails.paymentType.replace(/_/g, ' ') :
+                                                        'Tidak tersedia'
+                                                    } />
                                                     <DetailRow label="Status Transaksi" value={transaction.paymentDetails.transactionStatus} isStatus />
                                                     <DetailRow label="Jumlah Pembayaran" value={`Rp ${new Intl.NumberFormat('id-ID').format(parseInt(transaction.paymentDetails.grossAmount))}`} isPrimary />
                                                     <DetailRow label="Status Message" value={transaction.paymentDetails.statusMessage} />
@@ -351,6 +374,8 @@ export default function TransactionPaid() {
                                 <button>close</button>
                             </form>
                         </dialog>
+
+                        <DeleteConfirmationModal transactionId={transaction.id} />
                     </React.Fragment>
                 ))}
             </div>
@@ -392,3 +417,94 @@ const DetailRow = ({
         )}
     </div>
 );
+
+const DeleteConfirmationModal = ({ transactionId }: { transactionId: string }) => {
+    const { user } = useAuth();
+
+    const handleDelete = async () => {
+        try {
+            if (!user) {
+                toast.error('Anda harus login untuk menghapus transaksi');
+                return;
+            }
+
+            // Show loading state
+            const deleteButton = document.querySelector(`#delete_btn_${transactionId}`) as HTMLButtonElement;
+            if (deleteButton) {
+                deleteButton.disabled = true;
+                deleteButton.innerHTML = 'Menghapus...';
+            }
+
+            // Show loading toast
+            const loadingToast = toast.loading('Sedang menghapus transaksi...');
+
+            // Get transaction data first to verify ownership
+            const transactionRef = doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_TRANSACTIONS as string, transactionId);
+            const transactionSnap = await getDoc(transactionRef);
+
+            if (!transactionSnap.exists()) {
+                toast.dismiss(loadingToast);
+                throw new Error('Transaksi tidak ditemukan');
+            }
+
+            const transactionData = transactionSnap.data();
+
+            // Verify ownership
+            if (transactionData.userId !== user.uid) {
+                toast.dismiss(loadingToast);
+                throw new Error('Anda tidak memiliki izin untuk menghapus transaksi ini');
+            }
+
+            // Delete the transaction
+            await deleteDoc(transactionRef);
+
+            // Close the modal
+            const modal = document.getElementById(`delete_modal_${transactionId}`) as HTMLDialogElement;
+            if (modal) {
+                modal.close();
+            }
+
+            // Show success toast
+            toast.dismiss(loadingToast);
+            toast.success('Transaksi berhasil dihapus');
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+            toast.error(error instanceof Error ? error.message : 'Gagal menghapus transaksi. Silakan coba lagi.');
+        } finally {
+            // Reset button state
+            const deleteButton = document.querySelector(`#delete_btn_${transactionId}`) as HTMLButtonElement;
+            if (deleteButton) {
+                deleteButton.disabled = false;
+                deleteButton.innerHTML = 'Hapus';
+            }
+        }
+    };
+
+    return (
+        <dialog id={`delete_modal_${transactionId}`} className="modal">
+            <div className="modal-box bg-white p-6">
+                <h3 className="text-lg font-bold text-gray-800 mb-4">Konfirmasi Penghapusan</h3>
+                <p className="text-gray-600 mb-6">
+                    Apakah Anda yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.
+                </p>
+                <div className="flex justify-end gap-3">
+                    <form method="dialog">
+                        <button className="px-4 py-2 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                            Batal
+                        </button>
+                    </form>
+                    <button
+                        id={`delete_btn_${transactionId}`}
+                        onClick={handleDelete}
+                        className="px-4 py-2 rounded-xl bg-red-500 text-white hover:bg-red-600 transition-colors disabled:bg-red-300 disabled:cursor-not-allowed"
+                    >
+                        Hapus
+                    </button>
+                </div>
+            </div>
+            <form method="dialog" className="modal-backdrop">
+                <button>close</button>
+            </form>
+        </dialog>
+    );
+};
