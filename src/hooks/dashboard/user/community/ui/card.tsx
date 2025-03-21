@@ -7,7 +7,7 @@ import { Timestamp as FirebaseTimestamp } from 'firebase/firestore'
 export const SupporterCard = ({ supporter, expanded, onToggle }: { supporter: Supporter, expanded: boolean, onToggle: (supporterId: string) => void }) => (
     <div className="group bg-gradient-to-br from-card/60 to-card/40 hover:from-card-hover/60 hover:to-card-hover/40 backdrop-blur-sm rounded-xl border border-border/70 p-6 transition-all duration-300 hover:shadow-xl relative overflow-hidden">
         {/* Status indicator - visual cue */}
-        <div className={`absolute top-0 left-0 w-2 h-full ${supporter.status === 'premium' ? 'bg-primary' : 'bg-gray-300'
+        <div className={`absolute top-0 left-0 w-2 h-full ${supporter.accountType === 'premium' ? 'bg-primary' : 'bg-gray-300'
             }`}></div>
 
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -18,11 +18,11 @@ export const SupporterCard = ({ supporter, expanded, onToggle }: { supporter: Su
                 <div>
                     <div className="flex items-center gap-2">
                         <h4 className="font-semibold text-lg text-primary">{supporter.username}</h4>
-                        <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full ${supporter.status === 'premium'
+                        <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full ${supporter.accountType === 'premium'
                             ? 'bg-primary/20 text-primary'
                             : 'bg-gray-200 text-gray-700'
                             }`}>
-                            {supporter.status || 'N/A'}
+                            {supporter.accountType || 'N/A'}
                         </span>
                     </div>
                     <p className="text-sm font-mono mt-1 bg-card/50 px-2 py-0.5 rounded text-text-dark">{supporter.referralCode}</p>
@@ -48,10 +48,17 @@ export const SupporterCard = ({ supporter, expanded, onToggle }: { supporter: Su
             </div>
             <div className="flex items-center gap-3 bg-card/50 p-3 rounded-lg">
                 <span className="text-text-dark font-medium">Status:</span>
-                <span className={`font-medium ${supporter.status === 'premium' ? 'text-primary' : 'text-gray-600'} capitalize`}>
-                    {supporter.status || 'N/A'}
+                <span className={`font-medium ${supporter.accountType === 'premium' ? 'text-primary' : 'text-gray-600'} capitalize`}>
+                    {supporter.accountType || 'N/A'}
                 </span>
             </div>
+
+            {supporter.referredBy && (
+                <div className="flex flex-col gap-3 bg-card/50 p-3 rounded-lg">
+                    <span className="text-text-dark font-medium">Direferensikan Oleh:</span>
+                    <span className="font-medium text-primary">{supporter.referredBy}</span>
+                </div>
+            )}
         </div>
 
         {supporter.usedBy && supporter.usedBy.length > 0 && (

@@ -8,7 +8,7 @@ import { db } from '@/utils/firebase';
 
 import { doc, updateDoc, getDoc, Timestamp } from 'firebase/firestore';
 
-import { UserAccount } from './interface/Interface';
+import { UserAccount } from '@/hooks/dashboard/user/pengaturan/alamat/interface/Interface';
 
 import toast from 'react-hot-toast';
 
@@ -29,7 +29,6 @@ export default function AlamatLayout() {
                 const userDoc = await doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS as string, user?.uid as string);
                 const userData = (await getDoc(userDoc)).data() as UserAccount;
 
-                // Pre-fill the form with existing data
                 setFormData({
                     ...userData,
                 });
@@ -106,19 +105,19 @@ export default function AlamatLayout() {
     return (
         <section className="min-h-full px-0 sm:px-2">
             {/* Header Section */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 bg-background dark:bg-background-dark rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 bg-background rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-6 mb-6 sm:mb-8">
                 <div className="space-y-1">
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
                         Alamat Saya
                     </h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
+                    <p className="text-sm sm:text-base text-gray-500">
                         Kelola alamat pengiriman Anda
                     </p>
                 </div>
             </div>
 
             {/* User Info Card */}
-            <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-background dark:bg-background-dark rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300">
+            <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-background rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300">
                 <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                     <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center">
                         <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,10 +125,10 @@ export default function AlamatLayout() {
                         </svg>
                     </div>
                     <div>
-                        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+                        <h2 className="text-xl font-semibold text-gray-700">
                             Informasi Pengguna
                         </h2>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Detail akun dan informasi pribadi</p>
+                        <p className="text-sm text-gray-500">Detail akun dan informasi pribadi</p>
                     </div>
                 </div>
 
@@ -139,6 +138,7 @@ export default function AlamatLayout() {
                         { label: 'Username', value: formData.username },
                         { label: 'Email', value: formData.email },
                         { label: 'Nomor Telepon', value: formData.phoneNumber },
+                        { label: 'Account Type', value: formData.accountType },
                         {
                             label: 'Tanggal Bergabung',
                             value: formData.createdAt instanceof Timestamp
@@ -153,11 +153,12 @@ export default function AlamatLayout() {
                                 : '-'
                         }
                     ].map((item, index) => (
-                        <div key={index} className="p-4 bg-background-dark dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                        <div key={index} className="p-4 bg-background rounded-xl border border-gray-200">
+                            <p className="text-sm font-medium text-gray-600 mb-1 capitalize">
                                 {item.label}
                             </p>
-                            <p className="text-base text-gray-900 dark:text-gray-200">
+
+                            <p className="text-base text-gray-900 capitalize">
                                 {item.value || '-'}
                             </p>
                         </div>
@@ -166,7 +167,7 @@ export default function AlamatLayout() {
             </div>
 
             {/* Family Info Card */}
-            <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-background dark:bg-background-dark rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300">
+            <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-background rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 sm:mb-6">
                     <div className="flex items-center gap-3 sm:gap-4">
                         <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -175,10 +176,10 @@ export default function AlamatLayout() {
                             </svg>
                         </div>
                         <div>
-                            <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+                            <h2 className="text-xl font-semibold text-gray-700">
                                 Informasi Keluarga
                             </h2>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Data keluarga dan ahli waris</p>
+                            <p className="text-sm text-gray-500">Data keluarga dan ahli waris</p>
                         </div>
                     </div>
                 </div>
@@ -205,7 +206,7 @@ export default function AlamatLayout() {
                         }
                     ].map((item, index) => (
                         <div key={index} className="space-y-2">
-                            <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            <label className="text-sm font-medium text-gray-600">
                                 {item.label}
                             </label>
 
@@ -215,23 +216,19 @@ export default function AlamatLayout() {
                                 value={item.value || ''}
                                 onChange={item.onChange}
                                 disabled={hasExistingData() && !isEditing}
-                                className="input w-full px-4 py-3 bg-background-dark dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300
-                                disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-background-dark dark:disabled:bg-gray-800 
-                                disabled:text-text dark:disabled:text-text-dark"
+                                className="input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-700"
                             />
                         </div>
                     ))}
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        <label className="text-sm font-medium text-gray-600">
                             Status Ahli Waris
                         </label>
                         <select
                             value={formData.statusAhliWaris || ''}
                             onChange={(e) => setFormData(prev => ({ ...prev, statusAhliWaris: e.target.value }))}
                             disabled={hasExistingData() && !isEditing}
-                            className="select w-full px-4 py-3 bg-background-dark dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300
-                            disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-background-dark dark:disabled:bg-gray-800 
-                            disabled:text-text dark:disabled:text-text-dark"
+                            className="select w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-700"
                         >
                             <option value="">Pilih Status</option>
                             {['Anak', 'Istri', 'Suami', 'Orang Tua', 'Saudara Kandung', 'Kerabat'].map((status) => (
@@ -244,7 +241,7 @@ export default function AlamatLayout() {
 
             {/* Address Cards */}
             {['KTP', 'Domisili'].map((type) => (
-                <div key={type} className="mb-6 sm:mb-8 p-4 sm:p-6 bg-background dark:bg-background-dark rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300">
+                <div key={type} className="mb-6 sm:mb-8 p-4 sm:p-6 bg-background rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 sm:mb-6">
                         <div className="flex items-center gap-3 sm:gap-4">
                             <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -254,15 +251,15 @@ export default function AlamatLayout() {
                                 </svg>
                             </div>
                             <div>
-                                <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+                                <h2 className="text-xl font-semibold text-gray-700">
                                     Alamat {type}
                                 </h2>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                <p className="text-sm text-gray-500">
                                     Detail alamat {type.toLowerCase()}
                                 </p>
                             </div>
                         </div>
-                        <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 bg-background-dark dark:bg-gray-800 px-2 sm:px-3 py-1 rounded-full w-full sm:w-auto text-center sm:text-left">
+                        <span className="text-xs sm:text-sm text-gray-500 bg-background px-2 sm:px-3 py-1 rounded-full w-full sm:w-auto text-center sm:text-left">
                             Terakhir diperbarui: {formData.updatedAt instanceof Timestamp ?
                                 formData.updatedAt.toDate().toLocaleString('id-ID', {
                                     day: 'numeric',
@@ -284,7 +281,7 @@ export default function AlamatLayout() {
                             { field: 'streetAddress', label: 'Alamat Jalan', colSpan: true }
                         ].map((item, index) => (
                             <div key={index} className={`space-y-2 ${item.colSpan ? 'sm:col-span-2' : ''}`}>
-                                <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                <label className="text-sm font-medium text-gray-600">
                                     {item.label}
                                 </label>
                                 <input
@@ -300,9 +297,7 @@ export default function AlamatLayout() {
                                         e.target.value
                                     )}
                                     disabled={hasExistingData() && !isEditing}
-                                    className="input w-full px-4 py-3 bg-background-dark dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300
-                                    disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-background-dark dark:disabled:bg-gray-800 
-                                    disabled:text-text dark:disabled:text-text-dark"
+                                    className="input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-700"
                                 />
                             </div>
                         ))}
@@ -317,7 +312,7 @@ export default function AlamatLayout() {
                         <button
                             onClick={handleSubmit}
                             disabled={isSaving}
-                            className="w-full sm:w-auto btn px-6 sm:px-8 py-2.5 sm:py-3 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="w-full sm:w-auto btn px-6 sm:px-8 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             {isSaving ? (
                                 <div className="flex items-center gap-2">
@@ -331,7 +326,7 @@ export default function AlamatLayout() {
                     ) : (
                         <button
                             onClick={() => setIsEditing(true)}
-                            className="w-full sm:w-auto btn px-6 sm:px-8 py-2.5 sm:py-3 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                            className="w-full sm:w-auto btn px-6 sm:px-8 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
                         >
                             Edit
                         </button>
@@ -340,7 +335,7 @@ export default function AlamatLayout() {
                     <button
                         onClick={handleSubmit}
                         disabled={isSaving}
-                        className="w-full sm:w-auto btn px-6 sm:px-8 py-2.5 sm:py-3 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="w-full sm:w-auto btn px-6 sm:px-8 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         {isSaving ? (
                             <div className="flex items-center gap-2">

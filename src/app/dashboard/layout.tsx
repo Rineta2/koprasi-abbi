@@ -14,6 +14,10 @@ import UserHeader from "@/components/layout/dashboard/user/Header";
 
 import AccessDenied from "@/components/layout/dashboard/AccessDenied";
 
+import MessagesContent from "@/components/layout/dashboard/MessagesContent";
+
+import NotificationsContent from "@/components/layout/dashboard/NotificationsContent";
+
 export default function DashboardLayout({
     children,
 }: {
@@ -30,6 +34,8 @@ export default function DashboardLayout({
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [currentRole, setCurrentRole] = useState<Role | null>(null);
     const [loading, setLoading] = useState(true);
+    const [showMessages, setShowMessages] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
 
     useEffect(() => {
         if (!user) {
@@ -100,6 +106,17 @@ export default function DashboardLayout({
             default:
                 return null;
         }
+    };
+
+    // Fungsi untuk menangani popup
+    const handleMessagesClick = () => {
+        setShowNotifications(false); // Tutup notifications jika terbuka
+        setShowMessages(!showMessages); // Toggle messages
+    };
+
+    const handleNotificationsClick = () => {
+        setShowMessages(false); // Tutup messages jika terbuka
+        setShowNotifications(!showNotifications); // Toggle notifications
     };
 
     return (
@@ -176,8 +193,11 @@ export default function DashboardLayout({
                         {/* Right side - Messages and Notifications */}
                         <div className="flex items-center gap-2">
                             {/* Messages */}
-                            <button className="relative group">
-                                <div className="p-2 hover:bg-slate-100 rounded-lg transition-colors duration-200">
+                            <div className="relative">
+                                <button
+                                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors duration-200 group"
+                                    onClick={handleMessagesClick}
+                                >
                                     <svg
                                         className="w-6 h-6 text-slate-600 group-hover:text-slate-800"
                                         fill="none"
@@ -191,13 +211,30 @@ export default function DashboardLayout({
                                             d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
                                         />
                                     </svg>
-                                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
-                                </div>
-                            </button>
+                                    {currentRole === Role.SUPER_ADMIN && (
+                                        <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                                    )}
+                                    {currentRole === Role.ADMIN && (
+                                        <span className="absolute top-1 right-1 w-2 h-2 bg-yellow-500 rounded-full ring-2 ring-white"></span>
+                                    )}
+                                    {currentRole === Role.USER && (
+                                        <span className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full ring-2 ring-white"></span>
+                                    )}
+                                </button>
+                                {showMessages && (
+                                    <MessagesContent
+                                        role={currentRole!}
+                                        onClose={() => setShowMessages(false)}
+                                    />
+                                )}
+                            </div>
 
                             {/* Notifications */}
-                            <button className="relative group">
-                                <div className="p-2 hover:bg-slate-100 rounded-lg transition-colors duration-200">
+                            <div className="relative">
+                                <button
+                                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors duration-200 group"
+                                    onClick={handleNotificationsClick}
+                                >
                                     <svg
                                         className="w-6 h-6 text-slate-600 group-hover:text-slate-800"
                                         fill="none"
@@ -211,9 +248,23 @@ export default function DashboardLayout({
                                             d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                                         />
                                     </svg>
-                                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
-                                </div>
-                            </button>
+                                    {currentRole === Role.SUPER_ADMIN && (
+                                        <span className="absolute top-1 right-1 w-2 h-2 bg-purple-500 rounded-full ring-2 ring-white"></span>
+                                    )}
+                                    {currentRole === Role.ADMIN && (
+                                        <span className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full ring-2 ring-white"></span>
+                                    )}
+                                    {currentRole === Role.USER && (
+                                        <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full ring-2 ring-white"></span>
+                                    )}
+                                </button>
+                                {showNotifications && (
+                                    <NotificationsContent
+                                        role={currentRole!}
+                                        onClose={() => setShowNotifications(false)}
+                                    />
+                                )}
+                            </div>
                         </div>
                     </div>
 

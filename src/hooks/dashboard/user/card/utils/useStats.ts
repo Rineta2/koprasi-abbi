@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
+
 import { db } from "@/utils/firebase";
+
 import { collection, query, where, getDocs } from "firebase/firestore";
+
 import { useAuth } from "@/utils/context/AuthContext";
 
 export function useStats() {

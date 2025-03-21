@@ -16,11 +16,8 @@ export interface Supporter {
   type: string;
   count: number;
   joinedAt: Timestamp;
-  status: string;
-  usedBy?: {
-    username: string;
-    joinedAt: Timestamp;
-  }[];
+  accountType: string;
+  usedBy?: UsedByEntry[];
 }
 
 export interface ReferralNetwork {
@@ -28,11 +25,11 @@ export interface ReferralNetwork {
   ownerUid: string;
   ownerUsername: string;
   ownerReferralCode: string;
+  ownerAccountType: string;
   type: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
   supporters: Supporter[];
-  ownerStatus: string;
 }
 
 export interface User {

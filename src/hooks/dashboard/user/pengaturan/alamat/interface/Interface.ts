@@ -4,6 +4,7 @@ export interface UserAccount {
   fullName: string;
   phoneNumber: string;
   username: string;
+  accountType: string;
   tanggalLahir: string;
   alamatKtp?: {
     fullName: string;
