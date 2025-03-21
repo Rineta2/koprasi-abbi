@@ -174,13 +174,13 @@ export const menuItems = [
       },
 
       {
-        label: "Belum Dibayar",
-        href: "/dashboard/super-admins/transaction/unpaid",
+        label: "Sudah Dibayar",
+        href: "/dashboard/super-admins/transaction/paid",
       },
 
       {
-        label: "Sudah Dibayar",
-        href: "/dashboard/super-admins/transaction/paid",
+        label: "Belum Dibayar",
+        href: "/dashboard/super-admins/transaction/unpaid",
       },
 
       {

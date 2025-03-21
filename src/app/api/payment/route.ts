@@ -87,7 +87,7 @@ export async function POST(request: Request) {
         error: `${process.env.NEXT_PUBLIC_URL}/payment/error`,
         pending: `${process.env.NEXT_PUBLIC_URL}/payment/pending`,
       },
-      enabled_payments: ["credit_card", "bank_transfer", "gopay", "shopeepay"],
+      enabled_payments: paymentData.product.paymentMethod,
       expiry: {
         unit: "minutes",
         duration: 60,
@@ -133,7 +133,7 @@ export async function POST(request: Request) {
           id: paymentData.user.id,
           email: paymentData.user.email,
           fullName: paymentData.user.fullName,
-          photoURL: paymentData.user.photoURL,
+          photoURL: paymentData.user.photoURL || null,
           accountType: paymentData.user.accountType,
         },
         productDetails: paymentData.product,
@@ -149,6 +149,9 @@ export async function POST(request: Request) {
           statusMessage: null,
           statusCode: null,
           vaNumbers: [],
+          paymentCode: null,
+          billKey: null,
+          billerCode: null,
         },
       };
 

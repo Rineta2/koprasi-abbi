@@ -1,12 +1,12 @@
 export interface MidtransSuccessResult {
-  status_code: string;
-  status_message: string;
   transaction_id: string;
   order_id: string;
   gross_amount: string;
   payment_type: string;
   transaction_time: string;
   transaction_status: string;
+  status_message: string;
+  status_code: string;
   va_numbers?: Array<{
     bank: string;
     va_number: string;

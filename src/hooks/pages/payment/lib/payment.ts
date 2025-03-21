@@ -29,7 +29,7 @@ export interface TransactionData {
   };
   paymentDetails: {
     paymentType: string;
-    va_numbers?: VANumber[];
+    vaNumbers: VANumber[];
     transactionTime: string;
     statusMessage: string;
     statusCode: string;

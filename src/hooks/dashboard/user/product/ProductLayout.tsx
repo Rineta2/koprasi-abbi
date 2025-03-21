@@ -6,7 +6,7 @@ import { db } from '@/utils/firebase'
 
 import { getAuth } from 'firebase/auth'
 
-import { collection, onSnapshot } from 'firebase/firestore'
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore'
 
 import Image from 'next/image'
 
@@ -93,6 +93,11 @@ export default function ProductLayout() {
             // Get fresh ID token
             const idToken = await currentUser.getIdToken(true);
 
+            // Get user data from accounts collection using the correct Firestore methods
+            const userDocRef = doc(db, 'accounts', currentUser.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            const userData = userDocSnap.data();
+
             const paymentData = {
                 product: {
                     id: product.id,
@@ -109,9 +114,9 @@ export default function ProductLayout() {
                 user: {
                     id: currentUser.uid,
                     email: currentUser.email,
-                    fullName: user?.fullName || currentUser.email?.split('@')[0],
-                    photoURL: currentUser.photoURL || '',
-                    accountType: user?.accountType
+                    fullName: userData?.fullName || currentUser.email?.split('@')[0],
+                    photoURL: userData?.photoURL || user?.photoURL || currentUser.photoURL || null,
+                    accountType: userData?.accountType || user?.accountType
                 },
                 transaction: {
                     orderId: `ORDER-${Date.now()}-${Math.random().toString(36).substring(7)}`,
@@ -151,39 +156,90 @@ export default function ProductLayout() {
                         console.log('Payment success:', result);
                         try {
                             const newToken = await currentUser.getIdToken(true);
+
+                            const notificationData = {
+                                orderId: data.orderId,
+                                status: 'success',
+                                transaction_id: result.transaction_id,
+                                payment_type: result.payment_type,
+                                transaction_time: result.transaction_time,
+                                transaction_status: result.transaction_status,
+                                gross_amount: result.gross_amount,
+                                status_message: result.status_message,
+                                status_code: result.status_code,
+                                va_numbers: result.va_numbers || [],
+                                product: {
+                                    id: product.id,
+                                    title: product.title,
+                                    price: product.price,
+                                    status: product.status,
+                                    image: product.image,
+                                }
+                            };
+
+                            console.log('Sending notification data:', notificationData);
+
                             const notificationResponse = await fetch('/api/payment/notification', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                     'Authorization': `Bearer ${newToken}`
                                 },
-                                body: JSON.stringify({
-                                    orderId: data.orderId,
-                                    status: 'success',
-                                    transaction_id: result.transaction_id,
-                                    payment_type: result.payment_type,
-                                    transaction_time: result.transaction_time,
-                                    transaction_status: result.transaction_status,
-                                    gross_amount: result.gross_amount,
-                                    status_message: result.status_message,
-                                    status_code: result.status_code,
-                                    product: {
-                                        id: product.id,
-                                        title: product.title,
-                                        price: product.price,
-                                        status: product.status,
-                                        image: product.image,
-                                    }
-                                })
+                                body: JSON.stringify(notificationData)
                             });
 
+                            // Log response status dan headers untuk debugging
+                            console.log('Response status:', notificationResponse.status);
+                            console.log('Response headers:', Object.fromEntries(notificationResponse.headers.entries()));
+
+                            // Cek content-type dari response
+                            const contentType = notificationResponse.headers.get('content-type');
+
                             if (!notificationResponse.ok) {
-                                throw new Error('Gagal memperbarui status transaksi');
+                                let errorMessage = '';
+                                try {
+                                    // Hanya parse sebagai JSON jika content-type adalah application/json
+                                    if (contentType?.includes('application/json')) {
+                                        const errorData = await notificationResponse.json();
+                                        errorMessage = errorData.error || errorData.details || 'Unknown error';
+                                    } else {
+                                        // Jika bukan JSON, ambil text response
+                                        const textError = await notificationResponse.text();
+                                        console.error('Server response:', textError);
+                                        errorMessage = 'Server error: Non-JSON response received';
+                                    }
+                                } catch (parseError) {
+                                    console.error('Error parsing response:', parseError);
+                                    errorMessage = 'Failed to parse server response';
+                                }
+                                throw new Error(`Gagal memperbarui status transaksi: ${errorMessage}`);
                             }
 
-                            router.push(`/payment/status/${data.orderId}`);
+                            // Parse response hanya jika content-type adalah application/json
+                            let responseData;
+                            try {
+                                if (contentType?.includes('application/json')) {
+                                    responseData = await notificationResponse.json();
+                                    console.log('Success response:', responseData);
+                                }
+                            } catch (parseError) {
+                                console.error('Error parsing success response:', parseError);
+                                // Tidak throw error di sini karena transaksi mungkin sudah berhasil
+                            }
+
+                            // Tambahkan delay sebelum redirect
+                            setTimeout(() => {
+                                router.push(`/payment/status/${data.orderId}`);
+                            }, 1000);
+
                         } catch (error) {
                             console.error('Error updating transaction:', error);
+                            // Log stack trace untuk debugging
+                            if (error instanceof Error) {
+                                console.error('Error stack:', error.stack);
+                            }
+                            alert(error instanceof Error ? error.message : 'Terjadi kesalahan saat memperbarui status transaksi');
+                            // Tetap redirect ke halaman status meskipun ada error
                             router.push(`/payment/status/${data.orderId}`);
                         }
                     },
