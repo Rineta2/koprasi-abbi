@@ -5,7 +5,7 @@ import ProfileLayout from '@/hooks/dashboard/user/product/ProductLayout';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Product - Profil',
+    title: 'Product - Koperasi ABBI',
     description: 'Halaman Product user - profil',
 }
 
