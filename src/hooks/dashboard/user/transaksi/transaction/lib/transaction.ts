@@ -24,6 +24,10 @@ export interface PaymentDetails {
   grossAmount: string;
   transactionTime: string;
   paymentType: string;
+  vaNumbers: {
+    bank: string;
+    va_number: string;
+  }[];
 }
 
 export interface Transaction {

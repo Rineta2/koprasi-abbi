@@ -22,7 +22,7 @@ import Link from 'next/link'
 
 import { useRouter } from 'next/navigation'
 
-import { MidtransSuccessResult, MidtransPendingResult, MidtransErrorResult } from '@/types/midtrans'
+import { MidtransSuccessResult } from '@/types/midtrans'
 
 export default function ProductLayout() {
     const [products, setProducts] = useState<Product[]>([])
@@ -47,8 +47,7 @@ export default function ProductLayout() {
 
             setProducts(filteredProducts)
             setLoading(false)
-        }, (error) => {
-            console.error('Error fetching products:', error)
+        }, () => {
             setLoading(false)
         })
 
@@ -67,12 +66,10 @@ export default function ProductLayout() {
         try {
             await navigator.clipboard.writeText(text);
             setCopyMessage('Nomor rekening berhasil disalin!');
-            // Hilangkan pesan setelah 3 detik
             setTimeout(() => {
                 setCopyMessage('');
             }, 3000);
-        } catch (err) {
-            console.error('Gagal menyalin:', err);
+        } catch {
             setCopyMessage('Gagal menyalin nomor rekening');
             setTimeout(() => {
                 setCopyMessage('');
@@ -128,8 +125,6 @@ export default function ProductLayout() {
                 }
             };
 
-            console.log('Sending payment request with data:', paymentData);
-
             const response = await fetch('/api/payment', {
                 method: 'POST',
                 headers: {
@@ -140,7 +135,6 @@ export default function ProductLayout() {
             });
 
             const data = await response.json();
-            console.log('Payment API response:', data);
 
             if (!response.ok) {
                 throw new Error(data.error || data.details || 'Gagal memproses pembayaran');
@@ -153,9 +147,24 @@ export default function ProductLayout() {
             if (typeof window !== 'undefined' && window.snap) {
                 const snapConfig = {
                     onSuccess: async function (result: MidtransSuccessResult) {
-                        console.log('Payment success:', result);
                         try {
                             const newToken = await currentUser.getIdToken(true);
+
+                            let vaNumbers: { bank: string; va_number: string; biller_code?: string }[] = [];
+                            if (result.va_numbers && result.va_numbers.length > 0) {
+                                vaNumbers = result.va_numbers;
+                            } else if (result.permata_va_number) {
+                                vaNumbers = [{
+                                    bank: 'permata',
+                                    va_number: result.permata_va_number
+                                }];
+                            } else if (result.payment_type === 'echannel' && result.bill_key && result.biller_code) {
+                                vaNumbers = [{
+                                    bank: 'mandiri',
+                                    va_number: result.bill_key,
+                                    biller_code: result.biller_code
+                                }];
+                            }
 
                             const notificationData = {
                                 orderId: data.orderId,
@@ -167,7 +176,13 @@ export default function ProductLayout() {
                                 gross_amount: result.gross_amount,
                                 status_message: result.status_message,
                                 status_code: result.status_code,
-                                va_numbers: result.va_numbers || [],
+                                va_numbers: vaNumbers,
+                                bill_key: result.bill_key,
+                                biller_code: result.biller_code,
+                                qr_string: result.qr_string,
+                                actions: result.actions,
+                                payment_code: result.payment_code,
+                                finish_redirect_url: `/payment/status/${data.orderId}`,
                                 product: {
                                     id: product.id,
                                     title: product.title,
@@ -176,8 +191,6 @@ export default function ProductLayout() {
                                     image: product.image,
                                 }
                             };
-
-                            console.log('Sending notification data:', notificationData);
 
                             const notificationResponse = await fetch('/api/payment/notification', {
                                 method: 'POST',
@@ -188,71 +201,38 @@ export default function ProductLayout() {
                                 body: JSON.stringify(notificationData)
                             });
 
-                            // Log response status dan headers untuk debugging
-                            console.log('Response status:', notificationResponse.status);
-                            console.log('Response headers:', Object.fromEntries(notificationResponse.headers.entries()));
-
-                            // Cek content-type dari response
-                            const contentType = notificationResponse.headers.get('content-type');
-
                             if (!notificationResponse.ok) {
                                 let errorMessage = '';
                                 try {
-                                    // Hanya parse sebagai JSON jika content-type adalah application/json
-                                    if (contentType?.includes('application/json')) {
+                                    if (notificationResponse.headers.get('content-type')?.includes('application/json')) {
                                         const errorData = await notificationResponse.json();
                                         errorMessage = errorData.error || errorData.details || 'Unknown error';
                                     } else {
-                                        // Jika bukan JSON, ambil text response
-                                        const textError = await notificationResponse.text();
-                                        console.error('Server response:', textError);
                                         errorMessage = 'Server error: Non-JSON response received';
                                     }
-                                } catch (parseError) {
-                                    console.error('Error parsing response:', parseError);
+                                } catch {
                                     errorMessage = 'Failed to parse server response';
                                 }
                                 throw new Error(`Gagal memperbarui status transaksi: ${errorMessage}`);
                             }
 
-                            // Parse response hanya jika content-type adalah application/json
-                            let responseData;
-                            try {
-                                if (contentType?.includes('application/json')) {
-                                    responseData = await notificationResponse.json();
-                                    console.log('Success response:', responseData);
-                                }
-                            } catch (parseError) {
-                                console.error('Error parsing success response:', parseError);
-                                // Tidak throw error di sini karena transaksi mungkin sudah berhasil
-                            }
-
-                            // Tambahkan delay sebelum redirect
                             setTimeout(() => {
                                 router.push(`/payment/status/${data.orderId}`);
                             }, 1000);
 
                         } catch (error) {
-                            console.error('Error updating transaction:', error);
-                            // Log stack trace untuk debugging
-                            if (error instanceof Error) {
-                                console.error('Error stack:', error.stack);
-                            }
                             alert(error instanceof Error ? error.message : 'Terjadi kesalahan saat memperbarui status transaksi');
-                            // Tetap redirect ke halaman status meskipun ada error
                             router.push(`/payment/status/${data.orderId}`);
                         }
                     },
-                    onPending: function (result: MidtransPendingResult) {
-                        console.log('Payment pending:', result);
+                    onPending: function () {
                         router.push(`/payment/status/${data.orderId}`);
                     },
-                    onError: function (result: MidtransErrorResult) {
-                        console.error('Payment error:', result);
+                    onError: function () {
                         router.push(`/payment/status/${data.orderId}`);
                     },
                     onClose: function () {
-                        console.log('Customer closed the popup without finishing the payment');
+                        // Empty function
                     }
                 };
 
@@ -261,7 +241,6 @@ export default function ProductLayout() {
                 throw new Error('Midtrans Snap belum dimuat. Silakan muat ulang halaman.');
             }
         } catch (error) {
-            console.error('Payment error:', error);
             alert(error instanceof Error ? error.message : 'Terjadi kesalahan saat memproses pembayaran');
         } finally {
             setLoadingProductId('');

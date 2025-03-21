@@ -24,6 +24,40 @@ import { Transaction, DetailRowProps } from '@/hooks/dashboard/user/transaksi/un
 
 import Unpaid from '@/hooks/dashboard/user/transaksi/unpaid/ui/Unpaid';
 
+// Definisikan tipe untuk nilai yang mungkin dalam updateData
+type UpdateDataValue = string | number | Date | Array<{
+    bank: string;
+    va_number: string;
+}> | Array<{
+    name: string;
+    link: string;
+}> | null;
+
+// Definisikan tipe untuk payment details
+interface PaymentDetails {
+    transactionStatus: string;
+    statusMessage: string;
+    paymentType: string;
+    transactionTime: string;
+    transactionId: string;
+    statusCode: string;
+    grossAmount: string;
+    method: string;
+    vaNumbers?: Array<{
+        bank: string;
+        va_number: string;
+    }>;
+    billKey?: string;
+    billerCode?: string;
+    qrString?: string;
+    actions?: Array<{
+        name: string;
+        link: string;
+    }>;
+    paymentCode?: string;
+    finishRedirectUrl?: string;
+}
+
 export default function TransactionPaid() {
     const [isLoading, setIsLoading] = useState(true);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -155,8 +189,7 @@ export default function TransactionPaid() {
                     modal.close();
                 }
                 resolve('Transaksi berhasil dibatalkan');
-            } catch (error) {
-                console.error('Error cancelling transaction:', error);
+            } catch {
                 reject('Gagal membatalkan transaksi');
             }
         });
@@ -206,18 +239,75 @@ export default function TransactionPaid() {
                 window.snap.pay(midtransToken, {
                     onSuccess: async function (result: MidtransSuccessResult) {
                         try {
-                            await updateDoc(transactionRef, {
+                            // Buat object update dengan tipe yang spesifik
+                            const updateData: Record<string, UpdateDataValue> = {
                                 status: 'success',
-                                'paymentDetails.transactionStatus': result.transaction_status,
-                                'paymentDetails.statusMessage': result.status_message,
-                                'paymentDetails.paymentType': result.payment_type,
-                                'paymentDetails.transactionTime': result.transaction_time,
-                                'paymentDetails.transactionId': result.transaction_id,
-                                'paymentDetails.statusCode': result.status_code,
-                                'paymentDetails.grossAmount': result.gross_amount,
                                 updatedAt: new Date()
+                            };
+
+                            // Buat payment details object
+                            const paymentDetails: PaymentDetails = {
+                                transactionStatus: result.transaction_status,
+                                statusMessage: result.status_message,
+                                paymentType: result.payment_type,
+                                transactionTime: result.transaction_time,
+                                transactionId: result.transaction_id,
+                                statusCode: result.status_code,
+                                grossAmount: result.gross_amount,
+                                method: 'midtrans'
+                            };
+
+                            // Handle VA Numbers for bank transfer
+                            if (result.payment_type === 'bank_transfer') {
+                                if (result.va_numbers && result.va_numbers.length > 0) {
+                                    paymentDetails.vaNumbers = result.va_numbers;
+                                } else if (result.permata_va_number) {
+                                    paymentDetails.vaNumbers = [{
+                                        bank: 'permata',
+                                        va_number: result.permata_va_number
+                                    }];
+                                }
+                            }
+
+                            // Handle Mandiri Bill
+                            if (result.payment_type === 'echannel') {
+                                paymentDetails.billKey = result.bill_key;
+                                paymentDetails.billerCode = result.biller_code;
+                            }
+
+                            // Handle QRIS
+                            if (result.payment_type === 'qris') {
+                                paymentDetails.qrString = result.qr_string;
+                                if (result.actions) {
+                                    paymentDetails.actions = result.actions;
+                                }
+                            }
+
+                            // Handle E-Wallet (DANA, OVO, etc)
+                            if (['dana', 'ovo', 'gopay', 'shopeepay'].includes(result.payment_type)) {
+                                if (result.actions) {
+                                    paymentDetails.actions = result.actions;
+                                }
+                                if (result.payment_code) {
+                                    paymentDetails.paymentCode = result.payment_code;
+                                }
+                            }
+
+                            // Add redirect URL
+                            paymentDetails.finishRedirectUrl = `/payment/status/${transactionId}`;
+
+                            // Flatten payment details for Firestore update
+                            Object.entries(paymentDetails).forEach(([key, value]) => {
+                                if (value !== undefined) {  // Only add defined values
+                                    updateData[`paymentDetails.${key}`] = value as UpdateDataValue;
+                                }
                             });
+
+                            await updateDoc(transactionRef, updateData);
                             resolve('Pembayaran berhasil');
+
+                            // Redirect ke halaman status
+                            router.push(`/payment/status/${transactionId}`);
                         } catch {
                             reject('Gagal mengupdate status pembayaran');
                         }
@@ -230,9 +320,12 @@ export default function TransactionPaid() {
                                 'paymentDetails.statusMessage': result.status_message,
                                 'paymentDetails.transactionId': result.transaction_id,
                                 'paymentDetails.statusCode': result.status_code,
+                                'paymentDetails.actions': result.actions || null,
+                                'paymentDetails.finishRedirectUrl': `/payment/status/${transactionId}`,
                                 updatedAt: new Date()
                             });
                             resolve('Pembayaran dalam proses');
+                            router.push(`/payment/status/${transactionId}`);
                         } catch {
                             reject('Gagal mengupdate status pembayaran');
                         }
@@ -247,6 +340,7 @@ export default function TransactionPaid() {
                                 updatedAt: new Date()
                             });
                             reject('Pembayaran gagal');
+                            router.push(`/payment/status/${transactionId}`);
                         } catch {
                             reject('Gagal mengupdate status pembayaran');
                         }
@@ -534,15 +628,9 @@ export default function TransactionPaid() {
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                                                 </svg>
-                                                ID & Link Transaksi
+                                                Link Transaksi
                                             </h4>
                                             <div className="flex flex-col gap-4">
-                                                <div className="flex flex-col">
-                                                    <span className="text-gray-600 text-sm mb-2">Transaction ID</span>
-                                                    <code className="bg-gray-100 px-4 py-3 rounded-xl text-sm font-mono overflow-x-auto">
-                                                        {transaction.paymentDetails.transactionId}
-                                                    </code>
-                                                </div>
                                                 <div className="flex flex-col">
                                                     <span className="text-gray-600 text-sm mb-2">Link Transaksi</span>
                                                     <code

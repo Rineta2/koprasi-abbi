@@ -44,17 +44,19 @@ export default function TransactionLayout() {
         router.push('/dashboard/user/product');
     }
 
-    const filteredTransactions = transactions.filter(transaction => {
-        const matchesSearch = transaction.productDetails.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            transaction.orderId.toLowerCase().includes(searchQuery.toLowerCase());
+    const filteredTransactions = transactions
+        .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds) // Sort by newest first
+        .filter(transaction => {
+            const matchesSearch = transaction.productDetails.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                transaction.orderId.toLowerCase().includes(searchQuery.toLowerCase());
 
-        const matchesStatus = selectedStatus === 'all' || transaction.status === selectedStatus;
+            const matchesStatus = selectedStatus === 'all' || transaction.status === selectedStatus;
 
-        const transactionDate = new Date(transaction.createdAt.seconds * 1000).toISOString().split('T')[0];
-        const matchesDate = !dateRange ? true : transactionDate === dateRange;
+            const transactionDate = new Date(transaction.createdAt.seconds * 1000).toISOString().split('T')[0];
+            const matchesDate = !dateRange ? true : transactionDate === dateRange;
 
-        return matchesSearch && matchesStatus && matchesDate;
-    });
+            return matchesSearch && matchesStatus && matchesDate;
+        });
 
     // Calculate pagination
     const offset = currentPage * ITEMS_PER_PAGE;
@@ -245,7 +247,7 @@ export default function TransactionLayout() {
                             <option value="all">Semua Status</option>
                             <option value="success">Sukses</option>
                             <option value="pending">Pending</option>
-                            <option value="failed">Gagal</option>
+                            <option value="cancelled">Cancelled</option>
                         </select>
                     </motion.div>
                 )}
@@ -363,10 +365,25 @@ export default function TransactionLayout() {
                                                     Rp {selectedTransaction.amount.toLocaleString('id-ID')}
                                                 </p>
                                             </div>
+
                                             <div className="flex-1 min-w-[200px] bg-white rounded-xl p-4 border border-gray-100">
                                                 <p className="text-sm text-gray-500 mb-1">Metode Pembayaran</p>
                                                 <p className="text-lg font-semibold capitalize">
-                                                    {selectedTransaction.paymentDetails.paymentType?.replace('_', ' ') || 'Tidak tersedia'}
+                                                    {selectedTransaction.paymentDetails.paymentType?.replace('_', ' ') || 'N/A'}
+                                                </p>
+                                            </div>
+
+                                            <div className="flex-1 min-w-[200px] bg-white rounded-xl p-4 border border-gray-100">
+                                                <p className="text-sm text-gray-500 mb-1">Status Transaksi</p>
+                                                <p className="text-lg font-semibold capitalize">
+                                                    {(selectedTransaction.paymentDetails.transactionStatus === 'settlement' ? 'success' : selectedTransaction.paymentDetails.transactionStatus)?.replace('_', ' ') || 'N/A'}
+                                                </p>
+                                            </div>
+
+                                            <div className="flex-1 min-w-[200px] bg-white rounded-xl p-4 border border-gray-100">
+                                                <p className="text-sm text-gray-500 mb-1">Bank</p>
+                                                <p className="text-lg font-semibold uppercase">
+                                                    {selectedTransaction.paymentDetails.vaNumbers.map((va) => va.bank).join(', ') || 'N/A'}
                                                 </p>
                                             </div>
                                         </div>

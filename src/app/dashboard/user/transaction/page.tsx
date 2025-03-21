@@ -5,7 +5,7 @@ import TransactionLayout from '@/hooks/dashboard/user/transaksi/transaction/Tran
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Transaksi User',
+    title: 'Transaksi User | Koperasi ABBI',
     description: 'Halaman transaksi user',
 }
 
