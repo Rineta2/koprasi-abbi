@@ -1,37 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Website Koperasi ABBI 🏢
 
-## Getting Started
+Koprasi digital abbi dan litbinex gold stable point
 
-First, run the development server:
+![Website Preview](public/priview.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌐 Demo Website
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Kunjungi website kami di [abbi.my.id](https://abbi.my.id/)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚡ Teknologi yang Digunakan
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Website ini dibangun menggunakan:
 
-## Learn More
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Firebase
+- React Hook Form
+- Framer
+- React Query
+- React Hot Toast
+- React Icons
+- Date-fns
+- [Teknologi lainnya]
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 Fitur Utama
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 👥 Pendaftaran dan Manajemen Anggota
+  - Registrasi anggota baru
+  - Profil anggota
+  - Riwayat transaksi
+- 💰 Manajemen Keuangan
+  - Simpanan wajib
+- 📊 Dashboard
+  - Ringkasan Transaksi
+- 🔒 Keamanan
+  - Autentikasi pengguna
+  - Enkripsi data
+  - Role-based access control
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📫 Kontak
 
-## Deploy on Vercel
+- Email: koprasiabbi@gmail.com
+- WhatsApp: [nomor WhatsApp]
+- Instagram: [@koperasi.abbi](https://www.instagram.com/koperasi.abbi)
+- Alamat: Jl. KH. Abdul Hamid KM.1 Cemplang, Desa Sukamulya
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📄 Lisensi
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# koprasi-abbi
+[Informasi lisensi project]
