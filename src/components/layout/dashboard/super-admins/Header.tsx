@@ -127,8 +127,8 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
                                     href={item.href}
                                     onClick={handleLinkClick}
                                     className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 hover:scale-[1.02] ${isLinkActive(item.href)
-                                            ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                                            : 'text-text-dark hover:bg-background-dark hover:text-text'
+                                        ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                        : 'text-text-dark hover:bg-background-dark hover:text-text'
                                         }`}
                                 >
                                     <item.icon className="w-[18px] h-[18px]" />
@@ -139,8 +139,8 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
                                     <button
                                         onClick={() => toggleDropdown(index)}
                                         className={`flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all duration-300 hover:scale-[1.02] ${item.subItems?.some(subItem => isLinkActive(subItem.href))
-                                                ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                                                : 'text-text-dark hover:bg-background-dark hover:text-text'
+                                            ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                            : 'text-text-dark hover:bg-background-dark hover:text-text'
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">
@@ -158,7 +158,7 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
                                         </svg>
                                     </button>
 
-                                    <div className={`overflow-hidden transition-all duration-300 ${activeDropdown === index ? 'max-h-52' : 'max-h-0'
+                                    <div className={`overflow-hidden transition-all duration-300 ${activeDropdown === index ? 'max-h-100' : 'max-h-0'
                                         }`}>
                                         <ul className="mt-2 space-y-1 px-4">
                                             {item.subItems.map((subItem, subIndex) => (
@@ -167,8 +167,8 @@ export default function UserHeader({ onSidebarToggle }: HeaderProps) {
                                                         href={subItem.href}
                                                         onClick={handleLinkClick}
                                                         className={`block py-2.5 px-4 text-sm rounded-lg transition-all duration-300 hover:scale-[1.02] ${isLinkActive(subItem.href)
-                                                                ? 'text-primary font-medium bg-primary/10 shadow-sm'
-                                                                : 'text-text-dark hover:text-text hover:bg-background-dark'
+                                                            ? 'text-primary font-medium bg-primary/10 shadow-sm'
+                                                            : 'text-text-dark hover:text-text hover:bg-background-dark'
                                                             }`}
                                                     >
                                                         {subItem.label}
