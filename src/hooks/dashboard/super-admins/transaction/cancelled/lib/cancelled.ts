@@ -3,12 +3,14 @@ import { Timestamp } from "firebase/firestore";
 export interface Transaction {
   midtransToken: string;
   orderId: string;
+  createdAt: Timestamp;
   status: string;
   transactionLink: string;
   updatedAt: Timestamp;
   paymentDetails: {
     grossAmount: string;
     paymentType: string;
+    method: string;
     statusCode: string;
     statusMessage: string;
     transactionId: string;

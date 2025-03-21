@@ -107,7 +107,7 @@ export default function PaidLayout() {
     }
 
     return (
-        <section className='min-h-full px-0 sm:px-4'>
+        <section className='min-h-full px-0'>
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -252,10 +252,17 @@ export default function PaidLayout() {
                                     <span className='text-slate-600'>Amount</span>
                                     <span className='font-semibold text-primary'>Rp {transaction.paymentDetails.grossAmount}</span>
                                 </div>
+
                                 <div className='flex items-center justify-between py-2 border-b border-slate-100'>
                                     <span className='text-slate-600'>Payment</span>
                                     <span className='font-semibold'>{transaction.paymentDetails.paymentType}</span>
                                 </div>
+
+                                <div className='flex items-center justify-between py-2 border-b border-slate-100'>
+                                    <span className='text-slate-600'>Bank</span>
+                                    <span className='font-semibold uppercase'>{transaction.paymentDetails.vaNumbers.map(va => va.bank).join(', ')}</span>
+                                </div>
+
                                 <div className='flex items-center justify-between py-2'>
                                     <span className='text-slate-600'>Date</span>
                                     <span className='font-semibold'>{new Date(transaction.paymentDetails.transactionTime).toLocaleDateString()}</span>

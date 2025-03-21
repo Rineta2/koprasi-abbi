@@ -14,6 +14,11 @@ export interface Transaction {
     transactionId: string;
     transactionStatus: string;
     transactionTime: string;
+    vaNumbers: {
+      bank: string;
+      va_number: string;
+      biller_code: string;
+    }[];
   };
   productDetails: {
     id: string;

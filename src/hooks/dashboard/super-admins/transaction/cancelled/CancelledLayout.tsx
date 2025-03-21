@@ -249,7 +249,7 @@ export default function UnpaidLayout() {
                                     )}
                                     <div>
                                         <h3 className='font-semibold text-lg line-clamp-1'>{transaction.userDetails.fullName}</h3>
-                                        <span className='inline-flex items-center px-4 py-1.5 bg-emerald-100/80 text-emerald-700 rounded-full text-sm font-medium'>
+                                        <span className='inline-flex items-center px-4 py-1.5 bg-red-100/80 text-red-700 rounded-full text-sm font-medium'>
                                             {transaction.status}
                                         </span>
                                     </div>
@@ -263,11 +263,18 @@ export default function UnpaidLayout() {
                                 </div>
                                 <div className='flex items-center justify-between py-2 border-b border-slate-100'>
                                     <span className='text-slate-600'>Payment</span>
-                                    <span className='font-semibold'>{transaction.paymentDetails.paymentType}</span>
+                                    <span className='font-semibold capitalize'>{transaction.paymentDetails.method}</span>
                                 </div>
                                 <div className='flex items-center justify-between py-2'>
                                     <span className='text-slate-600'>Date</span>
-                                    <span className='font-semibold'>{new Date(transaction.paymentDetails.transactionTime).toLocaleDateString()}</span>
+                                    <span>{transaction.updatedAt.toDate().toLocaleString('id-ID', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                        timeZone: 'Asia/Jakarta'
+                                    })}</span>
                                 </div>
 
                                 <button
@@ -325,16 +332,23 @@ export default function UnpaidLayout() {
                                 {/* Status Bar */}
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 gap-2 sm:gap-0">
                                     <div className="flex items-center gap-2 sm:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                        <span className="font-semibold text-emerald-700">{selectedTransaction.status}</span>
+                                        <span className="font-semibold text-red-700">{selectedTransaction.status}</span>
                                     </div>
                                     <div className="flex items-center gap-2 text-slate-600 text-sm sm:text-base">
                                         <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                        <span>{selectedTransaction.updatedAt.toDate().toLocaleString()}</span>
+                                        <span>{selectedTransaction.updatedAt.toDate().toLocaleString('id-ID', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            timeZone: 'Asia/Jakarta'
+                                        })}</span>
                                     </div>
                                 </div>
 
@@ -407,28 +421,10 @@ export default function UnpaidLayout() {
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
-                                                <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                                <div>
-                                                    <p className="text-sm text-slate-600">Payment Method</p>
-                                                    <p className="font-semibold">{selectedTransaction.paymentDetails.paymentType}</p>
-                                                </div>
-                                            </div>
+
                                         </div>
 
                                         <div className="space-y-4">
-                                            <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
-                                                <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                </svg>
-                                                <div>
-                                                    <p className="text-sm text-slate-600">Transaction Time</p>
-                                                    <p className="font-semibold">{selectedTransaction.paymentDetails.transactionTime}</p>
-                                                </div>
-                                            </div>
-
                                             <div className="p-4 bg-slate-50 rounded-xl">
                                                 <div className="flex items-center gap-2 mb-3">
                                                     <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -436,13 +432,24 @@ export default function UnpaidLayout() {
                                                     </svg>
                                                     <p className="text-sm text-slate-600">Status</p>
                                                 </div>
+
                                                 <div className="flex flex-wrap gap-2">
-                                                    <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm">
+                                                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">
                                                         {selectedTransaction.paymentDetails.transactionStatus}
                                                     </span>
                                                     <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
                                                         Code: {selectedTransaction.paymentDetails.statusCode}
                                                     </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+                                                <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <div>
+                                                    <p className="text-sm text-slate-600">Payment Method</p>
+                                                    <p className="font-semibold capitalize">{selectedTransaction.paymentDetails.method}</p>
                                                 </div>
                                             </div>
                                         </div>

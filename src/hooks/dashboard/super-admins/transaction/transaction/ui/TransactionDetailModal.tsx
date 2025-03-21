@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { TransactionType } from '../lib/transaction'
 
 interface TransactionDetailModalProps {
@@ -42,19 +43,28 @@ export function TransactionDetailModal({ transaction }: TransactionDetailModalPr
                                 <p className="text-sm text-gray-500 mb-1">Order ID</p>
                                 <p className="font-medium text-gray-900">{transaction.orderId}</p>
                             </div>
+
                             <div className="bg-white p-4 rounded-xl shadow-sm">
                                 <p className="text-sm text-gray-500 mb-1">Transaction ID</p>
                                 <p className="font-medium text-gray-900">{transaction.paymentDetails.transactionId}</p>
                             </div>
+
                             <div className="bg-white p-4 rounded-xl shadow-sm">
                                 <p className="text-sm text-gray-500 mb-1">Status</p>
                                 <span className={`px-3 py-1.5 rounded-full text-sm font-medium inline-block ${transaction.status === 'success'
-                                        ? 'bg-green-50 text-green-700 ring-1 ring-green-600/20'
-                                        : 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/20'
+                                    ? 'bg-green-50 text-green-700 ring-1 ring-green-600/20'
+                                    : transaction.status === 'pending'
+                                        ? 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/20'
+                                        : 'bg-red-50 text-red-700 ring-1 ring-red-600/20'
                                     }`}>
-                                    {transaction.status === 'success' ? 'Success' : 'Pending'}
+                                    {transaction.status === 'success'
+                                        ? 'Success'
+                                        : transaction.status === 'pending'
+                                            ? 'Pending'
+                                            : 'Cancelled'}
                                 </span>
                             </div>
+
                             <div className="bg-white p-4 rounded-xl shadow-sm">
                                 <p className="text-sm text-gray-500 mb-1">Transaction Date</p>
                                 <p className="font-medium text-gray-900">
@@ -95,8 +105,8 @@ export function TransactionDetailModal({ transaction }: TransactionDetailModalPr
                                     </p>
                                     <div className="mt-2 flex items-center gap-2">
                                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${transaction.productDetails.status === 'premium'
-                                                ? 'bg-primary/10 text-primary'
-                                                : 'bg-blue-50 text-blue-700'
+                                            ? 'bg-primary/10 text-primary'
+                                            : 'bg-blue-50 text-blue-700'
                                             }`}>
                                             {transaction.productDetails.status}
                                         </span>
@@ -109,7 +119,7 @@ export function TransactionDetailModal({ transaction }: TransactionDetailModalPr
                     {/* Customer & Payment Details */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Customer Details */}
-                        <div className="bg-gray-50 p-6 rounded-2xl space-y-4 hover:bg-gray-50/80 transition-colors duration-200">
+                        <div className="bg-gray-50 p-6 rounded-2xl space-y-4 hover:bg-gray-50/80 transition-colors duration-200 h-fit">
                             <h4 className="font-semibold text-lg flex items-center gap-2 text-gray-800">
                                 <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -157,6 +167,14 @@ export function TransactionDetailModal({ transaction }: TransactionDetailModalPr
                                     <p className="text-sm text-gray-500">Payment Method</p>
                                     <p className="font-semibold text-gray-900 mt-1">{transaction.paymentDetails.paymentType}</p>
                                 </div>
+
+                                <div className="bg-white p-4 rounded-xl shadow-sm">
+                                    <p className="text-sm text-gray-500">Bank</p>
+                                    <p className="font-bold text-xl text-primary mt-1 uppercase">
+                                        {transaction.paymentDetails.vaNumbers.map(va => va.bank).join(', ')}
+                                    </p>
+                                </div>
+
                                 <div className="bg-white p-4 rounded-xl shadow-sm">
                                     <p className="text-sm text-gray-500">Amount</p>
                                     <p className="font-bold text-xl text-primary mt-1">
@@ -164,6 +182,21 @@ export function TransactionDetailModal({ transaction }: TransactionDetailModalPr
                                     </p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Actions Link */}
+                    <div className="bg-gray-50 p-6 rounded-2xl space-y-4 hover:bg-gray-50/80 transition-colors duration-200">
+                        <h4 className="font-semibold text-lg flex items-center gap-2 text-gray-800">
+                            <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14v6m0 0l-3-3m3 3l3-3m-3-3v6" />
+                            </svg>
+                            Actions Link
+                        </h4>
+                        <div className="bg-white p-4 rounded-xl shadow-sm">
+                            <Link href={transaction.transactionLink} target="_blank" className="text-primary font-medium">
+                                {transaction.transactionLink}
+                            </Link>
                         </div>
                     </div>
                 </div>

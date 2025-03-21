@@ -19,9 +19,11 @@ export function TransactionCard({ transaction, openTransactionDetail }: Transact
             <div className="absolute top-4 right-4 z-10">
                 <div className={`px-4 py-2 rounded-full text-sm font-medium ${transaction.status === 'success'
                     ? 'bg-green-50 text-green-600 ring-1 ring-green-500/20'
-                    : 'bg-yellow-50 text-yellow-600 ring-1 ring-yellow-500/20'
+                    : transaction.status === 'pending'
+                        ? 'bg-yellow-50 text-yellow-600 ring-1 ring-yellow-500/20'
+                        : 'bg-red-50 text-red-600 ring-1 ring-red-500/20'
                     }`}>
-                    {transaction.status === 'success' ? 'Success' : 'Pending'}
+                    {transaction.status === 'success' ? 'Success' : transaction.status === 'pending' ? 'Pending' : 'Cancelled'}
                 </div>
             </div>
 
