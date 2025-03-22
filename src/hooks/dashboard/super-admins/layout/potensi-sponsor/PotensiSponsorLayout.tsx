@@ -8,17 +8,17 @@ import { toast } from 'react-hot-toast'
 
 import InsplensiasiSkelaton from '@/hooks/dashboard/super-admins/layout/reward/RewardSkelaton'
 
-import { RewardsContent } from '@/hooks/dashboard/super-admins/layout/reward/lib/Rewards'
+import { PotensiSponsorContent } from '@/hooks/dashboard/super-admins/layout/potensi-sponsor/lib/PotensiSponsor'
 
-import { ContentModal } from '@/hooks/dashboard/super-admins/layout/reward/ui/ContentModal'
+import { ContentModal } from '@/hooks/dashboard/super-admins/layout/potensi-sponsor/ui/ContentModal'
 
-import { DeleteModal } from '@/hooks/dashboard/super-admins/layout/reward/ui/DeleteModal'
+import { DeleteModal } from '@/hooks/dashboard/super-admins/layout/potensi-sponsor/ui/DeleteModal'
 
-import { useRewardData } from '@/hooks/dashboard/super-admins/layout/reward/lib/FetchDataReward'
+import { usePotensiSponsorData } from '@/hooks/dashboard/super-admins/layout/potensi-sponsor/lib/FetchDataPotensiSponsor'
 
 import Image from 'next/image'
 
-const initialFormData: RewardsContent = {
+const initialFormData: PotensiSponsorContent = {
     title: '',
     imageUrl: '',
     textLeft: [{
@@ -32,19 +32,19 @@ const initialFormData: RewardsContent = {
     }]
 };
 
-export default function RewardLayout() {
+export default function PotensiSponsorLayout() {
     const {
         isLoading,
-        rewards,
+        potensiSponsor,
         isSubmitting,
         setIsSubmitting,
         handleImageUpload,
         createContent,
         handleUpdate,
         handleDelete,
-    } = useRewardData();
+    } = usePotensiSponsorData();
 
-    const [formData, setFormData] = useState<RewardsContent>(initialFormData)
+    const [formData, setFormData] = useState<PotensiSponsorContent>(initialFormData)
 
     const [isEditing, setIsEditing] = useState(false)
 
@@ -113,13 +113,13 @@ export default function RewardLayout() {
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div>
                         <h1 className='text-3xl font-bold text-gray-800 mb-1'>
-                            Reward
+                            Potensi Sponsor
                         </h1>
-                        <p className='text-gray-500'>Manage your reward content</p>
+                        <p className='text-gray-500'>Manage your potensi sponsor content</p>
                     </div>
 
                     {
-                        rewards.length === 0 && (
+                        potensiSponsor.length === 0 && (
                             <button
                                 onClick={() => {
                                     setIsEditing(false)
@@ -140,7 +140,7 @@ export default function RewardLayout() {
 
             {/* Content Cards */}
             <div className="grid grid-cols-1 gap-6 mb-6">
-                {rewards.map((content) => (
+                {potensiSponsor.map((content) => (
                     <div key={content.id}
                         className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
                     >
@@ -260,7 +260,7 @@ export default function RewardLayout() {
             </div>
 
             {/* Empty State */}
-            {rewards.length === 0 && (
+            {potensiSponsor.length === 0 && (
                 <div className="text-center bg-white rounded-2xl shadow-md p-4 sm:p-8">
                     <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center 
                         justify-center mb-4"

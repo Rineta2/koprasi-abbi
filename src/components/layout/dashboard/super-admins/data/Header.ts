@@ -104,11 +104,6 @@ export const menuItems = [
       },
 
       {
-        label: "Prize Pool Sponsor",
-        href: "/dashboard/super-admins/layout/prize-pool-sponsor",
-      },
-
-      {
         label: "Sisa Hasil Usaha",
         href: "/dashboard/super-admins/layout/sisa-hasil-usaha",
       },

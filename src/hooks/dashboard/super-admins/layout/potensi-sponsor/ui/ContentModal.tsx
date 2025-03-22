@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ContentModalProps } from '@/hooks/dashboard/super-admins/layout/reward/lib/Rewards';
+import { ContentModalProps } from '@/hooks/dashboard/super-admins/layout/potensi-sponsor/lib/PotensiSponsor';
 
 import Image from 'next/image';
 
