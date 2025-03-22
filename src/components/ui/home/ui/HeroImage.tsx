@@ -28,6 +28,9 @@ export default function HeroImage({ home }: HeroImageProps) {
                     height={600}
                     className="relative z-10 drop-shadow-2xl w-full h-auto"
                     priority
+                    loading="eager"
+                    fetchPriority="high"
+                    sizes="(max-width: 768px) 100vw, 600px"
                 />
             </div>
         </motion.div>
