@@ -4,3 +4,9 @@ export interface PartnerType {
   updatedAt: string;
   createdAt: string;
 }
+
+// PartnerCard
+
+export interface PartnerCardProps {
+  partner: PartnerType;
+}

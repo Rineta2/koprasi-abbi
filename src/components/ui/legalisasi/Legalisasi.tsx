@@ -63,7 +63,9 @@ export default function Legalisasi() {
                     transition={{ duration: 0.6 }}
                     className='flex flex-col items-center justify-center space-y-6 mb-16'
                 >
-                    <h1 className='text-4xl md:text-5xl lg:text-6xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary-dark to-primary animate-gradient-x'>
+                    <h1 className='text-3xl md:text-4xl lg:text-5xl font-bold mb-4 
+                                bg-gradient-to-r from-primary via-primary/90 to-primary/80 
+                                bg-clip-text text-transparent'>
                         {legalisasi[0].companyName}
                     </h1>
                     <h3 className='text-xl md:text-2xl font-medium text-text-dark/80 text-center'>

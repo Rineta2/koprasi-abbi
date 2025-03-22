@@ -12,3 +12,15 @@ export interface HomeType {
   updatedAt: string;
   createdAt: string;
 }
+
+// HeroText
+
+export interface HeroTextProps {
+  home: HomeType
+}
+
+// HeroImage
+
+export interface HeroImageProps {
+  home: HomeType
+}

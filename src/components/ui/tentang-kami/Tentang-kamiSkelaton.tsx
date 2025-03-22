@@ -1,57 +1,52 @@
+import React from 'react'
+
 export default function TentangKamiSkelaton() {
     return (
-        <section className='relative min-h-screen flex items-center justify-center overflow-hidden bg-background'>
-            <div className="container px-4 sm:px-6 lg:px-8">
-                <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center'>
-                    {/* Image skeleton */}
-                    <div className='relative w-full aspect-square lg:aspect-[4/3] overflow-hidden rounded-3xl flex items-center justify-center'>
-                        {/* Static background pattern */}
-                        <div className="absolute inset-0 bg-[conic-gradient(from_45deg,#0000_25%,rgba(255,255,255,0.1)_50%,#0000_75%)] opacity-75" />
-                        <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.05)_0px,rgba(255,255,255,0.05)_2px,transparent_2px,transparent_4px)]" />
-                        <div className="absolute inset-0 bg-gradient-to-tl from-primary/30 via-transparent to-primary-dark/30" />
+        <section className='relative py-16 md:py-24 lg:py-32 flex items-center overflow-hidden bg-gradient-to-b from-background to-background/95'>
+            <div className="container px-4 sm:px-6 lg:px-8 mx-auto">
+                {/* Section header skeleton */}
+                <div className="text-center mb-12 md:mb-16 lg:mb-20 max-w-3xl mx-auto">
+                    <div className='w-3/4 h-12 bg-slate-200 rounded-lg mx-auto relative overflow-hidden'>
+                        <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                    </div>
+                    <div className="h-1 w-20 md:w-24 bg-slate-200 rounded-full mx-auto my-6"></div>
+                </div>
 
-                        {/* Image placeholder */}
-                        <div className="w-full h-full bg-border relative overflow-hidden">
-                            <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-border via-card to-border"></div>
+                <div className='grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-center'>
+                    {/* Image skeleton */}
+                    <div className='lg:col-span-5 relative rounded-2xl overflow-hidden shadow-xl'>
+                        <div className="relative aspect-[4/3] bg-slate-200 overflow-hidden">
+                            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
                         </div>
                     </div>
 
                     {/* Content skeleton */}
-                    <div className='flex flex-col space-y-10 md:space-y-12'>
-                        {/* Title skeleton */}
-                        <div className="h-12 md:h-14 lg:h-16 bg-border rounded-lg relative overflow-hidden w-3/4">
-                            <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-border via-card to-border"></div>
+                    <div className='lg:col-span-7 flex flex-col space-y-6 md:space-y-8'>
+                        <div className='space-y-6'>
+                            <div className='w-full h-24 bg-slate-200 rounded-lg relative overflow-hidden'>
+                                <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                            </div>
+                            <div className='w-full h-24 bg-slate-200 rounded-lg relative overflow-hidden'>
+                                <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                            </div>
                         </div>
 
-                        {/* Text skeleton */}
-                        <div className='flex flex-col space-y-8'>
-                            <div className="space-y-4">
-                                {[1, 2, 3].map((line) => (
-                                    <div
-                                        key={line}
-                                        className="h-6 md:h-7 lg:h-8 bg-border rounded relative overflow-hidden"
-                                        style={{ width: `${Math.random() * 20 + 80}%` }}
-                                    >
-                                        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-border via-card to-border"></div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="space-y-4">
-                                {[1, 2, 3].map((line) => (
-                                    <div
-                                        key={line}
-                                        className="h-6 md:h-7 lg:h-8 bg-border rounded relative overflow-hidden"
-                                        style={{ width: `${Math.random() * 20 + 80}%` }}
-                                    >
-                                        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-border via-card to-border"></div>
-                                    </div>
-                                ))}
-                            </div>
+                        {/* Feature highlights skeleton */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                            {[1, 2, 3, 4].map((index) => (
+                                <div key={index} className="flex items-start space-x-3">
+                                    <div className="w-5 h-5 rounded-full bg-slate-200"></div>
+                                    <div className="w-24 h-5 bg-slate-200 rounded"></div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
+
+                {/* Background decorative elements */}
+                <div className="absolute top-1/4 left-0 w-64 h-64 bg-slate-100/50 rounded-full filter blur-3xl"></div>
+                <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-slate-100/50 rounded-full filter blur-3xl"></div>
             </div>
         </section>
-    );
+    )
 }

@@ -60,12 +60,15 @@ export default function TrendBisnis() {
                             className="w-20 h-20 md:w-28 md:h-28 transition-transform hover:scale-110"
                         />
                     </motion.div>
+
                     <motion.h1
                         initial={{ opacity: 0, scale: 0.5 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
-                        className="text-3xl md:text-4xl lg:text-5xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-text to-text-dark"
+                        className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 
+                                bg-gradient-to-r from-primary via-primary/90 to-primary/80 
+                                bg-clip-text text-transparent"
                     >
                         {trendBisnis[0].title}
                     </motion.h1>
@@ -103,7 +106,7 @@ export default function TrendBisnis() {
                                     className="w-12 h-12 md:w-14 md:h-14"
                                 />
                             </div>
-                            <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary via-primary/90 to-primary/80 bg-clip-text text-transparent">
+                            <h3 className="text-xl md:text-2xl font-bold text-primary">
                                 Analisis Ekonomi
                             </h3>
                         </div>

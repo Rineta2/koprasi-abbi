@@ -7,3 +7,8 @@ export interface PendaftaranAnggotaKoperasiType {
   updatedAt: string;
   createdAt: string;
 }
+
+// Card
+export interface CardContentProps {
+  item: PendaftaranAnggotaKoperasiType
+}

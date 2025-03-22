@@ -1,50 +1,72 @@
+import React from 'react'
+
 export default function ImpianAndaSkelaton() {
     return (
-        <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden py-20 md:py-24">
-            {/* Decorative lines */}
-            <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full opacity-10">
-                    {[...Array(10)].map((_, i) => (
-                        <div
-                            key={i}
-                            className="absolute h-[2px] w-[200%] bg-gradient-to-r from-blue-500/50 to-purple-500/50 transform -rotate-45"
-                            style={{
-                                top: `${i * 15}%`,
-                                left: `-${i * 10}%`
-                            }}
-                        />
+        <section className='py-24 md:py-32 lg:py-40 relative overflow-hidden'>
+            {/* Background pattern - sama dengan komponen utama */}
+            <div className="absolute inset-0 -z-10">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#1091cc20_1px,transparent_1px),linear-gradient(to_bottom,#1091cc20_1px,transparent_1px)] 
+                    bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,white_60%,transparent_100%)]"></div>
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#1091cc10_1px,transparent_1px),linear-gradient(to_bottom,#1091cc10_1px,transparent_1px)] 
+                    bg-[size:120px_120px] [mask-image:radial-gradient(ellipse_at_center,white_60%,transparent_100%)]"></div>
+            </div>
+
+            <div className="container px-6 sm:px-8 lg:px-12 mx-auto relative z-10 max-w-[1600px]">
+                {/* Header skeleton */}
+                <div className="text-center mb-24 md:mb-32 max-w-3xl mx-auto">
+                    <div className="h-12 w-2/3 bg-slate-200 rounded-lg mx-auto mb-6 relative overflow-hidden">
+                        <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                    </div>
+                    <div className="h-1 w-24 md:w-32 bg-slate-200 rounded-full mx-auto mb-8"></div>
+                    <div className="h-20 w-full bg-slate-200 rounded-lg relative overflow-hidden">
+                        <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                    </div>
+                </div>
+
+                {/* Content skeleton */}
+                <div className="space-y-40 md:space-y-56 lg:space-y-64">
+                    {[1, 2, 3].map((item, index) => (
+                        <div key={item} className="py-8 md:py-12">
+                            <div className='grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 xl:gap-24 items-center'>
+                                {/* Content container skeleton */}
+                                <div className={`lg:col-span-5 ${index % 2 === 0 ? 'lg:order-1' : 'lg:order-2'}`}>
+                                    <div className="bg-background/70 backdrop-blur-sm p-8 md:p-10 lg:p-12 rounded-2xl border border-primary/10 shadow-lg">
+                                        <div className="h-8 w-32 bg-slate-200 rounded-full mb-6 relative overflow-hidden">
+                                            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                                        </div>
+                                        <div className="h-10 w-3/4 bg-slate-200 rounded-lg mb-6 relative overflow-hidden">
+                                            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                                        </div>
+                                        <div className="w-20 h-1 bg-slate-200 rounded-full mb-8"></div>
+                                        <div className="h-32 w-full bg-slate-200 rounded-lg mb-10 relative overflow-hidden">
+                                            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                                        </div>
+                                        <div className="space-y-5">
+                                            {[1, 2, 3].map((feature) => (
+                                                <div key={feature} className="flex items-center gap-4">
+                                                    <div className="w-6 h-6 rounded-full bg-slate-200"></div>
+                                                    <div className="h-6 w-32 bg-slate-200 rounded relative overflow-hidden">
+                                                        <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Image container skeleton */}
+                                <div className={`lg:col-span-7 ${index % 2 === 0 ? 'lg:order-2' : 'lg:order-1'}`}>
+                                    <div className="relative rounded-3xl overflow-hidden shadow-xl">
+                                        <div className="w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[650px] bg-slate-200 relative overflow-hidden">
+                                            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1s_infinite] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>
-
-            <div className="container relative z-10 px-4 md:px-8 lg:px-12 space-y-16">
-                {/* Generate 3 skeleton items */}
-                {[...Array(3)].map((_, index) => (
-                    <div
-                        key={index}
-                        className='grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 rounded-2xl p-6 shadow-lg bg-white/5'
-                    >
-                        <div className="flex flex-col justify-center space-y-4 p-4">
-                            <div className="relative">
-                                {/* Title skeleton */}
-                                <div className="h-8 bg-gray-300 rounded-lg w-3/4 animate-pulse" />
-                                <div className="absolute -bottom-2 left-0 w-1/3 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
-                            </div>
-                            {/* Description skeleton */}
-                            <div className="space-y-2">
-                                <div className="h-4 bg-gray-300 rounded w-full animate-pulse" />
-                                <div className="h-4 bg-gray-300 rounded w-5/6 animate-pulse" />
-                                <div className="h-4 bg-gray-300 rounded w-4/6 animate-pulse" />
-                            </div>
-                        </div>
-
-                        <div className='flex items-center justify-center'>
-                            {/* Image skeleton */}
-                            <div className="rounded-2xl shadow-xl bg-gray-300 animate-pulse w-full h-[300px] md:h-[400px]" />
-                        </div>
-                    </div>
-                ))}
-            </div>
         </section>
-    );
+    )
 }

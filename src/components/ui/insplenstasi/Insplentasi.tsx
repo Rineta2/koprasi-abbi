@@ -19,8 +19,12 @@ export default function Insplentasi() {
     const [loading, setLoading] = useState(true);
 
     const { scrollYProgress } = useScroll();
-    const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.3]);
-    const scale = useTransform(scrollYProgress, [0, 0.3], [1, 1.1]);
+
+    // Meningkatkan efek parallax untuk background
+    const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+    const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+    const backgroundOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.6]);
+    const overlayOpacity = useTransform(scrollYProgress, [0, 1], [0.7, 0.85]);
 
     useEffect(() => {
         const unsubscribe = FetchInsplentasi((newInsplenstasi) => {
@@ -37,19 +41,32 @@ export default function Insplentasi() {
 
     return (
         <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden py-20 md:py-24">
-            {/* Parallax Background */}
+            {/* Enhanced Parallax Background */}
             <motion.div
                 className='absolute top-0 left-0 w-full h-full'
-                style={{ opacity, scale }}
+                style={{
+                    y: backgroundY,
+                    scale: backgroundScale,
+                    opacity: backgroundOpacity,
+                }}
             >
-                <div className="absolute inset-0 bg-black/50" />
+                <motion.div
+                    className="absolute inset-0 bg-black"
+                    style={{
+                        opacity: overlayOpacity
+                    }}
+                />
                 <Image
                     src={imgInsplentasi}
                     alt='insplentasi'
-                    className='w-full h-full object-cover'
+                    className='w-full h-[120%] object-cover object-center'
                     priority
+                    quality={100}
                 />
             </motion.div>
+
+            {/* Tambahkan efek blur gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/30 pointer-events-none" />
 
             <div className="container relative z-10 px-4 md:px-8 lg:px-12">
                 {insplenstasi.map((item) => (
@@ -60,8 +77,8 @@ export default function Insplentasi() {
                         viewport={{ once: true }}
                         transition={{ duration: 1, ease: "easeOut" }}
                         className='flex flex-col items-center justify-center gap-8 md:gap-12 lg:gap-16 container 
-                            backdrop-blur-md bg-black/30 p-6 md:p-10 lg:p-12 rounded-[2rem] shadow-2xl 
-                            border border-gray-500/20'
+                            backdrop-blur-md bg-black/40 p-6 md:p-10 lg:p-12 rounded-[2rem] shadow-2xl 
+                            border border-gray-300/30'
                     >
                         {/* Title Section */}
                         <motion.div
@@ -70,8 +87,8 @@ export default function Insplentasi() {
                             viewport={{ once: true }}
                             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                             className='flex flex-col md:flex-row items-center justify-center gap-6 
-                                bg-white/95 p-6 md:p-8 rounded-2xl relative shadow-lg
-                                transition-all duration-300 border border-gray-200'
+                                bg-white/90 p-6 md:p-8 rounded-2xl relative shadow-lg
+                                transition-all duration-300 border border-gray-300'
                         >
                             <div className='flex flex-wrap items-center justify-center gap-6 z-10'>
                                 <Image
@@ -115,7 +132,7 @@ export default function Insplentasi() {
                             transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
                             className='flex items-center justify-center animate-bounce'
                         >
-                            <MdOutlineKeyboardDoubleArrowDown className='text-3xl md:text-4xl text-primary' />
+                            <MdOutlineKeyboardDoubleArrowDown className='text-3xl md:text-4xl text-white' />
                         </motion.div>
 
                         {/* SVG Chart */}
@@ -141,20 +158,20 @@ export default function Insplentasi() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: 0.9 }}
-                            className="w-full max-w-3xl mx-auto bg-white/90 backdrop-blur-md 
-                                rounded-xl p-6 md:p-8 border border-gray-200"
+                            className="w-full max-w-3xl mx-auto bg-white/95 backdrop-blur-md 
+                                rounded-xl p-6 md:p-8 border border-gray-300"
                         >
-                            <p className="text-gray-800 text-base md:text-lg leading-relaxed mb-6">
+                            <p className="text-gray-700 text-base md:text-lg leading-relaxed mb-6">
                                 Grafik ini menunjukkan perkembangan dan implementasi program kami yang telah berhasil dilaksanakan dengan kolaborasi para anggota.
                             </p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {['Pelaksanaan Program', 'Pertumbuhan Anggota', 'Pengelolaan Dana', 'Keberlanjutan'].map((feature, index) => (
                                     <div key={index} className="flex items-center gap-3">
-                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center border border-primary/30">
-                                            <div className="w-3 h-3 rounded-full bg-primary"></div>
+                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center border border-gray-300">
+                                            <div className="w-3 h-3 rounded-full bg-blue-600"></div>
                                         </div>
-                                        <span className="text-gray-800">{feature}</span>
+                                        <span className="text-gray-700">{feature}</span>
                                     </div>
                                 ))}
                             </div>
