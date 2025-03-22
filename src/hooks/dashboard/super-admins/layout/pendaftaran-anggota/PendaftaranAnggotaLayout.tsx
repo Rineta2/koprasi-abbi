@@ -144,6 +144,7 @@ export default function HomeLayout() {
                         </h1>
                         <p className='text-text-dark/80 text-lg'>Manage your pendaftaran anggota</p>
                     </div>
+
                     {contents.length === 0 && (
                         <button
                             className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-primary-dark text-white rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-primary/20 hover:-translate-y-1"

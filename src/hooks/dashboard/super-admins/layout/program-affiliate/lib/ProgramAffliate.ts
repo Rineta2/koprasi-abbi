@@ -1,5 +1,3 @@
-//
-
 interface Benefit {
   title: string;
   imageUrl: string;

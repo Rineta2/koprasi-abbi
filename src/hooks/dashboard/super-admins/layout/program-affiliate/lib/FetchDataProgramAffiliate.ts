@@ -19,11 +19,11 @@ import { compressImage } from "@/base/helper/ImageCompression";
 
 import { ProgramAffliateContent } from "@/hooks/dashboard/super-admins/layout/program-affiliate/lib/ProgramAffliate";
 
-export const useBonusSponsorData = () => {
+export const useProgramAffiliateData = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [bonussponsor, setBonussponsor] = useState<ProgramAffliateContent[]>(
-    []
-  );
+  const [programAffiliate, setProgramAffiliate] = useState<
+    ProgramAffliateContent[]
+  >([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchContents = async () => {
@@ -38,7 +38,7 @@ export const useBonusSponsorData = () => {
         id: doc.id,
         ...doc.data(),
       })) as ProgramAffliateContent[];
-      setBonussponsor(contentArray);
+      setProgramAffiliate(contentArray);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching contents:", error);
@@ -60,8 +60,8 @@ export const useBonusSponsorData = () => {
       const base64 = await base64Promise;
       const result = await imagekitInstance.upload({
         file: base64,
-        fileName: `bonus-sponsor-${Date.now()}`,
-        folder: "/bonus-sponsor",
+        fileName: `program-affiliate-${Date.now()}`,
+        folder: "/program-affiliate",
       });
 
       return result.url;
@@ -132,7 +132,7 @@ export const useBonusSponsorData = () => {
 
   return {
     isLoading,
-    bonussponsor,
+    programAffiliate,
     isSubmitting,
     setIsSubmitting,
     handleImageUpload,

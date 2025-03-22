@@ -94,11 +94,6 @@ export const menuItems = [
       },
 
       {
-        label: "Potensi Anggota Baru",
-        href: "/dashboard/super-admins/layout/potensi-anggota-baru",
-      },
-
-      {
         label: "Reward",
         href: "/dashboard/super-admins/layout/reward",
       },
