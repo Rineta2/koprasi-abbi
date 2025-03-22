@@ -24,6 +24,8 @@ import PrizePool from '@/components/ui/prize-pool/PrizePool'
 
 import BonusSponsor from '@/components/ui/bonus-sponsor/BonusSponsor'
 
+import ProgramAffiliate from '@/components/ui/program-affiliate/ProgramAffiliate'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -39,6 +41,7 @@ export default function HomeScreen() {
       <PendaftaranAnggotaKoperasi />
       <PrizePool />
       <BonusSponsor />
+      <ProgramAffiliate />
     </Fragment>
   )
 }
