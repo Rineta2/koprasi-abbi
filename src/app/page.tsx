@@ -26,6 +26,8 @@ import BonusSponsor from '@/components/ui/bonus-sponsor/BonusSponsor'
 
 import ProgramAffiliate from '@/components/ui/program-affiliate/ProgramAffiliate'
 
+import Potensi from '@/components/ui/potensi/Potensi'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -42,6 +44,7 @@ export default function HomeScreen() {
       <PrizePool />
       <BonusSponsor />
       <ProgramAffiliate />
+      <Potensi />
     </Fragment>
   )
 }
