@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 
 import { MdKeyboardDoubleArrowDown } from "react-icons/md";
 
-export default function Potensi() {
+export default function PotensiSuport() {
     return (
         <section className='min-h-full relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50'>
             <div className="container px-4 py-16 relative z-10">
@@ -28,7 +28,7 @@ export default function Potensi() {
                             viewBox="0 0 24 24"
                             stroke="currentColor"
                         >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
                         </motion.svg>
 
                         <motion.h1
@@ -38,7 +38,8 @@ export default function Potensi() {
                             transition={{ duration: 0.8, delay: 0.3 }}
                             className='text-3xl sm:text-4xl font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 animate-gradient'
                         >
-                            ADA POTENSI HADIAH BAGI ANDA JIKA ANDA MEREKRUT ANGGOTA BARU
+                            ADA POTENSI HADIAH BAGI SPONSOR ANDA
+                            JIKA ANDA MEREKRUT ANGGOTA BARU
                         </motion.h1>
                     </div>
 

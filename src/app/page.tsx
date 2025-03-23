@@ -30,6 +30,10 @@ import Potensi from '@/components/ui/potensi/Potensi'
 
 import Reward from '@/components/ui/reward/Reward'
 
+import PotensiSuport from '@/components/ui/potensi/PotensiSuport'
+
+import RewardSponsor from '@/components/ui/reward-sponsor/RewardSponsor'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -48,6 +52,8 @@ export default function HomeScreen() {
       <ProgramAffiliate />
       <Potensi />
       <Reward />
+      <PotensiSuport />
+      <RewardSponsor />
     </Fragment>
   )
 }
