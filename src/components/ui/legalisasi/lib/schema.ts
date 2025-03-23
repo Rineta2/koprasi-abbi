@@ -27,3 +27,24 @@ export interface LegalisasiType {
   imageUrl: string;
   createdAt: string;
 }
+
+// Props untuk komponen HeaderSection
+export interface HeaderSectionProps {
+  data: LegalisasiType
+}
+
+// Props untuk komponen RegistrationSection
+export interface RegistrationSectionProps {
+  data: LegalisasiType
+}
+
+// Props untuk komponen ManagementSection
+export interface ManagementSectionProps {
+  data: LegalisasiType
+}
+
+
+// Props untuk komponen AddressSection
+export interface AddressSectionProps {
+  data: LegalisasiType
+}

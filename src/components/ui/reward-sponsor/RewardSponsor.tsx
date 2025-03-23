@@ -34,7 +34,7 @@ export default function ProgramAffiliate() {
     }
 
     return (
-        <section className='min-h-full relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50'>
+        <section className='min-h-full relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 py-16'>
             <BackgroundElements />
             <div className="container px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
                 <RewardHeader />

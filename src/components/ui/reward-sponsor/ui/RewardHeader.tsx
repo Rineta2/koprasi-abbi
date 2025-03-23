@@ -15,7 +15,7 @@ export default function RewardHeader() {
                 transition={{ duration: 0.5 }}
                 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4"
             >
-                Reward
+                SPONSOR ANDA MENDAPATKAN
             </motion.h1>
             <motion.div
                 initial={{ width: 0 }}
@@ -23,14 +23,6 @@ export default function RewardHeader() {
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="w-24 h-1 bg-indigo-600 mx-auto rounded-full mb-6"
             />
-            <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4"
-            >
-                Dapatkan berbagai keuntungan menarik melalui program reward kami
-            </motion.p>
         </motion.div>
     )
 }

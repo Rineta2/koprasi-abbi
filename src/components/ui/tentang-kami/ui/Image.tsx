@@ -15,7 +15,7 @@ export function ImageSection({ imageUrl, title }: ImageSectionProps) {
         >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10 z-10" />
 
-            <div className="group relative overflow-hidden aspect-[4/3]">
+            <div className="group relative overflow-hidden h-[350px] sm:h-[500px]">
                 <Image
                     src={imageUrl}
                     alt={title}

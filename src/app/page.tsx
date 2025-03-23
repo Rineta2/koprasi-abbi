@@ -34,6 +34,8 @@ import PotensiSuport from '@/components/ui/potensi/PotensiSuport'
 
 import RewardSponsor from '@/components/ui/reward-sponsor/RewardSponsor'
 
+import SisaHasilusaha from '@/components/ui/sisa-hasil-usaha/SisaHasilusaha'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -54,6 +56,7 @@ export default function HomeScreen() {
       <Reward />
       <PotensiSuport />
       <RewardSponsor />
+      <SisaHasilusaha />
     </Fragment>
   )
 }

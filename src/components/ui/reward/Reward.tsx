@@ -36,7 +36,7 @@ export default function ProgramAffiliate() {
     return (
         <section className='min-h-full relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50' id='reward'>
             <BackgroundElements />
-            <div className="container px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
+            <div className="container px-4 sm:px-6 lg:px-8 relative z-10">
                 <RewardHeader />
                 <BenefitColumns reward={reward} />
                 <RequirementsSection reward={reward} />
