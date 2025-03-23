@@ -28,6 +28,8 @@ import ProgramAffiliate from '@/components/ui/program-affiliate/ProgramAffiliate
 
 import Potensi from '@/components/ui/potensi/Potensi'
 
+import Reward from '@/components/ui/reward/Reward'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -45,6 +47,7 @@ export default function HomeScreen() {
       <BonusSponsor />
       <ProgramAffiliate />
       <Potensi />
+      <Reward />
     </Fragment>
   )
 }

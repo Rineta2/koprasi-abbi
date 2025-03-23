@@ -1,10 +1,10 @@
-import Link from 'next/link'
-
 import React from 'react'
+
+import { MdKeyboardDoubleArrowDown } from "react-icons/md";
 
 export default function Potensi() {
     return (
-        <section className='min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50'>
+        <section className='min-h-full relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50'>
             <div className="container px-4 py-16 md:py-24 lg:py-32 relative z-10 mx-auto">
                 <div className="flex flex-col items-center justify-center max-w-4xl mx-auto text-center">
                     <div className="mb-12 space-y-6">
@@ -17,10 +17,9 @@ export default function Potensi() {
                         </h1>
                     </div>
 
-                    <Link href='/register' className='group relative px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full hover:bg-blue-700 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl active:translate-y-0'>
-                        <span className="relative z-10">DAFTAR SEGERA</span>
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </Link>
+                    <div className='flex flex-col items-center justify-center'>
+                        <MdKeyboardDoubleArrowDown className='text-blue-600 text-4xl animate-bounce' />
+                    </div>
                 </div>
             </div>
         </section>

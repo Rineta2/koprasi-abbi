@@ -109,11 +109,6 @@ export const menuItems = [
       },
 
       {
-        label: "Security Assets",
-        href: "/dashboard/super-admins/layout/security-assets",
-      },
-
-      {
         label: "PROGRAM AFFILIATE KOPERASI ABBI",
         href: "/dashboard/super-admins/layout/program-affiliate-koperasi-abbi",
       },
