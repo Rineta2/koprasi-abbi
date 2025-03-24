@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Check if there's a saved redirect URL
         const redirectUrl = localStorage.getItem('redirectAfterLogin');
         if (redirectUrl) {
-            localStorage.removeItem('redirectAfterLogin'); // Clear the saved URL
+            localStorage.removeItem('redirectAfterLogin');
             router.push(redirectUrl);
             return;
         }
