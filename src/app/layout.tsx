@@ -1,7 +1,5 @@
 import { metadata } from "@/base/meta/metadata";
 
-import Script from 'next/script'
-
 metadata.manifest = "/manifest.json";
 
 export { metadata };
@@ -19,14 +17,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <Script
-          src="https://app.sandbox.midtrans.com/snap/snap.js"
-          data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
-          strategy="worker"
-          async
-        />
-      </head>
       <body
         className={`${nunitoSans.variable} antialiased`}
       >
