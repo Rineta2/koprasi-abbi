@@ -38,6 +38,8 @@ import SisaHasilusaha from '@/components/ui/sisa-hasil-usaha/SisaHasilusaha'
 
 import ProgramAffiliateKoperasi from '@/components/ui/ProgramAffiliateKoperasi/ProgramAffiliateKoperasi'
 
+import Contact from '@/components/ui/contact/Contact'
+
 export default function HomeScreen() {
   return (
     <Fragment>
@@ -60,6 +62,7 @@ export default function HomeScreen() {
       <RewardSponsor />
       <SisaHasilusaha />
       <ProgramAffiliateKoperasi />
+      <Contact />
     </Fragment>
   )
 }

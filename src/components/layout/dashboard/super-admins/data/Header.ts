@@ -112,6 +112,11 @@ export const menuItems = [
         label: "PROGRAM AFFILIATE KOPERASI ABBI",
         href: "/dashboard/super-admins/layout/program-affiliate-koperasi-abbi",
       },
+
+      {
+        label: "Testimonials",
+        href: "/dashboard/super-admins/layout/testimonials",
+      },
     ],
   },
 
