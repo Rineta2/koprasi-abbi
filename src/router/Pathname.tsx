@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 import { usePathname } from "next/navigation";
 
@@ -12,8 +12,11 @@ import { Toaster } from "react-hot-toast";
 
 import Script from "next/script";
 
+import ModalPopup from "@/base/helper/model/ModalPopup"
+
 const Pathname = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
+    const [showModal, setShowModal] = useState(true);
 
     // Check for all dashboard/admin routes
     const isAdminRoute = pathname?.includes("/dashboard") ||
@@ -49,6 +52,7 @@ const Pathname = ({ children }: { children: React.ReactNode }) => {
                     },
                 }}
             />
+            {showModal && <ModalPopup onClose={() => setShowModal(false)} />}
             {!isAdminRoute && <Header />}
             {children}
             {!isAdminRoute && <Footer />}

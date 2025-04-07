@@ -96,7 +96,7 @@ export default function Footer() {
                         <ul className="space-y-4">
                             <li className="flex items-center space-x-3 group hover:translate-x-2 transition-transform duration-300">
                                 <i className="fas fa-map-marker-alt text-primary group-hover:text-secondary transition-colors"></i>
-                                <span className="text-text/80 group-hover:text-text transition-colors">Jl. KH. Abdul Hamid KM.1 Cemplang, Desa Sukamulya</span>
+                                <span className="text-text/80 group-hover:text-text transition-colors">Jakarta Raya</span>
                             </li>
                             <li className="flex items-center space-x-3 group hover:translate-x-2 transition-transform duration-300">
                                 <i className="fas fa-phone text-primary group-hover:text-secondary transition-colors"></i>
@@ -104,7 +104,7 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center space-x-3 group hover:translate-x-2 transition-transform duration-300">
                                 <i className="fas fa-envelope text-primary group-hover:text-secondary transition-colors"></i>
-                                <span className="text-text/80 group-hover:text-text transition-colors">koprasiabbi@gmail.com</span>
+                                <span className="text-text/80 group-hover:text-text transition-colors">spacedigitalia@gmail.com</span>
                             </li>
                         </ul>
                     </div>
@@ -130,7 +130,7 @@ export default function Footer() {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-text/10 mt-12 pt-8 text-sm text-center">
-                    <p className="text-text/60">&copy; {new Date().getFullYear()} KOPERASI ABBI. All rights reserved.</p>
+                    <p className="text-text/60">&copy; 2025 Space Digitalia. All rights reserved.</p>
                 </div>
             </div>
         </footer>

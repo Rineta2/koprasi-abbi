@@ -48,7 +48,7 @@ export default function TopBar() {
                         transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         className="group w-full sm:w-auto"
                     >
-                        <Link href="mailto:koprasiabbi@gmail.com"
+                        <Link href="mailto:spacedigitalia@gmail.com"
                             className='flex items-center justify-center sm:justify-start gap-2.5 text-white group-hover:text-white/90 text-xs md:text-sm font-medium transition-all duration-300'>
                             <motion.span
                                 whileHover={{ rotate: 15 }}
@@ -56,7 +56,7 @@ export default function TopBar() {
                             >
                                 <CgMail />
                             </motion.span>
-                            <span className='group-hover:text-white/90'>koprasiabbi@gmail.com</span>
+                            <span className='group-hover:text-white/90'>spacedigitalia@gmail.com</span>
                         </Link>
                     </motion.div>
 
@@ -73,7 +73,7 @@ export default function TopBar() {
                             <IoLocation />
                         </motion.div>
                         <p className="text-xs md:text-sm text-white group-hover:text-white/90 text-center sm:text-left">
-                            Jl. KH. Abdul Hamid KM.1 Cemplang, Desa Sukamulya
+                            Jakarta raya
                         </p>
                     </motion.div>
                 </div>
